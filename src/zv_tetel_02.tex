@@ -1,0 +1,833 @@
+\documentclass[12pt,a4paper]{article}
+
+\newcommand{\TETELNUMBER}{2}
+\newcommand{\TETELTITLE}{Algoritmusok, memória és elemi algoritmusok}
+\newcommand{\TETELSHORTTITLE}{Algoritmus, memória, pszeudókód}
+\newcommand{\TETELKIIRAS}{Az algoritmus. Iteratív és rekurzív algoritmus. A számítógépes memória. Adat és program. Verem és procedúra. Az algoritmus lejegyzése. A folyamatábra és a pszeudokód. Elemi algoritmusok.}
+
+\input{src/preamble.tex}
+
+\begin{document}
+\zvfrontmatter
+
+\section{A tétel lényege és vizsgaszintű vázlata}
+
+\begin{summarybox}
+A tétel központi gondolata az, hogy az algoritmus egy probléma megoldására szolgáló, végesen leírható és lépésenként végrehajtható eljárás. A végrehajtás mindig valamilyen adatokból, közbülső állapotokból, vezérlésből és memóriából áll. Ezért az algoritmust nem elég csak matematikai receptként látni: érteni kell azt is, hogy a program hogyan kerül a gép memóriájába, hogyan hajtódik végre, mire való a verem, hogyan működik a procedúrahívás, és hogyan írhatók le az alapvető algoritmusminták pszeudókóddal vagy folyamatábrával.
+\end{summarybox}
+
+A tétel vizsgán jól felépíthető a következő sorrendben:
+
+\begin{enumerate}
+  \item az algoritmus fogalma, bemenet, kimenet, állapot, végesség, helyesség;
+  \item iteratív algoritmusok: ciklusok, ciklusfeltétel, ciklusmag, terminálás;
+  \item rekurzív algoritmusok: báziseset, rekurzív eset, hívási lánc, veremhasználat;
+  \item a számítógépes memória hierarchikus felépítése és a változók tárolása;
+  \item adat és program viszonya a Neumann-elvű gépben;
+  \item verem, hívási verem, veremkeret, procedúra és függvényhívás;
+  \item algoritmusok lejegyzése: természetes nyelv, pszeudókód, folyamatábra, programkód;
+  \item elemi algoritmusok: sorozatszámítás, eldöntés, kiválasztás, keresés, megszámlálás, maximumkiválasztás, másolás, kiválogatás, szétválogatás, halmazműveletek, összefuttatás.
+\end{enumerate}
+
+\section{Az algoritmus fogalma}
+
+\subsection{Probléma, algoritmus, program}
+
+Az \textbf{algoritmus} egy számítási vagy adatfeldolgozási probléma megoldására szolgáló eljárás. A problémát véges számú, egyértelműen értelmezhető lépésre bontja. Az algoritmus absztrakt leírás: nem feltétlenül kötődik konkrét programozási nyelvhez vagy konkrét géphez.
+
+Egy probléma megadásakor legalább a következőket kell tisztázni:
+
+\begin{itemize}
+  \item milyen bemenetek lehetségesek;
+  \item milyen kimenetet várunk;
+  \item milyen közbülső adatokkal dolgozhatunk;
+  \item milyen feltételek mellett tekintjük helyesnek az eredményt;
+  \item milyen erőforráskorlátok lehetnek, például idő vagy memória.
+\end{itemize}
+
+Az \textbf{algoritmizálás} során a problémát részfeladatokra bontjuk, majd ezekhez lépéseket rendelünk. A \textbf{program} ezzel szemben az algoritmus valamely konkrét programozási nyelven, konkrét szintaxissal és futtatási környezettel megadott alakja.
+
+\begin{center}
+\input{src/tables/zv02_problema_algoritmus_program.tex}
+\end{center}
+
+\subsection{Az algoritmus fő tulajdonságai}
+
+Egy eljárást akkor tekintünk algoritmusnak, ha rendelkezik néhány alapvető tulajdonsággal.
+
+\begin{itemize}
+  \item \textbf{Bemenet}: az algoritmus nulla vagy több bemeneti adatot kaphat.
+  \item \textbf{Kimenet}: legalább egy eredményt vagy döntést elő kell állítania, ha a feladat nem tisztán mellékhatásos művelet.
+  \item \textbf{Egyértelműség}: a lépések értelmezése ne legyen kétértelmű.
+  \item \textbf{Végesség}: a leírás véges, és helyes bemenetekre elvárjuk, hogy véges sok lépés után befejeződjön.
+  \item \textbf{Végrehajthatóság}: minden lépés olyan művelet legyen, amely az adott modellben ténylegesen elvégezhető.
+  \item \textbf{Helyesség}: a specifikáció szerinti eredményt adja.
+  \item \textbf{Hatékonyság}: az idő- és tárigény a feladathoz képest elfogadható legyen.
+\end{itemize}
+
+A \textbf{teljes helyesség} két részből áll: részleges helyességből és terminálásból. Részlegesen helyes az algoritmus, ha amennyiben megáll, akkor jó eredményt ad. Teljesen helyes akkor, ha meg is áll, és jó eredményt is ad.
+
+\subsection{Bemenet, kimenet és állapot}
+
+Az algoritmus végrehajtása állapotok sorozataként fogható fel. Egy állapot tartalmazhatja például a változók aktuális értékeit, a végrehajtás helyét, a verem tartalmát és a memóriában lévő adatokat. Egy utasítás az egyik állapotból egy másik állapotba visz át.
+
+\[
+S_0 \xrightarrow{u_1} S_1 \xrightarrow{u_2} S_2 \xrightarrow{u_3} \cdots \xrightarrow{u_k} S_k
+\]
+
+Itt $S_0$ a kezdőállapot, $S_k$ pedig a befejező állapot. Az algoritmus helyessége azt jelenti, hogy minden megengedett kezdőállapotból olyan végállapotba jutunk, amely megfelel a feladat specifikációjának.
+
+\subsection{Determinista és nemdeterminisztikus szemlélet}
+
+A legtöbb gyakorlati program determinisztikus: ugyanabból a bemenetből, ugyanazon feltételek mellett ugyanazt a lépéssort és ugyanazt az eredményt kapjuk. Vannak azonban olyan modellek és algoritmusok, ahol több lehetséges következő lépés is elképzelhető. Ezeket nemdeterminisztikus szemléletben tárgyaljuk. A záróvizsga 2. tételében a hangsúly a determinisztikus, klasszikus algoritmusokon van, de későbbi tételeknél a nemdeterminisztikus modell is fontos lesz.
+
+\section{Változók, kifejezések, utasítások és vezérlés}
+
+\subsection{Változó}
+
+A \textbf{változó} névvel ellátott tárhely vagy absztrakt tároló, amelynek értéke a program futása során lekérdezhető és gyakran módosítható. Egy változóról több szempontból beszélhetünk.
+
+\begin{center}
+\input{src/tables/zv02_valtozo_jellemzoi.tex}
+\end{center}
+
+A \textbf{deklaráció} megadja a változó nevét és sok nyelvben a típusát. A \textbf{definíció} helyet rendel hozzá. Az \textbf{inicializálás} kezdőértéket állít be. Ezek a fogalmak egyes magas szintű nyelvekben összeolvadnak, alacsonyabb szintű nyelvekben viszont fontos megkülönböztetni őket.
+
+\subsection{Kifejezés és utasítás}
+
+A \textbf{kifejezésnek} értéke van. Példák:
+
+\[
+a+b,\qquad x<10,\qquad \text{Hossz}[X],\qquad f(x).
+\]
+
+Az \textbf{utasítás} a program állapotát változtatja meg, vagy a vezérlés menetét módosítja. Példák:
+
+\begin{itemize}
+  \item értékadás: $x\leftarrow x+1$;
+  \item elágazás: ha $x<0$, akkor más ágon folytatjuk;
+  \item ciklus: egy utasítássorozatot ismétlünk;
+  \item procedúrahívás: másik logikai egységre adjuk át a vezérlést;
+  \item be- és kimenet: adatot olvasunk vagy írunk.
+\end{itemize}
+
+\subsection{Vezérlési szerkezetek}
+
+Szekvenciával csak egymás utáni lépéseket tudunk leírni. A nem triviális algoritmusokhoz elágazásra és ismétlésre is szükség van.
+
+\begin{center}
+\input{src/tables/zv02_vezerlesi_szerkezetek.tex}
+\end{center}
+
+Elméletileg sok szerkezet visszavezethető feltételes ugrásokra vagy akár egyetlen ciklusszerkezetre is, de olvashatóság és helyességbizonyítás szempontjából a strukturált vezérlési szerkezetek előnyösebbek.
+
+\section{Iteratív algoritmusok}
+
+\subsection{Iteráció fogalma}
+
+Az \textbf{iteratív algoritmus} ismétléssel oldja meg a feladatot. A ciklusmag ugyanazt a lépéssorozatot hajtja végre többször, miközben a változók értékei változnak. Az iteráció jellemző formái:
+
+\begin{itemize}
+  \item \textbf{elöltesztelő ciklus}: a feltételt a ciklusmag előtt vizsgáljuk, például WHILE;
+  \item \textbf{hátultesztelő ciklus}: a ciklusmag legalább egyszer lefut, például DO-WHILE vagy REPEAT-UNTIL;
+  \item \textbf{számlálós ciklus}: adott indexértékeken megyünk végig, például FOR;
+  \item \textbf{bejáró ciklus}: egy kollekció elemeit járjuk be, például FOREACH.
+\end{itemize}
+
+Az iteráció alkalmas sorozatok bejárására, összegzésre, keresésre, rendezésre, fájlok feldolgozására és sok más ismétlődő feladatra.
+
+\subsection{Ciklus működése}
+
+Egy WHILE ciklus általános alakja pszeudókódban:
+
+\[
+\begin{aligned}
+&\text{WHILE } p \text{ DO}\\
+&\quad f
+\end{aligned}
+\]
+
+ahol $p$ logikai feltétel, $f$ pedig a ciklusmag. A ciklus addig ismétlődik, amíg $p$ igaz. Ha $p$ már az elején hamis, a ciklusmag egyszer sem fut le.
+
+Egy FOR ciklus növekvő indexszel:
+
+\[
+\begin{aligned}
+&\text{FOR } i\leftarrow a \text{ TO } b \text{ DO}\\
+&\quad f(i)
+\end{aligned}
+\]
+
+Ez átalakítható WHILE ciklussá:
+
+\[
+\begin{aligned}
+&i\leftarrow a\\
+&\text{WHILE } i\leq b \text{ DO}\\
+&\quad f(i)\\
+&\quad i\leftarrow i+1
+\end{aligned}
+\]
+
+\subsection{Terminálás és ciklusinvariáns}
+
+Egy ciklusnál két alapvető kérdés van:
+
+\begin{itemize}
+  \item \textbf{megáll-e}: a ciklusfeltétel egyszer hamissá válik-e;
+  \item \textbf{jót számol-e}: a ciklus végén a kívánt eredmény áll-e elő.
+\end{itemize}
+
+A helyesség vizsgálatánál fontos a \textbf{ciklusinvariáns}. Ez olyan állítás, amely igaz a ciklus előtt, igaz marad minden iteráció után, és a ciklus befejezésekor a kilépési feltétellel együtt bizonyítja az eredményt.
+
+Példa összegzésre:
+
+\[
+\begin{aligned}
+&s\leftarrow 0\\
+&\text{FOR } i\leftarrow 1 \text{ TO } n \text{ DO}\\
+&\quad s\leftarrow s+x_i
+\end{aligned}
+\]
+
+Ciklusinvariáns: az $i$-edik iteráció előtt $s$ az első $i-1$ elem összege. A ciklus végén ezért $s=x_1+x_2+\cdots+x_n$.
+
+\subsection{Iteratív faktoriális}
+
+A faktoriális definíciója:
+
+\[
+n!=1\cdot2\cdot3\cdots n,\qquad 0!=1.
+\]
+
+Iteratív algoritmus:
+
+\[
+\begin{aligned}
+&\text{FACTORIAL\_ITER}(n,@result)\\
+&\quad result\leftarrow 1\\
+&\quad \text{FOR } i\leftarrow 2 \text{ TO } n \text{ DO}\\
+&\quad\quad result\leftarrow result\cdot i\\
+&\quad \text{RETURN}(result)
+\end{aligned}
+\]
+
+A ciklus minden lépésben megszorozza az eddigi szorzatot a következő számmal. Az időigény $O(n)$, a plusz memóriaigény $O(1)$.
+
+\section{Rekurzív algoritmusok}
+
+\subsection{Rekurzió fogalma}
+
+A \textbf{rekurzív algoritmus} egy feladatot önmagához hasonló, de kisebb méretű részfeladatra vezet vissza. Rekurziónál mindig kell:
+
+\begin{itemize}
+  \item \textbf{báziseset}: olyan egyszerű eset, amely közvetlenül megoldható;
+  \item \textbf{rekurzív eset}: a feladat visszavezetése kisebb feladatra;
+  \item \textbf{méretcsökkenés}: minden hívással közelebb kell jutni a bázisesethez;
+  \item \textbf{eredmény-összeállítás}: a részfeladatok eredményéből előáll a teljes eredmény.
+\end{itemize}
+
+Ha a méret nem csökken, vagy nincs elérhető báziseset, akkor végtelen rekurzió keletkezik, amely a gyakorlatban veremtúlcsorduláshoz vezethet.
+
+\subsection{Rekurzív faktoriális}
+
+A faktoriális rekurzív definíciója:
+
+\[
+f(n)=
+\begin{cases}
+1, & n=0 \text{ vagy } n=1,\\
+n\cdot f(n-1), & n>1.
+\end{cases}
+\]
+
+Pszeudókód:
+
+\[
+\begin{aligned}
+&\text{FACTORIAL\_REC}(n,@result)\\
+&\quad \text{IF } n\leq 1\\
+&\quad\quad \text{THEN } result\leftarrow 1\\
+&\quad\quad \text{ELSE CALL FACTORIAL\_REC}(n-1,temp)\\
+&\quad\quad\quad result\leftarrow n\cdot temp\\
+&\quad \text{RETURN}(result)
+\end{aligned}
+\]
+
+Például:
+
+\[
+f(5)=5\cdot f(4)=5\cdot4\cdot f(3)=5\cdot4\cdot3\cdot2\cdot1=120.
+\]
+
+Az időigény $O(n)$, de a hívási verem miatt a memóriaigény $O(n)$.
+
+\subsection{Rekurzív Fibonacci és a rossz rekurzió példája}
+
+A Fibonacci-sorozat:
+
+\[
+F_0=0,\qquad F_1=1,\qquad F_n=F_{n-1}+F_{n-2}\quad(n\geq2).
+\]
+
+A közvetlen rekurzív algoritmus:
+
+\[
+\begin{aligned}
+&\text{FIB}(n,@result)\\
+&\quad \text{IF } n<2\\
+&\quad\quad \text{THEN } result\leftarrow n\\
+&\quad\quad \text{ELSE CALL FIB}(n-1,a)\\
+&\quad\quad\quad \text{CALL FIB}(n-2,b)\\
+&\quad\quad\quad result\leftarrow a+b\\
+&\quad \text{RETURN}(result)
+\end{aligned}
+\]
+
+Ez matematikailag természetes, de algoritmikusan rossz lehet, mert ugyanazokat a részproblémákat sokszor újraszámolja. Például $F_5$ számításakor többször előkerül $F_3$, $F_2$, $F_1$. Ezért a naiv rekurzív Fibonacci időigénye exponenciális jellegű. Iteratív megoldással vagy dinamikus programozással $O(n)$ időre csökkenthető.
+
+\subsection{Rekurzió és iteráció összehasonlítása}
+
+\begin{center}
+\input{src/tables/zv02_iteracio_rekurzio_osszehasonlitas.tex}
+\end{center}
+
+Sok iteratív algoritmus megadható rekurzívan, és sok rekurzív algoritmus átalakítható iteratívvá. A választás függ a probléma szerkezetétől, az olvashatóságtól, a memóriaigénytől és a programozási nyelv futtatókörnyezetétől.
+
+\section{A számítógépes memória}
+
+\subsection{Memória fogalma}
+
+A számítógépes \textbf{memória} adatok és programutasítások tárolására szolgál. A program végrehajtásakor a processzor utasításokat olvas, adatokon műveleteket végez, majd az eredményt regiszterekbe, memóriába vagy más eszközre írja.
+
+A memória absztrakt modellje gyakran címzett cellák sorozata:
+
+\[
+M[0], M[1], M[2],\ldots,M[N-1].
+\]
+
+Minden cellának van címe, és valamilyen bitmintát tárol. A címzés segítségével a processzor vagy a program meg tudja mondani, melyik helyről kell olvasni vagy hova kell írni.
+
+\subsection{Memóriahierarchia}
+
+A számítógépekben többféle tároló található. Általános szabály, hogy minél gyorsabb egy tároló, annál kisebb és drágább.
+
+\begin{center}
+\input{src/tables/zv02_memoriahierarchia.tex}
+\end{center}
+
+\subsection{A program futás közbeni memóriaterületei}
+
+Egy folyamat virtuális memóriáját sokszor logikai részekre bontjuk. A pontos részletek operációs rendszertől és futtatókörnyezettől függnek, de a fő gondolat a következő.
+
+\input{src/figures/memoria_folyamat_teruletei.tex}
+
+\begin{itemize}
+  \item \textbf{Kódszegmens}: a program végrehajtható utasításai.
+  \item \textbf{Statikus adatterület}: globális és statikus élettartamú változók.
+  \item \textbf{Heap}: futás közben dinamikusan létrehozott objektumok és adatok.
+  \item \textbf{Verem}: függvény- és procedúrahívásokhoz kapcsolódó ideiglenes adatok.
+\end{itemize}
+
+\subsection{Statikus, verem- és heap-allokáció}
+
+\begin{center}
+\input{src/tables/zv02_memoria_allokacio_tipusok.tex}
+\end{center}
+
+A verem gyors és egyszerű, de mérete korlátozott. A heap rugalmasabb, de kezelése drágább lehet, és alacsonyabb szintű nyelvekben memória-szivárgás vagy felszabadítás utáni használat hibája is előfordulhat.
+
+\section{Adat és program}
+
+\subsection{Neumann-elvű tárolt program}
+
+A klasszikus Neumann-elvű gép lényege, hogy a program utasításai és az adatok ugyanabban a főmemóriában tárolhatók. Emiatt a program is bitminták sorozata, amelyet a processzor utasításként értelmez.
+
+\begin{summarybox}
+Ugyanaz a bitminta értelmezéstől függően lehet adat vagy utasítás. A különbséget nem a bitek önmagukban hordozzák, hanem a végrehajtási környezet és az értelmezési szabályok.
+\end{summarybox}
+
+A processzor a végrehajtás során tipikusan a következő ciklust ismétli:
+
+\begin{enumerate}
+  \item \textbf{fetch}: a következő utasítás beolvasása a memóriából;
+  \item \textbf{decode}: az utasítás értelmezése, műveleti kód és operandusok meghatározása;
+  \item \textbf{execute}: a művelet végrehajtása;
+  \item \textbf{write-back}: eredmény visszaírása regiszterbe vagy memóriába;
+  \item \textbf{következő utasítás}: az utasításszámláló frissítése.
+\end{enumerate}
+
+\subsection{Gépi kód, assembly, magas szintű nyelv}
+
+A \textbf{gépi kód} a processzor közvetlenül végrehajtható utasításainak bináris formája. Az utasításokban műveleti kódok, azaz opcode-ok és operandusok szerepelnek. Például egy utasítás jelentheti azt, hogy két regisztert össze kell adni, memóriából kell olvasni, vagy másik címre kell ugrani.
+
+Az \textbf{assembly} a gépi kód emberközelibb alakja: a bináris opcode-ok helyett mnemonikokat használ, például \code{MOV}, \code{ADD}, \code{JMP}. Az assembly még mindig hardver- és architektúrafüggő.
+
+A \textbf{magas szintű programozási nyelvek} távolabb vannak a hardvertől. A programozó változókkal, típusokkal, függvényekkel, osztályokkal és vezérlési szerkezetekkel dolgozik, majd a program fordítással, interpretálással vagy byte-kódos végrehajtással jut el a gépi végrehajtásig.
+
+\subsection{Fordítás és interpretálás}
+
+\begin{center}
+\input{src/tables/zv02_forditas_interpretalas.tex}
+\end{center}
+
+A modern rendszerek sokszor kevert megoldásokat használnak. Például egy nyelv fordulhat byte-kódra, amelyet virtuális gép hajt végre, és a gyakran futó részeket futás közben natív kóddá fordíthatja a JIT fordító.
+
+\section{Verem és procedúra}
+
+\subsection{Verem mint absztrakt adattípus}
+
+A \textbf{verem} olyan adatszerkezet, amely LIFO elven működik: Last In, First Out, azaz az utoljára betett elem kerül ki először.
+
+Alapműveletei:
+
+\begin{itemize}
+  \item \code{PUSH}: elem berakása a verem tetejére;
+  \item \code{POP}: a felső elem kivétele;
+  \item \code{TOP}: a felső elem lekérdezése kivétel nélkül;
+  \item \code{EMPTY}: annak vizsgálata, hogy üres-e a verem.
+\end{itemize}
+
+\input{src/figures/verem_push_pop.tex}
+
+A verem nemcsak adatstruktúraként fontos, hanem a programok végrehajtásában is: a függvények és procedúrák hívásait a hívási verem követi.
+
+\subsection{Procedúra és függvény}
+
+A \textbf{procedúra} logikailag összetartozó utasítások névvel ellátott egysége. Paramétereket kaphat, és mellékhatásként módosíthat adatokat, de klasszikus értelemben nincs visszatérési értéke.
+
+A \textbf{függvény} hasonlóan hívható egység, de visszatérési értékkel rendelkezik, ezért kifejezésként is használható. Matematikai értelemben ideális esetben ugyanarra a bemenetre mindig ugyanazt az eredményt adja, és nincs mellékhatása. A gyakorlati programozási nyelvekben azonban a függvények is okozhatnak mellékhatást.
+
+\begin{center}
+\input{src/tables/zv02_procedura_fuggveny.tex}
+\end{center}
+
+\subsection{Paraméterátadás}
+
+A híváskor megadott konkrét értékeket \textbf{argumentumoknak}, a procedúra vagy függvény definíciójában szereplő neveket \textbf{formális paramétereknek} nevezzük.
+
+Az argumentumok paraméterekhez rendelése történhet:
+
+\begin{itemize}
+  \item \textbf{pozíció szerint}: az első argumentum az első paraméterhez tartozik;
+  \item \textbf{név szerint}: például $x=5$, $limit=10$;
+  \item ritkábban \textbf{névegyezőség szerint}: a hívó és hívott azonos nevű változóit rendelik össze.
+\end{itemize}
+
+Az értékek átadásának két klasszikus módja:
+
+\begin{itemize}
+  \item \textbf{érték szerinti átadás}: a hívott egység másolatot kap, a paraméter módosítása nem módosítja közvetlenül a hívó változóját;
+  \item \textbf{cím vagy referencia szerinti átadás}: a hívott egység a hívó adatára hivatkozik, ezért a módosítás kívül is látható lehet.
+\end{itemize}
+
+\subsection{Hívási verem és veremkeret}
+
+A \textbf{hívási verem} a függvény- és procedúrahívások nyilvántartására szolgál. Minden aktív híváshoz tartozik egy \textbf{veremkeret} vagy stack frame.
+
+Egy veremkeret tartalmazhatja:
+
+\begin{itemize}
+  \item a visszatérési címet;
+  \item az átadott paramétereket vagy azok hivatkozásait;
+  \item a lokális változókat;
+  \item ideiglenes értékeket;
+  \item mentett regisztereket vagy állapotinformációkat.
+\end{itemize}
+
+Amikor egy procedúrát meghívunk, új veremkeret kerül a hívási verem tetejére. Amikor a procedúra visszatér, a keret lekerül, és a végrehajtás a visszatérési címen folytatódik.
+
+\input{src/figures/hivasi_verem_keretek.tex}
+
+\subsection{Rekurzió és hívási verem kapcsolata}
+
+Rekurzió esetén ugyanannak a függvénynek több aktív példánya is lehet. Minden példány külön veremkeretet kap, saját paraméterekkel és lokális változókkal. Ez teszi lehetővé, hogy a rekurzív hívások egymástól függetlenül tárolják a részfeladatok állapotát.
+
+Például $\text{FACTORIAL\_REC}(4)$ esetén a hívási lánc:
+
+\[
+\text{fact}(4)\to\text{fact}(3)\to\text{fact}(2)\to\text{fact}(1).
+\]
+
+A visszatérés fordított sorrendben történik:
+
+\[
+\text{fact}(1)\to\text{fact}(2)\to\text{fact}(3)\to\text{fact}(4).
+\]
+
+Ez pontosan a verem LIFO működésének felel meg.
+
+\section{Az algoritmus lejegyzése}
+
+\subsection{Lejegyzési módok összehasonlítása}
+
+Az algoritmusokat többféleképpen lehet leírni. A választás célfüggő: tanuláshoz és tervezéshez gyakran pszeudókód vagy folyamatábra jó, implementáláshoz programkód kell.
+
+\begin{center}
+\input{src/tables/zv02_algoritmus_lejegyzes_modok.tex}
+\end{center}
+
+\subsection{Pszeudókód}
+
+A \textbf{pszeudókód} a természetes nyelv és a programkód közötti leírási forma. Célja, hogy az algoritmus lényegét mutassa meg nyelvfüggetlenül, miközben a vezérlési szerkezetek és műveletek már programozásszerűen jelennek meg.
+
+Tipikus jelölések:
+
+\begin{itemize}
+  \item értékadás: $x\leftarrow 0$;
+  \item összehasonlítás: $x=y$, $x<y$;
+  \item cím vagy kimeneti paraméter: $@x$;
+  \item nem létező cím vagy üres referencia: $NIL$;
+  \item növelés, csökkentés: $\text{INC}(i)$, $\text{DEC}(i)$;
+  \item elágazás: IF, THEN, ELSE;
+  \item ciklus: WHILE, DO, REPEAT, UNTIL, FOR, FOREACH;
+  \item hívás: CALL;
+  \item be- és kimenet: INPUT, OUTPUT;
+  \item visszatérés: RETURN.
+\end{itemize}
+
+Példa pszeudókódra, amely megszámolja a pozitív elemeket:
+
+\[
+\begin{aligned}
+&\text{COUNT\_POSITIVE}(@X,@count)\\
+&\quad count\leftarrow 0\\
+&\quad \text{FOR } i\leftarrow 1 \text{ TO Hossz}[X] \text{ DO}\\
+&\quad\quad \text{IF } x_i>0\\
+&\quad\quad\quad \text{THEN INC}(count)\\
+&\quad \text{RETURN}(count)
+\end{aligned}
+\]
+
+\subsection{Folyamatábra}
+
+A \textbf{folyamatábra} irányított gráfként ábrázolja az algoritmust. Csomópontjai a lépéseket, élei a vezérlés irányát mutatják. A folyamatábra különösen jó az elágazások és ciklusok szemléltetésére.
+
+Gyakori elemei:
+
+\begin{center}
+\input{src/tables/zv02_folyamatabra_jelek.tex}
+\end{center}
+
+Egyszerű folyamatábra jellegű döntési szerkezet:
+
+\input{src/figures/folyamatabra_megszamlalas.tex}
+
+\begin{warningbox}
+Folyamatábránál az áttekinthetőség fontosabb, mint az, hogy minden programnyelvi részletet berajzoljunk. Nagy programokat nem célszerű teljes egészében folyamatábrával dokumentálni; ott inkább moduláris bontás, pszeudókód, UML vagy tényleges kódolvasás használható.
+\end{warningbox}
+
+\section{Elemi algoritmusok sorozatokon}
+
+\subsection{Alapfogalmak}
+
+A legtöbb elemi algoritmus sorozatokon dolgozik. Legyen
+
+\[
+X=(x_1,x_2,\ldots,x_n)
+\]
+
+egy $n$ hosszú sorozat. Egy $T$ tulajdonság olyan logikai függvény, amely minden elemről eldönti, hogy rendelkezik-e az adott tulajdonsággal:
+
+\[
+T:A\to\{\text{igaz},\text{hamis}\}.
+\]
+
+Például $T(x)$ jelentheti azt, hogy $x$ pozitív, páros, prímszám, adott intervallumba esik, vagy egy keresett kulccsal egyezik.
+
+\subsection{Sorozatszámítás, aggregáció, redukció}
+
+A \textbf{sorozatszámítás} vagy \textbf{redukció} a sorozat elemeit egyetlen értékké összesíti. Ilyen az összegzés, szorzás, logikai ÉS/VAGY, maximum, minimum vagy sztringek összefűzése.
+
+Általános alak egy $\square$ bináris művelettel:
+
+\[
+\begin{aligned}
+&\text{REDUCE}(@X,@s)\\
+&\quad s\leftarrow Null\\
+&\quad \text{FOR } i\leftarrow 1 \text{ TO Hossz}[X] \text{ DO}\\
+&\quad\quad s\leftarrow s\square x_i\\
+&\quad \text{RETURN}(s)
+\end{aligned}
+\]
+
+Példák:
+
+\begin{center}
+\input{src/tables/zv02_aggregacio_muveletek_null_elemek.tex}
+\end{center}
+
+Időigénye általában $O(n)$, mert minden elemet egyszer feldolgoz.
+
+\subsection{Eldöntés: létezik-e, illetve minden elemre igaz-e}
+
+Az \textbf{eldöntés} azt vizsgálja, hogy van-e a sorozatban $T$ tulajdonságú elem.
+
+\[
+\begin{aligned}
+&\text{EXISTS}(@X,@van)\\
+&\quad i\leftarrow 1\\
+&\quad \text{WHILE } i\leq \text{Hossz}[X] \text{ AND } \overline{T(x_i)} \text{ DO}\\
+&\quad\quad \text{INC}(i)\\
+&\quad van\leftarrow (i\leq \text{Hossz}[X])\\
+&\quad \text{RETURN}(van)
+\end{aligned}
+\]
+
+A \textbf{minden elemre igaz-e} változat:
+
+\[
+\begin{aligned}
+&\text{ALL}(@X,@mind)\\
+&\quad i\leftarrow 1\\
+&\quad \text{WHILE } i\leq \text{Hossz}[X] \text{ AND } T(x_i) \text{ DO}\\
+&\quad\quad \text{INC}(i)\\
+&\quad mind\leftarrow (i>\text{Hossz}[X])\\
+&\quad \text{RETURN}(mind)
+\end{aligned}
+\]
+
+Mindkét algoritmus rövidzáras: ha korán eldől a válasz, nem kell végignézni a teljes sorozatot. Legrosszabb esetben $O(n)$.
+
+\subsection{Kiválasztás és lineáris keresés}
+
+A \textbf{kiválasztás} feltételezi, hogy biztosan van $T$ tulajdonságú elem, és megkeresi egy ilyen elem indexét.
+
+\[
+\begin{aligned}
+&\text{FIND}(@X,@index)\\
+&\quad i\leftarrow 1\\
+&\quad \text{WHILE } \overline{T(x_i)} \text{ DO}\\
+&\quad\quad \text{INC}(i)\\
+&\quad index\leftarrow i\\
+&\quad \text{RETURN}(index)
+\end{aligned}
+\]
+
+A \textbf{lineáris keresés} már nem feltételezi a létezést: visszaadja, hogy talált-e elemet, és ha igen, annak indexét.
+
+\[
+\begin{aligned}
+&\text{LINEAR\_SEARCH}(@X,@van,@index)\\
+&\quad i\leftarrow 1\\
+&\quad \text{WHILE } i\leq \text{Hossz}[X] \text{ AND } \overline{T(x_i)} \text{ DO}\\
+&\quad\quad \text{INC}(i)\\
+&\quad van\leftarrow (i\leq \text{Hossz}[X])\\
+&\quad \text{IF } van\\
+&\quad\quad \text{THEN } index\leftarrow i\\
+&\quad \text{RETURN}(van,index)
+\end{aligned}
+\]
+
+Legrosszabb esetben mindkettő $O(n)$, mert a keresett elem lehet az utolsó, vagy hiányozhat.
+
+\subsection{Megszámlálás}
+
+A \textbf{megszámlálás} megadja, hány elem rendelkezik a $T$ tulajdonsággal.
+
+\[
+\begin{aligned}
+&\text{COUNT}(@X,@count)\\
+&\quad count\leftarrow 0\\
+&\quad \text{FOR } i\leftarrow 1 \text{ TO Hossz}[X] \text{ DO}\\
+&\quad\quad \text{IF } T(x_i)\\
+&\quad\quad\quad \text{THEN INC}(count)\\
+&\quad \text{RETURN}(count)
+\end{aligned}
+\]
+
+Például megszámolhatjuk a negatív számokat, a páros számokat, a sikeres vizsgajegyeket vagy egy szövegben adott karakter előfordulásait. Időigénye $O(n)$.
+
+\subsection{Maximum- és minimumkiválasztás}
+
+A \textbf{maximumkiválasztás} feltételezi, hogy a sorozat nem üres, és az elemek között értelmezve van egy rendezési reláció.
+
+\[
+\begin{aligned}
+&\text{MAX}(@X,@index)\\
+&\quad index\leftarrow 1\\
+&\quad \text{FOR } i\leftarrow 2 \text{ TO Hossz}[X] \text{ DO}\\
+&\quad\quad \text{IF } x_i>x_{index}\\
+&\quad\quad\quad \text{THEN } index\leftarrow i\\
+&\quad \text{RETURN}(index)
+\end{aligned}
+\]
+
+Ha több maximális elem van, ez a változat az első maximális elem indexét tartja meg, mert csak szigorú nagyobb esetben módosítja az indexet. Ha $\geq$ vizsgálatot használnánk, akkor az utolsó maximális elem indexe kerülne visszaadásra.
+
+A minimumkiválasztás ugyanígy működik, csak a reláció iránya változik. Időigénye $O(n)$.
+
+\subsection{Másolás és transzformáció}
+
+A \textbf{másolás} egy sorozat elemeit egy másik sorozatba viszi át. Ha közben minden elemre alkalmazunk egy $f:A\to B$ függvényt, akkor transzformációról, map jellegű algoritmusról beszélünk.
+
+\[
+\begin{aligned}
+&\text{MAP}(@X,@Y)\\
+&\quad \text{Hossz}[Y]\leftarrow \text{Hossz}[X]\\
+&\quad \text{FOR } i\leftarrow 1 \text{ TO Hossz}[X] \text{ DO}\\
+&\quad\quad y_i\leftarrow f(x_i)\\
+&\quad \text{RETURN}(Y)
+\end{aligned}
+\]
+
+Példa: minden szám négyzetének képzése, Celsius értékek Fahrenheitre alakítása, sztringek kisbetűssé alakítása.
+
+\subsection{Kiválogatás}
+
+A \textbf{kiválogatás} a $T$ tulajdonságú elemeket egy új sorozatba gyűjti.
+
+\[
+\begin{aligned}
+&\text{COLLECT}(@X,@Y)\\
+&\quad \text{Hossz}[Y]\leftarrow 0\\
+&\quad \text{FOR } i\leftarrow 1 \text{ TO Hossz}[X] \text{ DO}\\
+&\quad\quad \text{IF } T(x_i)\\
+&\quad\quad\quad \text{THEN INC}(\text{Hossz}[Y])\\
+&\quad\quad\quad\quad y_{\text{Hossz}[Y]}\leftarrow x_i\\
+&\quad \text{RETURN}(Y)
+\end{aligned}
+\]
+
+Példa: gyűjtsük ki a pozitív számokat, az adott intervallumba eső értékeket vagy az adott feltételnek megfelelő rekordokat. Időigénye $O(n)$, a kimeneti sorozat mérete legfeljebb $n$.
+
+\subsection{Szétválogatás}
+
+A \textbf{szétválogatás} két kimeneti sorozatot készít: az egyikbe a $T$ tulajdonságú elemek, a másikba a nem $T$ tulajdonságú elemek kerülnek.
+
+\[
+\begin{aligned}
+&\text{ASSORT}(@X,@Y,@Z)\\
+&\quad \text{Hossz}[Y]\leftarrow 0\\
+&\quad \text{Hossz}[Z]\leftarrow 0\\
+&\quad \text{FOR } i\leftarrow 1 \text{ TO Hossz}[X] \text{ DO}\\
+&\quad\quad \text{IF } T(x_i)\\
+&\quad\quad\quad \text{THEN INC}(\text{Hossz}[Y])\\
+&\quad\quad\quad\quad y_{\text{Hossz}[Y]}\leftarrow x_i\\
+&\quad\quad\quad \text{ELSE INC}(\text{Hossz}[Z])\\
+&\quad\quad\quad\quad z_{\text{Hossz}[Z]}\leftarrow x_i\\
+&\quad \text{RETURN}(Y,Z)
+\end{aligned}
+\]
+
+Példa: negatív és nemnegatív számok szétválogatása, sikeres és sikertelen vizsgák külön listába tétele.
+
+\subsection{Halmazműveletek sorozatokkal}
+
+Ha egy halmazt ismétlés nélküli sorozatként reprezentálunk, akkor halmazműveleteket is megadhatunk elemi algoritmusokkal.
+
+\textbf{Metszet}: azok az elemek kerülnek a kimenetbe, amelyek mindkét bemeneti sorozatban szerepelnek.
+
+\[
+\begin{aligned}
+&\text{INTERSECTION}(@X,@Y,@Z)\\
+&\quad \text{Hossz}[Z]\leftarrow 0\\
+&\quad \text{FOR } i\leftarrow 1 \text{ TO Hossz}[X] \text{ DO}\\
+&\quad\quad j\leftarrow 1\\
+&\quad\quad \text{WHILE } j\leq \text{Hossz}[Y] \text{ AND } x_i\neq y_j \text{ DO}\\
+&\quad\quad\quad \text{INC}(j)\\
+&\quad\quad \text{IF } j\leq \text{Hossz}[Y]\\
+&\quad\quad\quad \text{THEN INC}(\text{Hossz}[Z])\\
+&\quad\quad\quad\quad z_{\text{Hossz}[Z]}\leftarrow x_i\\
+&\quad \text{RETURN}(Z)
+\end{aligned}
+\]
+
+Egyszerű sorozatos megvalósításnál az időigény $O(nm)$ lehet, mert minden $X$-beli elemhez végig kell keresni $Y$-t. Rendezett sorozatokkal vagy hash táblával javítható.
+
+\textbf{Unió}: az első sorozat elemei bekerülnek, majd a másodikból csak azok, amelyek az elsőben nem szerepelnek. Egyszerű sorozatos megvalósítással ez is $O(nm)$ jellegű lehet.
+
+\subsection{Összefuttatás}
+
+Az \textbf{összefuttatás} két rendezett sorozatból egy rendezett kimeneti sorozatot készít. Ez az összefésülő rendezés egyik alaplépése is.
+
+\[
+\begin{aligned}
+&\text{MERGE}(@X,@Y,@Z)\\
+&\quad i\leftarrow 1,\quad j\leftarrow 1,\quad \text{Hossz}[Z]\leftarrow 0\\
+&\quad \text{WHILE } i\leq \text{Hossz}[X] \text{ AND } j\leq \text{Hossz}[Y] \text{ DO}\\
+&\quad\quad \text{IF } x_i\leq y_j\\
+&\quad\quad\quad \text{THEN INC}(\text{Hossz}[Z]);\ z_{\text{Hossz}[Z]}\leftarrow x_i;\ \text{INC}(i)\\
+&\quad\quad\quad \text{ELSE INC}(\text{Hossz}[Z]);\ z_{\text{Hossz}[Z]}\leftarrow y_j;\ \text{INC}(j)\\
+&\quad \text{WHILE } i\leq \text{Hossz}[X] \text{ DO}\\
+&\quad\quad \text{INC}(\text{Hossz}[Z]);\ z_{\text{Hossz}[Z]}\leftarrow x_i;\ \text{INC}(i)\\
+&\quad \text{WHILE } j\leq \text{Hossz}[Y] \text{ DO}\\
+&\quad\quad \text{INC}(\text{Hossz}[Z]);\ z_{\text{Hossz}[Z]}\leftarrow y_j;\ \text{INC}(j)\\
+&\quad \text{RETURN}(Z)
+\end{aligned}
+\]
+
+Ha $X$ hossza $n$, $Y$ hossza $m$, akkor az összefuttatás időigénye $O(n+m)$, mert mindkét sorozat minden elemét legfeljebb egyszer olvassuk ki.
+
+\section{Összefoglaló táblázat az elemi algoritmusokról}
+
+\input{src/tables/zv02_elemi_algoritmusok_osszefoglalo.tex}
+
+\section{Tipikus vizsgakérdések és rövid válaszvázlatok}
+
+\subsection{Mit nevezünk algoritmusnak?}
+
+Algoritmusnak nevezzük egy probléma megoldására szolgáló, végesen leírható, lépésenként végrehajtható eljárást. Megadja, hogy a bemenetekből milyen műveleteken és közbülső állapotokon keresztül kapjuk meg a kimenetet. Fontos tulajdonságai az egyértelműség, végesség, végrehajthatóság, helyesség és hatékonyság.
+
+\subsection{Mi a különbség algoritmus és program között?}
+
+Az algoritmus nyelvfüggetlen megoldási módszer, a program pedig ennek konkrét programozási nyelven megadott, futtatható vagy fordítható alakja. Ugyanaz az algoritmus több programozási nyelven is implementálható.
+
+\subsection{Mi a különbség iteráció és rekurzió között?}
+
+Iteráció esetén ciklussal ismételjük a lépéseket. Rekurzió esetén a feladatot önmagához hasonló, kisebb részfeladatra vezetjük vissza. Iterációnál a megállást a ciklusfeltétel biztosítja, rekurziónál a báziseset elérése. Rekurzió gyakran több veremmemóriát igényel.
+
+\subsection{Mire való a hívási verem?}
+
+A hívási verem a függvény- és procedúrahívások nyilvántartására szolgál. Tárolja a visszatérési címet, paramétereket, lokális változókat és egyéb ideiglenes adatokat. Híváskor új veremkeret jön létre, visszatéréskor ez lekerül a veremről.
+
+\subsection{Miért fontos a báziseset rekurziónál?}
+
+A báziseset biztosítja, hogy a rekurzió meg tudjon állni. Ha nincs báziseset, vagy a rekurzív hívások nem közelítenek hozzá, akkor végtelen rekurzió és veremtúlcsordulás történhet.
+
+\subsection{Mit jelent, hogy a program és az adat ugyanabban a memóriában van?}
+
+A Neumann-elvű gépben a programutasítások és az adatok is bitmintaként tárolódnak a memóriában. A bitminta jelentése attól függ, hogy a processzor utasításként vagy a program adatként értelmezi-e.
+
+\subsection{Mikor érdemes folyamatábrát használni?}
+
+Folyamatábra akkor hasznos, ha a vezérlés menete, az elágazások és ciklusok szemléltetése a cél. Rövid, oktatási vagy tervezési célú algoritmusoknál jól használható, de nagy programoknál gyorsan áttekinthetetlenné válhat.
+
+\subsection{Mi a különbség kiválasztás és lineáris keresés között?}
+
+A kiválasztás feltételezi, hogy biztosan van a tulajdonságnak megfelelő elem, és ennek indexét keresi. A lineáris keresés nem feltételezi a létezést, ezért visszaadja azt is, hogy talált-e elemet.
+
+\section{Rövid, szóban elmondható összefoglaló}
+
+Az algoritmus egy probléma megoldására szolgáló, végesen leírható, lépésenként végrehajtható eljárás. A probléma megadásakor tisztázni kell a bemenetet, a kimenetet, a közbülső adatokat és a helyességi feltételeket. A program az algoritmus konkrét programozási nyelvi megvalósítása. Az algoritmus futása állapotváltozások sorozata, ahol a változók, a memória és a vezérlés együtt határozza meg a következő lépést.
+
+Iteratív algoritmusnál ciklus ismétli a lépéseket. A ciklus lehet elöltesztelő, hátultesztelő, számlálós vagy bejáró jellegű. A ciklus helyességének vizsgálatához ciklusinvariánst használhatunk, a megálláshoz pedig biztosítani kell, hogy a feltétel egyszer hamissá váljon. Rekurzív algoritmusnál a feladatot kisebb, azonos jellegű részfeladatokra vezetjük vissza. Ehhez báziseset, rekurzív eset és méretcsökkenés kell. A rekurzió természetes például faktoriálisnál, Fibonacci-definíciónál, fáknál és oszd meg és uralkodj algoritmusoknál, de a hívási verem miatt memóriaigényesebb lehet.
+
+A számítógépes memória címzett tárolóhelyek rendszere. A futó program memóriájában elkülöníthetünk kódszegmenst, statikus adatterületet, heapet és vermet. A Neumann-elvű gépben a program és az adat is bitmintaként tárolódik; a processzor az utasításokat beolvassa, dekódolja, végrehajtja, majd frissíti a következő utasítás címét. A gépi kód a processzor közvetlen nyelve, az assembly ennek emberközelibb formája, a magas szintű nyelvek pedig fordítással, interpretálással vagy virtuális gépen keresztül jutnak végrehajtásig.
+
+A verem LIFO adatszerkezet. A hívási verem a procedúrák és függvények végrehajtásához kell: híváskor új veremkeret keletkezik, amely tartalmazhatja a paramétereket, lokális változókat és visszatérési címet; visszatéréskor ez a keret megszűnik. Rekurziónál ugyanannak a függvénynek több aktív hívása is lehet, mindegyik külön veremkerettel.
+
+Az algoritmus lejegyezhető természetes nyelven, matematikai formában, pszeudókóddal, folyamatábrával vagy programkóddal. A pszeudókód programközeli, de nyelvfüggetlen leírás; a folyamatábra irányított gráfként mutatja a vezérlést. Az elemi algoritmusok közé tartozik a sorozatszámítás, eldöntés, kiválasztás, lineáris keresés, megszámlálás, maximum- és minimumkiválasztás, másolás, kiválogatás, szétválogatás, metszet, unió és összefuttatás. Ezek a minták sok bonyolultabb algoritmus építőelemei.
+
+\section{Felhasznált források és ajánlott áttekintés}
+
+\subsection*{A mellékelt zipből felhasznált főbb anyagok}
+
+\begin{itemize}
+  \item \emph{Programtervezési ismeretek}: 05\_pseudo.rst, 06\_algorithms.rst, 08\_execution.rst, 10\_procedures.rst.
+  \item \emph{Programozás alapjai}: 01\_szamitogep\_es\_programozasa\_adat\_program\_memoria.pdf, 05\_fuggvenyek\_procedurak.pdf, 09\_rekurzio\_iteracio\_fuggvenyhivas.pdf.
+  \item \emph{Számítógép architektúrák}: 01\_szamitogep\_tortenet\_neumann\_architektura.pdf, 04\_processzor\_alu\_regiszterek\_utasitaskeszlet.pdf, 07\_memoria\_cache\_dram\_sram.pdf.
+  \item \emph{Operációs rendszerek}: 03\_folyamatok\_es\_szalak\_process\_threads.pdf, 07\_memoria\_menedzsment.pdf.
+  \item progterv\_zv\_tetelsor\_24.pdf: a 2. tétel hivatalos megfogalmazása.
+\end{itemize}
+
+\subsection*{Külső ellenőrző források}
+
+\begin{itemize}
+  \item Donald E. Knuth: \emph{The Art of Computer Programming}, Volume 1: Fundamental Algorithms.
+  \item Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein: \emph{Introduction to Algorithms}.
+  \item Andrew S. Tanenbaum, Todd Austin: \emph{Structured Computer Organization}.
+  \item David A. Patterson, John L. Hennessy: \emph{Computer Organization and Design}.
+\end{itemize}
+
+\end{document}

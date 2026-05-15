@@ -1,0 +1,13 @@
+\begin{center}
+\begin{tikzpicture}[node distance=9mm]
+  \node[terminator] (start) {START};
+  \node[flow, below=of start] (f1) {$f_1$};
+  \node[flow, below=of f1] (f2) {$f_2$};
+  \node[flow, below=of f2] (fn) {$f_n$};
+  \node[terminator, below=of fn] (stop) {STOP};
+  \draw[arrow] (start) -- (f1);
+  \draw[arrow] (f1) -- (f2);
+  \draw[arrow] (f2) -- node[right] {$\vdots$} (fn);
+  \draw[arrow] (fn) -- (stop);
+\end{tikzpicture}
+\end{center}

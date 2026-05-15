@@ -1,0 +1,32 @@
+\documentclass[12pt,a4paper]{article}
+
+\newcommand{\TETELNUMBER}{Ábrák}
+\newcommand{\TETELTITLE}{Záróvizsga ábragyűjtemény}
+\newcommand{\TETELSHORTTITLE}{Ábragyűjtemény}
+\newcommand{\ZVHEADERLEFT}{Ábragyűjtemény}
+\newcommand{\ZVHEADERRIGHT}{2026-os záróvizsga tételek}
+
+\input{src/preamble.tex}
+
+\newcommand{\zvfigurepage}[2]{%
+  \section*{#1}
+  \vfill
+  \input{src/figures/#2}
+  \vfill
+  \clearpage
+}
+
+\begin{document}
+\sloppy
+
+\zvfigurepage{Folyamat futás közbeni memóriaterületei}{memoria_folyamat_teruletei.tex}
+\zvfigurepage{Verem műveletei: PUSH és POP}{verem_push_pop.tex}
+\zvfigurepage{Hívási verem és veremkeretek}{hivasi_verem_keretek.tex}
+\zvfigurepage{Folyamatábra: pozitív elemek megszámlálása}{folyamatabra_megszamlalas.tex}
+\zvfigurepage{Programgráf: egyszerű elágazás START és STOP csomóponttal}{programgraf_elagazas_start_stop.tex}
+\zvfigurepage{Strukturált alapelem: szekvencia}{strukturalt_szekvencia.tex}
+\zvfigurepage{Strukturált alapelem: elágazás}{strukturalt_elagazas.tex}
+\zvfigurepage{Strukturált alapelem: ciklus}{strukturalt_ciklus.tex}
+\zvfigurepage{Struktogram: egyszerű pozitivitásvizsgálat}{struktogram_pozitiv_ertek.tex}
+
+\end{document}

@@ -1,0 +1,19 @@
+\begin{longtable}{p{0.18\textwidth}p{0.30\textwidth}p{0.25\textwidth}p{0.19\textwidth}}
+\toprule
+ADT & Értékkészlet & Tipikus műveletek & Realizáció \\
+\midrule
+\endfirsthead
+\toprule
+ADT & Értékkészlet & Tipikus műveletek & Realizáció \\
+\midrule
+\endhead
+Szám & $\mathbb{N},\mathbb{Z},\mathbb{Q},\mathbb{R}$ gépi részhalmazai & aritmetika, összehasonlítás, konverzió & fix méretű int, kettes komplemens, IEEE 754, BigInteger \\
+Logikai & $\{0,1\}$ & NOT, AND, OR, XOR, implikáció & bool, byte vagy gépi szó, rövidzár operátorok \\
+Halmaz & $\mathcal{P}(H)$ & tartalmazás, unió, metszet, különbség & bittömb, lista, hash set, keresőfa \\
+Karakter & karakterkészlet/kódpontok & kategória, összehasonlítás, kódolás & ASCII, Unicode, UTF-8/16/32 \\
+Sztring & $X^*$ & hossz, konkatenáció, keresés, részsztring & hossz-prefix, null-terminated, immutable objektum \\
+Tömb/vektor & $T^n$ vagy $I\to T$ & indexelés, bejárás, módosítás & folytonos memória, dinamikus tömb \\
+Mátrix & $T^{n\times m}$ & kétdimenziós indexelés, algebrai műveletek & sorfolytonos/oszlopfolytonos, ritka tárolás \\
+Rekord & $T_1\times\cdots\times T_n$ & mezőelérés, mezőmódosítás & struct, class, tuple, objektum \\
+\bottomrule
+\end{longtable}

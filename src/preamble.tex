@@ -1,0 +1,143 @@
+\usepackage{fontspec}
+\usepackage{geometry}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,longtable,tabularx,array,multirow}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes.geometric,shapes.misc,arrows.meta}
+\usepackage{caption}
+
+\setlength{\headheight}{16pt}
+\emergencystretch=2em
+\renewcommand{\contentsname}{Tartalom}
+
+% Fontbeallitasok: ha a DejaVu fontok nincsenek telepitve,
+% akkor automatikusan a MiKTeX/TeX Live alap Latin Modern fontjaira valtunk.
+\IfFontExistsTF{DejaVu Serif}{\setmainfont{DejaVu Serif}}{\setmainfont{Latin Modern Roman}}
+\IfFontExistsTF{DejaVu Sans}{\setsansfont{DejaVu Sans}}{\setsansfont{Latin Modern Sans}}
+\IfFontExistsTF{DejaVu Sans Mono}{\setmonofont{DejaVu Sans Mono}}{\setmonofont{Latin Modern Mono}}
+
+\geometry{left=25mm,right=25mm,top=24mm,bottom=27mm}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!45!black,
+  urlcolor=blue!55!black,
+  pdftitle={Zarovizsga tetel},
+  pdfauthor={Baba Levente - tanulasi segedanyag}
+}
+
+\definecolor{accent}{HTML}{1F4E79}
+\definecolor{lightaccent}{HTML}{EAF2F8}
+\definecolor{warnbg}{HTML}{FFF4E5}
+\definecolor{codebg}{HTML}{F7F7F7}
+
+\tikzset{
+  flow/.style={draw, rounded corners, align=center, minimum width=21mm, minimum height=8mm, fill=lightaccent},
+  pred/.style={draw, diamond, aspect=2, align=center, inner sep=1pt, fill=warnbg},
+  merge/.style={draw, circle, inner sep=1.2pt, fill=black!8},
+  terminator/.style={draw, rounded corners=4mm, align=center, minimum width=20mm, minimum height=8mm, fill=black!5},
+  arrow/.style={->, >=stealth, thick},
+  zvflowstart/.style={draw, rounded rectangle, minimum width=2.3cm, minimum height=0.7cm, align=center},
+  zvflowprocess/.style={draw, rectangle, minimum width=2.7cm, minimum height=0.7cm, align=center},
+  zvflowdecision/.style={draw, diamond, aspect=2.2, minimum width=2.8cm, minimum height=0.8cm, align=center}
+}
+
+
+\titleformat{\section}{\Large\bfseries\sffamily\color{accent}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\large\bfseries\sffamily\color{accent}}{\thesubsection.}{0.6em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\sffamily\color{accent}}{\thesubsubsection.}{0.6em}{}
+
+\setlist[itemize]{topsep=3pt,itemsep=2pt,parsep=0pt,leftmargin=1.4em}
+\setlist[enumerate]{topsep=3pt,itemsep=2pt,parsep=0pt,leftmargin=1.6em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\renewcommand{\arraystretch}{1.25}
+
+\providecommand{\ZVHEADERLEFT}{\TETELNUMBER. tétel}
+\providecommand{\ZVHEADERRIGHT}{\TETELSHORTTITLE}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\ZVHEADERLEFT}
+\rhead{\ZVHEADERRIGHT}
+\cfoot{\thepage}
+
+\lstdefinestyle{code}{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{codebg},
+  frame=single,
+  rulecolor=\color{black!15},
+  columns=fullflexible,
+  keepspaces=true,
+  breaklines=true,
+  tabsize=2,
+  showstringspaces=false
+}
+\lstset{style=code}
+
+\newtcolorbox{summarybox}{
+  enhanced,
+  colback=lightaccent,
+  colframe=accent!70!black,
+  arc=2mm,
+  boxrule=0.5pt,
+  left=2mm,right=2mm,top=1mm,bottom=1mm
+}
+
+\newtcolorbox{warningbox}{
+  enhanced,
+  colback=warnbg,
+  colframe=orange!70!black,
+  arc=2mm,
+  boxrule=0.5pt,
+  left=2mm,right=2mm,top=1mm,bottom=1mm
+}
+
+\newcommand{\adt}[2]{\ensuremath{#1=(#2)}}
+\newcommand{\set}[1]{\ensuremath{\{#1\}}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\base}[2]{\ensuremath{#1_{(#2)}}}
+\newcommand{\addr}{\ensuremath{@}}
+
+
+\providecommand{\TETELKIIRAS}{\TETELTITLE. \TETELTOPIC}
+\providecommand{\ZVAUTHOR}{Baba Levente}
+\providecommand{\ZVYEAR}{2026}
+\providecommand{\ZVAID}{ChatGPT segítségével}
+
+\newcommand{\makezvtitle}{%
+\begin{titlepage}
+  \centering
+  \vspace*{18mm}
+  {\Large\sffamily Programtervező Informatikus BSc\par}
+  \vspace{1mm}
+  {\large\sffamily \ZVYEAR-os záróvizsga tételek\par}
+  \vspace{15mm}
+  {\Huge\bfseries\sffamily \TETELNUMBER. tétel\par}
+  \vspace{5mm}
+  {\LARGE\bfseries\sffamily \TETELTITLE\par}
+  \vspace{10mm}
+  \begin{summarybox}
+    \textbf{Tételkiírás:} \TETELKIIRAS
+  \end{summarybox}
+  \vfill
+  {\large Készítette: \textbf{\ZVAUTHOR}\par}
+  \vspace{2mm}
+  {\large \ZVAID\par}
+\end{titlepage}%
+}
+
+\newcommand{\zvfrontmatter}{%
+  \sloppy
+  \makezvtitle
+  \tableofcontents
+  \newpage
+}

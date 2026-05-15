@@ -1,0 +1,38 @@
+\documentclass[12pt,a4paper]{article}
+
+\newcommand{\TETELNUMBER}{Táblázatok}
+\newcommand{\TETELTITLE}{Záróvizsga táblázatgyűjtemény}
+\newcommand{\TETELSHORTTITLE}{Táblázatgyűjtemény}
+\newcommand{\ZVHEADERLEFT}{Táblázatgyűjtemény}
+\newcommand{\ZVHEADERRIGHT}{2026-os záróvizsga tételek}
+
+\input{src/preamble.tex}
+
+\newcommand{\zvtablepage}[2]{%
+  \section*{#1}
+  \vspace{4mm}
+  \input{src/tables/#2}
+  \clearpage
+}
+
+\begin{document}
+\sloppy
+
+\zvtablepage{Absztrakt adattípus, adatstruktúra és implementáció}{zv01_abstrakt_adattipus_adatstruktura.tex}
+\zvtablepage{Helyiértékes számrendszerek jelentősége}{zv01_helyiertekes_szamrendszerek.tex}
+\zvtablepage{Absztrakt adattípusok összefoglaló táblázata}{zv01_adt_osszefoglalo.tex}
+\zvtablepage{Probléma, algoritmus és program összehasonlítása}{zv02_problema_algoritmus_program.tex}
+\zvtablepage{Változó fő jellemzői}{zv02_valtozo_jellemzoi.tex}
+\zvtablepage{Vezérlési szerkezetek}{zv02_vezerlesi_szerkezetek.tex}
+\zvtablepage{Iteráció és rekurzió összehasonlítása}{zv02_iteracio_rekurzio_osszehasonlitas.tex}
+\zvtablepage{Memóriahierarchia}{zv02_memoriahierarchia.tex}
+\zvtablepage{Statikus, verem- és heap-allokáció}{zv02_memoria_allokacio_tipusok.tex}
+\zvtablepage{Fordítás és interpretálás összehasonlítása}{zv02_forditas_interpretalas.tex}
+\zvtablepage{Procedúra és függvény összehasonlítása}{zv02_procedura_fuggveny.tex}
+\zvtablepage{Algoritmus-lejegyzési módok összehasonlítása}{zv02_algoritmus_lejegyzes_modok.tex}
+\zvtablepage{Folyamatábra jelölései}{zv02_folyamatabra_jelek.tex}
+\zvtablepage{Aggregációs műveletek és null elemek}{zv02_aggregacio_muveletek_null_elemek.tex}
+\zvtablepage{Elemi algoritmusok összefoglaló táblázata}{zv02_elemi_algoritmusok_osszefoglalo.tex}
+\zvtablepage{Programgráf elemei}{zv03_programgraf_elemek.tex}
+
+\end{document}

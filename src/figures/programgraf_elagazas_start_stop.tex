@@ -1,0 +1,16 @@
+\begin{center}
+\begin{tikzpicture}[node distance=12mm]
+  \node[terminator] (start) {START};
+  \node[pred, below=of start] (p) {$p$?};
+  \node[flow, below left=14mm and 18mm of p] (f) {$f$};
+  \node[flow, below right=14mm and 18mm of p] (g) {$g$};
+  \node[merge, below=20mm of p] (j) {};
+  \node[terminator, below=of j] (stop) {STOP};
+  \draw[arrow] (start) -- (p);
+  \draw[arrow] (p) -- node[left] {igaz} (f);
+  \draw[arrow] (p) -- node[right] {hamis} (g);
+  \draw[arrow] (f) -- (j);
+  \draw[arrow] (g) -- (j);
+  \draw[arrow] (j) -- (stop);
+\end{tikzpicture}
+\end{center}

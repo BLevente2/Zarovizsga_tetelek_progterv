@@ -1,0 +1,10 @@
+\begin{center}
+\begin{tikzpicture}[node distance=12mm]
+  \node[pred] (p) {$p$?};
+  \node[flow, below=of p] (f) {$f$};
+  \node[merge, right=22mm of p] (out) {};
+  \draw[arrow] (p) -- node[left] {i} (f);
+  \draw[arrow] (f.west) .. controls +(-20mm,0) and +(-20mm,0) .. (p.west);
+  \draw[arrow] (p) -- node[above] {h} (out);
+\end{tikzpicture}
+\end{center}

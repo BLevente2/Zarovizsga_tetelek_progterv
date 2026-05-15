@@ -1,0 +1,12 @@
+\begin{center}
+\begin{tikzpicture}[node distance=11mm]
+  \node[pred] (p) {$p$?};
+  \node[flow, below left=13mm and 17mm of p] (f) {$f$};
+  \node[flow, below right=13mm and 17mm of p] (g) {$g$};
+  \node[merge, below=20mm of p] (j) {};
+  \draw[arrow] (p) -- node[left] {i} (f);
+  \draw[arrow] (p) -- node[right] {h} (g);
+  \draw[arrow] (f) -- (j);
+  \draw[arrow] (g) -- (j);
+\end{tikzpicture}
+\end{center}

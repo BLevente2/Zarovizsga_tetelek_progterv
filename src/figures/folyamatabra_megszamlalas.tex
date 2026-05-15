@@ -1,0 +1,19 @@
+\begin{center}
+\begin{tikzpicture}[node distance=1.05cm]
+  \node[zvflowstart] (start) {START};
+  \node[zvflowprocess, below=of start] (input) {$i\leftarrow 1$, $count\leftarrow 0$};
+  \node[zvflowdecision, below=of input] (cond) {$i\leq n$?};
+  \node[zvflowdecision, below=of cond] (pos) {$x_i>0$?};
+  \node[zvflowprocess, left=2.2cm of pos] (inc) {$count\leftarrow count+1$};
+  \node[zvflowprocess, below=of pos] (next) {$i\leftarrow i+1$};
+  \node[zvflowstart, right=2.5cm of cond] (stop) {RETURN count};
+  \draw[->] (start) -- (input);
+  \draw[->] (input) -- (cond);
+  \draw[->] (cond) -- node[right] {igen} (pos);
+  \draw[->] (cond) -- node[above] {nem} (stop);
+  \draw[->] (pos) -- node[above] {igen} (inc);
+  \draw[->] (inc) |- (next);
+  \draw[->] (pos) -- node[right] {nem} (next);
+  \draw[->] (next) -- ++(0,-0.6) -| (cond);
+\end{tikzpicture}
+\end{center}
