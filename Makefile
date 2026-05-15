@@ -5,13 +5,16 @@ OUT_DIR := output
 LUALATEX := lualatex
 LATEX_FLAGS := -interaction=nonstopmode -halt-on-error -output-directory=$(OUT_DIR)
 
-TEX_FILES := $(wildcard $(SRC_DIR)/zv_tetel_*.tex)
+TETEL_FILES := $(wildcard $(SRC_DIR)/zv_tetel_*.tex)
+TETELSOR_MAIN := $(SRC_DIR)/zv_tetelsor.tex
+TEX_FILES := $(TETEL_FILES) $(TETELSOR_MAIN)
 COMMON_FILES := $(filter-out $(TEX_FILES),$(wildcard $(SRC_DIR)/*.tex))
 FIGURES_MAIN := $(FIGURES_DIR)/zv_abrak.tex
 FIGURE_FILES := $(filter-out $(FIGURES_MAIN),$(wildcard $(FIGURES_DIR)/*.tex))
 TABLES_MAIN := $(TABLES_DIR)/zv_tablazatok.tex
 TABLE_FILES := $(filter-out $(TABLES_MAIN),$(wildcard $(TABLES_DIR)/*.tex))
 PDF_FILES := $(patsubst $(SRC_DIR)/%.tex,$(OUT_DIR)/%.pdf,$(TEX_FILES))
+TETELSOR_PDF := $(OUT_DIR)/zv_tetelsor.pdf
 FIGURES_PDF := $(OUT_DIR)/zv_abrak.pdf
 TABLES_PDF := $(OUT_DIR)/zv_tablazatok.pdf
 
@@ -31,7 +34,7 @@ all: prepare $(PDF_FILES)
 prepare:
 	$(MKDIR_OUT)
 
-$(OUT_DIR)/%.pdf: $(SRC_DIR)/%.tex $(COMMON_FILES) $(FIGURE_FILES) $(TABLE_FILES) | prepare
+$(OUT_DIR)/%.pdf: $(SRC_DIR)/%.tex $(COMMON_FILES) $(TETELSOR_MAIN) $(FIGURE_FILES) $(TABLE_FILES) | prepare
 	$(LUALATEX) $(LATEX_FLAGS) $<
 	$(LUALATEX) $(LATEX_FLAGS) $<
 
@@ -61,6 +64,7 @@ distclean: clean
 
 list:
 	@echo $(PDF_FILES)
+	@echo $(TETELSOR_PDF)
 	@echo $(FIGURES_PDF)
 	@echo $(TABLES_PDF)
 

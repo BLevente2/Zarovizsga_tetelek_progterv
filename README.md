@@ -14,6 +14,12 @@ Jelenleg a projekt az alábbi tételeket tartalmazza:
 
 Minden tétel külön PDF-be fordul, így az egyes tételek önálló dokumentumként is használhatók.
 
+A teljes hivatalos tételsor külön dokumentumként is szerepel a projektben:
+
+- `zv_tetelsor.tex` - a 27 tételes záróvizsga tételsor LuaLaTeX-forrása
+
+A tételek fedlapján szereplő hivatalos tételkiírások is ebből a fájlból származnak, ezért a tételkiírások csak egy helyen vannak letárolva.
+
 ## Projektstruktúra
 
 ```text
@@ -24,6 +30,7 @@ Minden tétel külön PDF-be fordul, így az egyes tételek önálló dokumentum
 ├── output/
 └── src/
     ├── preamble.tex
+    ├── zv_tetelsor.tex
     ├── zv_tetel_01.tex
     ├── zv_tetel_02.tex
     ├── zv_tetel_03.tex
@@ -40,6 +47,17 @@ Minden tétel külön PDF-be fordul, így az egyes tételek önálló dokumentum
 ### `Makefile`
 
 A fordítási parancsokat tartalmazza. A célja, hogy ne kelljen minden `.tex` fájlt kézzel fordítani.
+
+### `src/zv_tetelsor.tex`
+
+Ez a fájl tartalmazza a 27 hivatalos záróvizsga-tétel kiírását LuaLaTeX makrók formájában, valamint önálló dokumentumként is lefordítható.
+
+A fájl két szerepet tölt be:
+
+- önálló dokumentumként előállítja a teljes tételsort: `output/zv_tetelsor.pdf`;
+- adatforrásként szolgál a kidolgozott tételek fedlapjához, tehát a fedlapokon szereplő hivatalos tételkiírások innen kerülnek be.
+
+Ennek az az előnye, hogy ha a tételsor szövegét javítani kell, akkor nem kell minden egyes tételben külön módosítani: elegendő a `src/zv_tetelsor.tex` fájlban javítani.
 
 ### `src/preamble.tex`
 
@@ -111,11 +129,12 @@ A dokumentum LuaLaTeX-re épül, ezért nem ajánlott `pdflatex` paranccsal ford
 make
 ```
 
-Ez csak a tételeket fordítja le:
+Ez a kidolgozott tételeket és a teljes tételsort fordítja le:
 
 - `output/zv_tetel_01.pdf`
 - `output/zv_tetel_02.pdf`
 - `output/zv_tetel_03.pdf`
+- `output/zv_tetelsor.pdf`
 
 A sima `make` nem fordítja le külön az ábragyűjteményt és a táblázatgyűjteményt.
 
@@ -211,7 +230,10 @@ A fájl elején érdemes a meglévő tételek mintáját követni:
 \newcommand{\TETELNUMBER}{4}
 \newcommand{\TETELTITLE}{A tétel rövid címe}
 \newcommand{\TETELSHORTTITLE}{Rövid fejléc-cím}
-\newcommand{\TETELTOPIC}{A hivatalos tételkiírás szövege}
+
+\newcommand{\ZVTetelsorDataOnly}{}
+\input{src/zv_tetelsor.tex}
+\newcommand{\TETELKIIRAS}{\ZVTetelKiiras{\TETELNUMBER}}
 
 \input{src/preamble.tex}
 
@@ -224,6 +246,8 @@ A fájl elején érdemes a meglévő tételek mintáját követni:
 ```
 
 A Makefile automatikusan felismeri a `src/zv_tetel_*.tex` mintára illeszkedő fájlokat, ezért az új tételt a sima `make` parancs is le fogja fordítani.
+
+A fedlap hivatalos tételkiírását ne kézzel másold be az új tételbe. A tételkiírásokat a `src/zv_tetelsor.tex` tartalmazza, ezért az új tétel elején is a fenti `\ZVTetelsorDataOnly`, `\input{src/zv_tetelsor.tex}` és `\TETELKIIRAS` részt érdemes használni.
 
 ## Új ábra hozzáadása
 
