@@ -60,6 +60,8 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
 \renewcommand{\arraystretch}{1.25}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\renewcommand{\tabularxcolumn}[1]{>{\raggedright\arraybackslash}p{#1}}
 
 \providecommand{\ZVHEADERLEFT}{\TETELNUMBER. tétel}
 \providecommand{\ZVHEADERRIGHT}{\TETELSHORTTITLE}
