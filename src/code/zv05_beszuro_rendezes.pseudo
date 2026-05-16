@@ -1,0 +1,13 @@
+BESZÚRÓ_RENDEZÉS(A)
+// Input paraméter: A - a rendezendő tömb
+// Output paraméter: A - a rendezett tömb
+// Időigény: T(n) = Θ(n^2), legjobb esetben Θ(n)
+FOR j ← 2 TO hossz[A] DO
+    kulcs ← A[j]
+    // Beszúrás az A[1..j-1] rendezett sorozatba
+    i ← j - 1
+    WHILE i > 0 AND A[i] > kulcs DO
+        A[i + 1] ← A[i]
+        DEC(i)
+    A[i + 1] ← kulcs
+RETURN(A)

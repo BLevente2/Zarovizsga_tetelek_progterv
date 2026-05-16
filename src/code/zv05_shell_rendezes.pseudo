@@ -1,0 +1,15 @@
+SHELL_RENDEZÉS(A, h)
+// Input paraméter: A - a rendezendő tömb
+//                  h[1..t] - csökkenő növekménysorozat, h[t] = 1
+// Output paraméter: A - a rendezett tömb
+// Időigény: a növekménysorozattól függ, alkalmas választással kb. Θ(n^1.5)
+FOR s ← 1 TO t DO
+    m ← h[s]
+    FOR j ← m + 1 TO hossz[A] DO
+        kulcs ← A[j]
+        i ← j - m
+        WHILE i > 0 AND A[i] > kulcs DO
+            A[i + m] ← A[i]
+            i ← i - m
+        A[i + m] ← kulcs
+RETURN(A)

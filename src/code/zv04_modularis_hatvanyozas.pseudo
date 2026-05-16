@@ -1,0 +1,9 @@
+Modularis_Hatvanyozas(a, b, n)
+  c <- 1
+  FOR i <- legmagasabb_bit DOWNTO 0 DO
+    c <- (c * c) mod n
+    IF bit(b, i) = 1 THEN
+      c <- (c * a) mod n
+    END IF
+  END FOR
+  RETURN c

@@ -128,14 +128,7 @@ Ez a jelölés gyorsabb és áttekinthetőbb, de kevésbé részletes. Vizsgán 
 
 A programkód és a programgráf ugyanannak a vezérlési szerkezetnek két különböző leírása. Például az alábbi pszeudókód:
 
-\begin{lstlisting}
-IF p THEN
-  f
-ELSE
-  g
-END IF
-h
-\end{lstlisting}
+\zvpseudocode[caption={Elágazás pszeudókódja},label={lst:zv03_elagazas_pelda}]{src/code/zv03_elagazas_pelda.pseudo}
 
 vezérlési szempontból azt jelenti, hogy először megvizsgáljuk a $p$ predikátumot. Igaz esetben az $f$, hamis esetben a $g$ ág fut le, majd mindkét esetben a $h$ művelet következik.
 
@@ -184,12 +177,7 @@ S(f_1,f_2,\ldots,f_n).
 
 Ez azt jelenti, hogy először $f_1$, utána $f_2$, majd így tovább, végül $f_n$ hajtódik végre.
 
-\begin{lstlisting}
-f1
-f2
-...
-fn
-\end{lstlisting}
+\zvpseudocode[caption={Szekvencia pszeudókódja},label={lst:zv03_szekvencia_pelda}]{src/code/zv03_szekvencia_pelda.pseudo}
 
 Programgráfként:
 
@@ -207,13 +195,7 @@ E(p;f,g).
 
 Itt $p$ a feltétel, $f$ az igaz ág, $g$ a hamis ág.
 
-\begin{lstlisting}
-IF p THEN
-  f
-ELSE
-  g
-END IF
-\end{lstlisting}
+\zvpseudocode[caption={Kétágú elágazás alapeleme},label={lst:zv03_elagazas_alapelem}]{src/code/zv03_elagazas_alapelem.pseudo}
 
 A programgráfban a predikátumcsomópontból két él indul ki, majd a két ág egy gyűjtőpontban újraegyesül.
 
@@ -237,11 +219,7 @@ C(p;f).
 
 Ez azt jelenti, hogy amíg $p$ igaz, végrehajtjuk az $f$ törzset.
 
-\begin{lstlisting}
-WHILE p DO
-  f
-END WHILE
-\end{lstlisting}
+\zvpseudocode[caption={Elöltesztelő ciklus alapeleme},label={lst:zv03_while_ciklus_alapelem}]{src/code/zv03_while_ciklus_alapelem.pseudo}
 
 A ciklus programgráfjában a predikátum igaz ága a ciklusmaghoz vezet, a ciklusmag visszatér a predikátumhoz, a hamis ág pedig kilép a ciklusból.
 
@@ -259,11 +237,7 @@ I(p;f).
 
 Pszeudókódban:
 
-\begin{lstlisting}
-DO
-  f
-WHILE p
-\end{lstlisting}
+\zvpseudocode[caption={Hátultesztelő ciklus alapeleme},label={lst:zv03_do_while_ciklus}]{src/code/zv03_do_while_ciklus.pseudo}
 
 Ez kvázi strukturált elem, mert közvetlenül nem a három klasszikus strukturált alapelem egyike, de könnyen átírható szekvencia és ciklus segítségével:
 
@@ -364,17 +338,7 @@ A ciklus teljes részgráfja egyetlen csomóponttal helyettesíthető.
 
 Tekintsük az alábbi pszeudókódot:
 
-\begin{lstlisting}
-f
-IF p THEN
-  g
-ELSE
-  h
-END IF
-WHILE q DO
-  k
-END WHILE
-\end{lstlisting}
+\zvpseudocode[caption={Strukturált program példa},label={lst:zv03_strukturalt_program_pelda}]{src/code/zv03_strukturalt_program_pelda.pseudo}
 
 A program formulája:
 
@@ -477,17 +441,7 @@ felépítése:
 
 Pszeudókódban:
 
-\begin{lstlisting}
-a
-WHILE p DO
-  IF q THEN
-    b
-  ELSE
-    c
-  END IF
-END WHILE
-d
-\end{lstlisting}
+\zvpseudocode[caption={Beágyazott strukturált program példa},label={lst:zv03_beagyazott_strukturalt_pelda}]{src/code/zv03_beagyazott_strukturalt_pelda.pseudo}
 
 Ez strukturált, mert a formula szintaktikailag csak $S$, $E$ és $C$ konstrukciókat tartalmaz.
 
@@ -497,29 +451,11 @@ Bizonyos nem strukturált vezérlések csak úgy alakíthatók át kényelmesen 
 
 Például egy korai kilépést tartalmazó ciklus:
 
-\begin{lstlisting}
-WHILE van_kovetkezo DO
-  x <- kovetkezo
-  IF T(x) THEN
-    GOTO talalat
-  END IF
-END WHILE
-talalat:
-eredmeny_kiirasa
-\end{lstlisting}
+\zvpseudocode[caption={Korai kilépés GOTO-val},label={lst:zv03_goto_korai_kilepes}]{src/code/zv03_goto_korai_kilepes.pseudo}
 
 Strukturáltabb alakban:
 
-\begin{lstlisting}
-talalt <- hamis
-WHILE van_kovetkezo AND talalt = hamis DO
-  x <- kovetkezo
-  IF T(x) THEN
-    talalt <- igaz
-  END IF
-END WHILE
-eredmeny_kiirasa
-\end{lstlisting}
+\zvpseudocode[caption={Korai kilépés strukturálása segédváltozóval},label={lst:zv03_flag_strukturalas}]{src/code/zv03_flag_strukturalas.pseudo}
 
 Itt a \code{flag} jellegű \code{talalt} változó megszünteti a tetszőleges ugrást, és a kilépés feltételét a ciklusfeltételbe emeli.
 
@@ -632,16 +568,7 @@ Ezzel beláttuk, hogy a ciklikus bonyolultság a predikátumok számán kereszt�
 
 Tekintsük az alábbi programot:
 
-\begin{lstlisting}
-IF p THEN
-  a
-ELSE
-  b
-END IF
-WHILE q DO
-  c
-END WHILE
-\end{lstlisting}
+\zvpseudocode[caption={Ciklikus bonyolultság példaprogramja},label={lst:zv03_ciklikus_bonyolultsag_pelda}]{src/code/zv03_ciklikus_bonyolultsag_pelda.pseudo}
 
 A programban két predikátum van: $p$ és $q$. Ezért:
 
@@ -723,23 +650,7 @@ Adott egy sorozat. Döntsük el, hogy van-e benne pozitív páros szám, és ha 
 
 \subsection{Strukturált pszeudókód}
 
-\begin{lstlisting}
-i <- 1
-talalt <- hamis
-WHILE i <= n AND talalt = hamis DO
-  IF X[i] > 0 AND X[i] mod 2 = 0 THEN
-    talalt <- igaz
-    ertek <- X[i]
-  ELSE
-    i <- i + 1
-  END IF
-END WHILE
-IF talalt THEN
-  ertek kiirasa
-ELSE
-  nincs_talalat kiirasa
-END IF
-\end{lstlisting}
+\zvpseudocode[caption={Strukturált keresési példa},label={lst:zv03_kereses_strukturalt_pelda}]{src/code/zv03_kereses_strukturalt_pelda.pseudo}
 
 \subsection{Programformula}
 

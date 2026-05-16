@@ -1,0 +1,9 @@
+Kibovitett_Euklidesz(a, b)
+  IF b = 0 THEN
+    RETURN (a, 1, 0)
+  END IF
+
+  (d, x1, y1) <- Kibovitett_Euklidesz(b, a mod b)
+  x <- y1
+  y <- x1 - (a div b) * y1
+  RETURN (d, x, y)

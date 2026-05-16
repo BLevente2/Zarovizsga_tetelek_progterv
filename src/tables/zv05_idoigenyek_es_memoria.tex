@@ -1,0 +1,23 @@
+\begingroup
+\setlength{\tabcolsep}{3.5pt}
+\begin{longtable}{L{0.20\textwidth}L{0.16\textwidth}L{0.16\textwidth}L{0.16\textwidth}L{0.14\textwidth}L{0.08\textwidth}}
+\toprule
+Algoritmus & Legjobb eset & Átlagos eset & Legrosszabb eset & Segédtár & Stabil? \\
+\midrule
+\endfirsthead
+\toprule
+Algoritmus & Legjobb eset & Átlagos eset & Legrosszabb eset & Segédtár & Stabil? \\
+\midrule
+\endhead
+Beszúró rendezés & $\Theta(n)$ & $\Theta(n^2)$ & $\Theta(n^2)$ & $\Theta(1)$ & igen \\
+Összefésülő rendezés & $\Theta(n\log n)$ & $\Theta(n\log n)$ & $\Theta(n\log n)$ & $\Theta(n)$ & igen, ha így írjuk \\
+Gyorsrendezés & $\Theta(n\log n)$ & $\Theta(n\log n)$ & $\Theta(n^2)$ & rekurziós verem & nem \\
+Buborék rendezés & $\Theta(n)$ & $\Theta(n^2)$ & $\Theta(n^2)$ & $\Theta(1)$ & igen \\
+Shell rendezés & növekményfüggő & növekményfüggő & növekményfüggő & $\Theta(1)$ & nem általában \\
+Minimum kiválasztásos & $\Theta(n^2)$ & $\Theta(n^2)$ & $\Theta(n^2)$ & $\Theta(1)$ & nem általában \\
+Négyzetes rendezés & kb. $\Theta(n^{1.5})$ & kb. $\Theta(n^{1.5})$ & kb. $\Theta(n^{1.5})$ & csoportfüggő & változó \\
+Leszámláló rendezés & $\Theta(n+k)$ & $\Theta(n+k)$ & $\Theta(n+k)$ & $\Theta(n+k)$ & igen \\
+Számjegyes rendezés & $\Theta(d(n+k))$ & $\Theta(d(n+k))$ & $\Theta(d(n+k))$ & segédrendezéstől függ & igen, ha a részrendezés stabil \\
+\bottomrule
+\end{longtable}
+\endgroup

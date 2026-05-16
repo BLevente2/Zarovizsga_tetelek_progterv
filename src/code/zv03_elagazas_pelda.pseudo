@@ -1,0 +1,6 @@
+IF p THEN
+  f
+ELSE
+  g
+END IF
+h

@@ -1,0 +1,5 @@
+Fermat_Teszt(n, a)
+  IF n <= 1 THEN RETURN hamis
+  IF lnko(a, n) != 1 THEN RETURN hamis
+  c <- Modularis_Hatvanyozas(a, n - 1, n)
+  RETURN (c = 1)

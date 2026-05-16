@@ -1,0 +1,14 @@
+BUBORÉKRENDEZÉS(A)
+// Input paraméter: A - a rendezendő tömb
+// Output paraméter: A - a rendezett tömb
+// Időigény: T(n) = Θ(n^2), cserefigyeléssel rendezett bemeneten Θ(n)
+j ← 2
+REPEAT
+    nemVoltCsere ← igaz
+    FOR i ← hossz[A] DOWNTO j DO
+        IF A[i] < A[i - 1]
+            THEN csere A[i] ↔ A[i - 1]
+                 nemVoltCsere ← hamis
+    INC(j)
+UNTIL nemVoltCsere
+RETURN(A)

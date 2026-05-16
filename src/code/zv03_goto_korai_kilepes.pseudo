@@ -1,0 +1,8 @@
+WHILE van_kovetkezo DO
+  x <- kovetkezo
+  IF T(x) THEN
+    GOTO talalat
+  END IF
+END WHILE
+talalat:
+eredmeny_kiirasa

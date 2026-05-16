@@ -1,0 +1,17 @@
+LESZÁMLÁLÓ_RENDEZÉS(A, k, B)
+// Input paraméter: A - a rendezendő tömb
+//                  k - kulcs felső korlátja, pozitív egész
+// Output paraméter: B - a rendezett tömb
+// Időigény: T(n) = Θ(n + k)
+FOR i ← 1 TO k DO
+    C[i] ← 0
+FOR j ← 1 TO hossz[A] DO
+    INC(C[A[j]])
+    // C[i] azt mutatja, hogy hány i értékű számunk van
+FOR i ← 2 TO k DO
+    C[i] ← C[i] + C[i - 1]
+    // C[i] most azt mutatja, hogy hány i-től nem nagyobb számunk van
+FOR j ← hossz[A] DOWNTO 1 DO
+    B[C[A[j]]] ← A[j]
+    DEC(C[A[j]])
+RETURN(B)

@@ -1,0 +1,16 @@
+MINIMUM_KIVÁLASZTÁSOS_RENDEZÉS(A)
+// Input paraméter: A - a rendezendő tömb
+// Output paraméter: A - a rendezett tömb
+// Időigény: T(n) = Θ(n^2)
+FOR i ← 1 TO hossz[A] - 1 DO
+    // minimumkeresés az A[i..hossz[A]] részben
+    k ← i
+    x ← A[i]
+    FOR j ← i + 1 TO hossz[A] DO
+        IF A[j] < x
+            THEN k ← j
+                 x ← A[j]
+    // az i. elem és a minimum felcserélése
+    A[k] ← A[i]
+    A[i] ← x
+RETURN(A)

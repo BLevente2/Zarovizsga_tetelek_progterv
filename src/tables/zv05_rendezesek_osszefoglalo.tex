@@ -1,0 +1,23 @@
+\begingroup
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{L{0.20\textwidth}L{0.34\textwidth}L{0.23\textwidth}L{0.13\textwidth}}
+\toprule
+Rendezés & Alapelv & Tipikus tulajdonság & Időigény röviden \\
+\midrule
+\endfirsthead
+\toprule
+Rendezés & Alapelv & Tipikus tulajdonság & Időigény röviden \\
+\midrule
+\endhead
+Beszúró rendezés & A következő elemet beszúrja az előtte lévő rendezett részbe. & Stabil, helyben rendez, majdnem rendezett bemeneten jó. & legjobb $\Theta(n)$, rossz $\Theta(n^2)$ \\
+Összefésülő rendezés & Két félre bont, rekurzívan rendez, majd összefésül. & Stabil lehet, de extra tárat igényel. & $\Theta(n\log n)$ \\
+Gyorsrendezés & Pivot szerint particionál, majd rekurzívan rendezi a részeket. & Gyakorlatban gyors, helyben rendezhető, nem stabil. & átlag $\Theta(n\log n)$, rossz $\Theta(n^2)$ \\
+Buborék rendezés & Szomszédos elemeket cserél, amíg van rossz sorrend. & Egyszerű, sok cserét végez. & legjobb $\Theta(n)$, rossz $\Theta(n^2)$ \\
+Shell rendezés & Fogyó növekményekkel távoli elemeket rendez beszúró jelleggel. & Időigénye a növekményektől függ. & gyakran kb. $\Theta(n^{1.5})$ \\
+Minimum kiválasztásos rendezés & Mindig kiválasztja a maradék minimumát és előre cseréli. & Kevés csere, de sok összehasonlítás. & $\Theta(n^2)$ \\
+Négyzetes rendezés & Csoportokra bontva gyorsítja a minimumkiválasztás gondolatát. & Köztes módszer, csoportos minimumkezeléssel. & kb. $\Theta(n^{1.5})$ \\
+Leszámláló rendezés & Megszámolja a kulcsok előfordulását és prefixösszegekkel pozíciót számít. & Nem összehasonlító, egész kulcstartomány kell. & $\Theta(n+k)$ \\
+Számjegyes rendezés & Több stabil részrendezést végez számjegyenként vagy pozíciónként. & Nem összehasonlító, stabil segédrendezés kell. & $\Theta(d(n+k))$ \\
+\bottomrule
+\end{longtable}
+\endgroup

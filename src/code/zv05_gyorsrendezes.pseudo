@@ -1,0 +1,11 @@
+GYORSRENDEZÉS(A, p, r)
+// Input paraméter: A - a tömb, amelynek egy részét rendezni kell
+//                  p - a rendezendő rész kezdőindexe
+//                  r - a rendezendő rész végindexe
+// Output paraméter: A - a rendezett résszel rendelkező tömb
+// Időigény: legrosszabb esetben Θ(n^2), átlagosan Θ(n · log n)
+IF p < r
+    THEN q ← PARTICIONÁL(A, p, r)
+         GYORSRENDEZÉS(A, p, q - 1)
+         GYORSRENDEZÉS(A, q + 1, r)
+RETURN(A)

@@ -11,6 +11,8 @@ Jelenleg a projekt az alábbi tételeket tartalmazza:
 - `zv_tetel_01.tex` - 1. tétel: adatok, adattípusok, adatműveletek és adatstruktúrák
 - `zv_tetel_02.tex` - 2. tétel: algoritmus, iteráció, rekurzió, memória, verem, procedúra, folyamatábra, pszeudokód, elemi algoritmusok
 - `zv_tetel_03.tex` - 3. tétel: strukturált programozás, programgráf, vezérlőgráf, struktogram, ciklikus bonyolultság
+- `zv_tetel_04.tex` - 4. tétel: számelméleti algoritmusok, euklideszi algoritmus, kongruenciák, moduláris hatványozás, Fermat-prímteszt, RSA
+- `zv_tetel_05.tex` - 5. tétel: rendezések, oszd meg és uralkodj, lineáris idejű rendezések, időelemzés, rendezési pszeudókódok
 
 Minden tétel külön PDF-be fordul, így az egyes tételek önálló dokumentumként is használhatók.
 
@@ -34,12 +36,16 @@ A tételek fedlapján szereplő hivatalos tételkiírások is ebből a fájlból
     ├── zv_tetel_01.tex
     ├── zv_tetel_02.tex
     ├── zv_tetel_03.tex
+    ├── zv_tetel_04.tex
+    ├── zv_tetel_05.tex
     ├── figures/
     │   ├── zv_abrak.tex
     │   └── ... külön TikZ-ábrák ...
-    └── tables/
-        ├── zv_tablazatok.tex
-        └── ... külön táblázatok ...
+    ├── tables/
+    │   ├── zv_tablazatok.tex
+    │   └── ... külön táblázatok ...
+    └── code/
+        └── ... külön kód- és pszeudókód-fájlok ...
 ```
 
 ## Fontos fájlok
@@ -70,7 +76,7 @@ A közös LaTeX-beállításokat tartalmazza:
 - címlap sablon;
 - TikZ-stílusok;
 - táblázatkezeléshez szükséges csomagok;
-- kódrészletek formázása;
+- kódrészletek és pszeudókódok formázása;
 - közös makrók.
 
 A tételekben lehetőleg csak a tényleges tételszöveg szerepeljen. Ami több dokumentumban is közös, azt érdemes a `preamble.tex` fájlba kiszervezni.
@@ -86,6 +92,20 @@ src/figures/zv_abrak.tex
 ```
 
 Ez egy önálló LaTeX-dokumentum, amely az összes ábrát egy PDF-be rendezi úgy, hogy minden oldalra külön ábra kerüljön.
+
+### `src/code/`
+
+Ebben a mappában vannak a tételekben megjelenített kódok és pszeudókódok külön fájlokba kiszervezve.
+
+A tételekben a kódok nem közvetlenül `lstlisting` blokkokként szerepelnek, hanem `\lstinputlisting` alapú közös makrókon keresztül kerülnek be. Ennek előnye, hogy a kódok külön is áttekinthetők, elnevezhetők, újrahasználhatók, és a LaTeX-források kevésbé zsúfoltak.
+
+Javasolt névkonvenció:
+
+```text
+src/code/zv05_beszuro_rendezes.pseudo
+src/code/zv05_gyorsrendezes.pseudo
+src/code/zv01_student_rekord_c.c
+```
 
 ### `src/tables/`
 
@@ -134,6 +154,8 @@ Ez a kidolgozott tételeket és a teljes tételsort fordítja le:
 - `output/zv_tetel_01.pdf`
 - `output/zv_tetel_02.pdf`
 - `output/zv_tetel_03.pdf`
+- `output/zv_tetel_04.pdf`
+- `output/zv_tetel_05.pdf`
 - `output/zv_tetelsor.pdf`
 
 A sima `make` nem fordítja le külön az ábragyűjteményt és a táblázatgyűjteményt.

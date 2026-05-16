@@ -1,0 +1,14 @@
+\begin{center}
+\begin{tikzpicture}[node distance=9mm]
+  \node[flow, minimum width=31mm] (problem) {Teljes tömb\\$n$ elem};
+  \node[flow, below left=11mm and 14mm of problem, minimum width=29mm] (left) {Bal rész\\$n/2$};
+  \node[flow, below right=11mm and 14mm of problem, minimum width=29mm] (right) {Jobb rész\\$n/2$};
+  \node[flow, below=18mm of problem, minimum width=44mm] (merge) {Összefésülés vagy\\particionálás utáni rekurzió};
+  \node[flow, below=9mm of merge, minimum width=40mm] (result) {Rendezett tömb};
+  \draw[arrow] (problem) -- node[left, font=\small] {felosztás} (left);
+  \draw[arrow] (problem) -- node[right, font=\small] {felosztás} (right);
+  \draw[arrow] (left) -- (merge);
+  \draw[arrow] (right) -- (merge);
+  \draw[arrow] (merge) -- node[right, font=\small] {egyesítés / nincs külön egyesítés} (result);
+\end{tikzpicture}
+\end{center}

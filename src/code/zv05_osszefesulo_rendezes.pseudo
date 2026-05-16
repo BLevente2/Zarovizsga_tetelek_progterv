@@ -1,0 +1,12 @@
+ÖSSZEFÉSÜLŐ_RENDEZÉS(A, p, r)
+// Input paraméter: A - a tömb, amelynek egy részét rendezni kell
+//                  p - a rendezendő rész kezdőindexe
+//                  r - a rendezendő rész végindexe
+// Output paraméter: A - a rendezett résszel rendelkező tömb
+// Időigény: T(n) = Θ(n · log n)
+IF p < r
+    THEN q ← floor((p + r) / 2)
+         ÖSSZEFÉSÜLŐ_RENDEZÉS(A, p, q)
+         ÖSSZEFÉSÜLŐ_RENDEZÉS(A, q + 1, r)
+         ÖSSZEFÉSÜL(A, p, q, r)
+RETURN(A)

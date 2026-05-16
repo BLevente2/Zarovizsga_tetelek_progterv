@@ -1,0 +1,13 @@
+\begin{center}
+\begin{tikzpicture}[node distance=8mm]
+  \node[flow, minimum width=42mm] (input) {Bemenet\\$A[1..n]$};
+  \node[flow, right=11mm of input, minimum width=42mm] (count) {Számlálás\\$C[1..k]$};
+  \node[flow, right=11mm of count, minimum width=42mm] (prefix) {Prefixösszegek\\$C[i]=\#\{x\leq i\}$};
+  \node[flow, below=11mm of prefix, minimum width=42mm] (place) {Elemek végleges\\pozícióba írása};
+  \node[flow, left=11mm of place, minimum width=42mm] (output) {Rendezett kimenet\\$B[1..n]$};
+  \draw[arrow] (input) -- (count);
+  \draw[arrow] (count) -- (prefix);
+  \draw[arrow] (prefix) -- (place);
+  \draw[arrow] (place) -- (output);
+\end{tikzpicture}
+\end{center}

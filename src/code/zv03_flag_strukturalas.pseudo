@@ -1,0 +1,8 @@
+talalt <- hamis
+WHILE van_kovetkezo AND talalt = hamis DO
+  x <- kovetkezo
+  IF T(x) THEN
+    talalt <- igaz
+  END IF
+END WHILE
+eredmeny_kiirasa

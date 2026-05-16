@@ -1,0 +1,14 @@
+\begingroup
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{L{0.24\textwidth}L{0.28\textwidth}X}
+\toprule
+Feladat & Feltétel & Következmény \\
+\midrule
+Kongruencia & $a\equiv b\pmod n$ & $n\mid(a-b)$, vagyis $a$ és $b$ azonos maradékosztályban vannak. \\
+Lineáris kongruencia & $ax\equiv b\pmod n$ & Ekvivalens azzal, hogy $ax+ny=b$ valamely $x,y\in\mathbb{Z}$ mellett. \\
+Megoldhatóság & $d=\operatorname{lnko}(a,n)$ és $d\mid b$ & Van megoldás. Az alapmegoldások száma $d$. \\
+Nincs megoldás & $d=\operatorname{lnko}(a,n)$ és $d\nmid b$ & Nincs olyan egész $x$, amely kielégítené a kongruenciát. \\
+Egyedi alapmegoldás & $\operatorname{lnko}(a,n)=1$ & Pontosan egy alapmegoldás van modulo $n$ szerint. Ez az inverz esetében $a^{-1}\pmod n$. \\
+\bottomrule
+\end{tabularx}
+\endgroup

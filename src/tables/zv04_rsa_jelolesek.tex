@@ -1,0 +1,16 @@
+\begingroup
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{>{\bfseries}L{0.17\textwidth}L{0.28\textwidth}X}
+\toprule
+Jelölés & Jelentés & Megjegyzés \\
+\midrule
+$p,q$ & két különböző nagy prímszám & Ezek titkos kiinduló adatok. Gyakorlati RSA-ban nagyon nagy, véletlenszerű prímeket használnak. \\
+$n=pq$ & modulus & A nyilvános és a titkos kulcsban is szerepel. A biztonság alapja, hogy $n$ faktorizálása nagy számokra nehéz. \\
+$\varphi(n)$ & Euler-féle függvény értéke & Két prím szorzatára $\varphi(n)=(p-1)(q-1)$. \\
+$e$ & nyilvános kitevő & Úgy kell választani, hogy $1<e<\varphi(n)$ és $\operatorname{lnko}(e,\varphi(n))=1$. \\
+$d$ & titkos kitevő & $d\equiv e^{-1}\pmod{\varphi(n)}$, vagyis $ed\equiv1\pmod{\varphi(n)}$. \\
+$(e,n)$ & nyilvános kulcs & Ezzel bárki titkosíthat: $C\equiv M^e\pmod n$. \\
+$(d,n)$ & titkos kulcs & Ezzel a címzett visszafejt: $M\equiv C^d\pmod n$. \\
+\bottomrule
+\end{tabularx}
+\endgroup

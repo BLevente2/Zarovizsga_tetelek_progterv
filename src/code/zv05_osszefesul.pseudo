@@ -1,0 +1,25 @@
+ÖSSZEFÉSÜL(A, p, q, r)
+// Input paraméter: A - a tömb
+//                  p..q és q+1..r - két rendezett résztömb
+// Output paraméter: A[p..r] - rendezett résztömb
+L ← A[p..q]
+R ← A[q + 1..r]
+i ← 1
+j ← 1
+k ← p
+WHILE i ≤ hossz[L] AND j ≤ hossz[R] DO
+    IF L[i] ≤ R[j]
+        THEN A[k] ← L[i]
+             INC(i)
+        ELSE A[k] ← R[j]
+             INC(j)
+    INC(k)
+WHILE i ≤ hossz[L] DO
+    A[k] ← L[i]
+    INC(i)
+    INC(k)
+WHILE j ≤ hossz[R] DO
+    A[k] ← R[j]
+    INC(j)
+    INC(k)
+RETURN(A)

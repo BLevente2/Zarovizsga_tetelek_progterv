@@ -1,0 +1,16 @@
+\begin{center}
+\begin{tikzpicture}[node distance=10mm]
+  \node[flow, minimum width=36mm] (picks) {Titkosan választott\\prímek: $p,q$};
+  \node[flow, right=17mm of picks, minimum width=35mm] (keys) {$n=pq$\\$\varphi(n)=(p-1)(q-1)$\\$ed\equiv1\pmod{\varphi(n)}$};
+  \node[flow, right=17mm of keys, minimum width=34mm] (pub) {Nyilvános kulcs\\$(e,n)$};
+  \node[flow, below=14mm of keys, minimum width=34mm] (priv) {Titkos kulcs\\$(d,n)$};
+  \node[flow, below=17mm of pub, minimum width=34mm] (enc) {Titkosítás\\$C\equiv M^e\pmod n$};
+  \node[flow, below=17mm of enc, minimum width=34mm] (dec) {Visszafejtés\\$M\equiv C^d\pmod n$};
+  \draw[arrow] (picks) -- (keys);
+  \draw[arrow] (keys) -- (pub);
+  \draw[arrow] (keys) -- (priv);
+  \draw[arrow] (pub) -- (enc);
+  \draw[arrow] (enc) -- (dec);
+  \draw[arrow] (priv) -- (dec);
+\end{tikzpicture}
+\end{center}

@@ -1,0 +1,9 @@
+Euklidesz(a, b)
+  a <- abs(a)
+  b <- abs(b)
+  WHILE b != 0 DO
+    r <- a mod b
+    a <- b
+    b <- r
+  END WHILE
+  RETURN a

@@ -1,0 +1,18 @@
+NÉGYZETES_RENDEZÉS(A)
+// Input paraméter: A - a rendezendő tömb
+// Output paraméter: B - a rendezett tömb
+// Időigény: T(n) = Θ(n · sqrt(n)) = Θ(n^1.5)
+s ← ceil(sqrt(hossz[A]))
+oszd fel A-t legfeljebb s darab, közel s méretű alcsoportra
+FOR minden alcsoport G DO
+    rendezd vagy minimumkeresésre készítsd elő G-t
+    ha G nem üres, tedd G minimumát a főcsoportba
+k ← 1
+WHILE a főcsoport nem üres DO
+    x ← a főcsoport minimuma
+    B[k] ← x
+    INC(k)
+    töröld x-et abból az alcsoportból, ahonnan származott
+    ha ez az alcsoport nem üres
+        THEN tedd be az alcsoport új minimumát a főcsoportba
+RETURN(B)

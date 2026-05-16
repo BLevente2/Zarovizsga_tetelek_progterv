@@ -1,0 +1,8 @@
+SZÁMJEGYES_RENDEZÉS(A, d)
+// Input paraméter: A - a rendezendő tömb
+//                  d - a kulcsok számjegyeinek vagy pozícióinak száma
+// Output paraméter: A - a rendezett tömb
+// Időigény: T(n) = Θ(d · (n + k))
+FOR i ← d DOWNTO 1 DO
+    stabil módszerrel rendezzük A-t az i. számjegy szerint
+RETURN(A)

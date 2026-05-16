@@ -1,0 +1,23 @@
+\begin{center}
+\begin{tikzpicture}[node distance=10mm]
+  \node[terminator] (start) {START};
+  \node[flow, below=of start] (init) {$c\leftarrow1$\\$i\leftarrow$ legfelső bit};
+  \node[pred, below=of init] (endtest) {van még bit?};
+  \node[flow, below right=13mm and 18mm of endtest] (square) {$c\leftarrow c^2\bmod n$};
+  \node[pred, below=of square] (bittest) {$b_i=1$?};
+  \node[flow, below left=12mm and 14mm of bittest] (mult) {$c\leftarrow c\cdot a\bmod n$};
+  \node[flow, below right=12mm and 14mm of bittest] (next) {következő bit};
+  \node[flow, below=18mm of endtest] (out) {$a^b\bmod n=c$};
+  \node[terminator, below=of out] (stop) {STOP};
+  \draw[arrow] (start) -- (init);
+  \draw[arrow] (init) -- (endtest);
+  \draw[arrow] (endtest) -- node[left] {nem} (out);
+  \draw[arrow] (out) -- (stop);
+  \draw[arrow] (endtest) -- node[above] {igen} (square);
+  \draw[arrow] (square) -- (bittest);
+  \draw[arrow] (bittest) -- node[left] {igen} (mult);
+  \draw[arrow] (bittest) -- node[right] {nem} (next);
+  \draw[arrow] (mult) |- (next);
+  \draw[arrow] (next.east) -- ++(8mm,0) |- (endtest.east);
+\end{tikzpicture}
+\end{center}

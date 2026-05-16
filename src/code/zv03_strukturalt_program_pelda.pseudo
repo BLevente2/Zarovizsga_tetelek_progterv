@@ -1,0 +1,9 @@
+f
+IF p THEN
+  g
+ELSE
+  h
+END IF
+WHILE q DO
+  k
+END WHILE

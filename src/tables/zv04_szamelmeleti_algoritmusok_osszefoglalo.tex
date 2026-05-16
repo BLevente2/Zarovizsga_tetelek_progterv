@@ -1,0 +1,21 @@
+\begingroup
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{L{0.21\textwidth}L{0.35\textwidth}L{0.23\textwidth}L{0.10\textwidth}}
+\toprule
+Algoritmus & Feladat & Fő ötlet & Időigény röviden \\
+\midrule
+\endfirsthead
+\toprule
+Algoritmus & Feladat & Fő ötlet & Időigény röviden \\
+\midrule
+\endhead
+Euklideszi algoritmus & $\operatorname{lnko}(a,b)$ meghatározása. & $\operatorname{lnko}(a,b)=\operatorname{lnko}(b,a\bmod b)$, amíg a maradék nulla nem lesz. & $O(\log b)$ \\
+Kibővített euklideszi algoritmus & $d=\operatorname{lnko}(a,b)$ és $x,y$ keresése úgy, hogy $d=ax+by$. & Az euklideszi lépésekhez az együtthatókat is visszaszámolja. & $O(\log b)$ \\
+Lineáris kongruencia megoldása & $ax\equiv b\pmod n$ megoldásai. & Először $d=\operatorname{lnko}(a,n)$; megoldás pontosan akkor van, ha $d\mid b$. & $O(\log n+d)$ \\
+Multiplikatív inverz & $a^{-1}\pmod n$ meghatározása. & Az $ax\equiv1\pmod n$ kongruencia egyedi alapmegoldása, ha $\operatorname{lnko}(a,n)=1$. & $O(\log n)$ \\
+Moduláris hatványozás & $a^b\bmod n$ gyors kiszámítása. & Négyzetre emelés és szorzás a kitevő bináris alakja alapján. & $O(\log b)$ szorzás \\
+Fermat-prímteszt & Gyors valószínűségi prímszűrés. & Prím $p$ esetén $a^{p-1}\equiv1\pmod p$ minden $1\leq a<p$ esetén. & $O(\log n)$ moduláris hatványozás \\
+RSA & Nyilvános kulcsú titkosítás és visszafejtés. & Kulcsgenerálás prímekkel, titkosítás és dekódolás moduláris hatványozással. & kulcsméretfüggő \\
+\bottomrule
+\end{longtable}
+\endgroup

@@ -1,0 +1,21 @@
+\begin{center}
+\begin{tikzpicture}[node distance=7mm, scale=0.82, transform shape]
+  \node[flow, minimum width=34mm] (root) {Rendezési\\algoritmusok};
+  \node[flow, below left=12mm and 8mm of root, minimum width=34mm] (comp) {Összehasonlító\\rendezések};
+  \node[flow, below right=12mm and 8mm of root, minimum width=34mm] (noncomp) {Nem összehasonlító\\rendezések};
+  \node[flow, below left=10mm and -3mm of comp, minimum width=29mm] (simple) {Egyszerű\\$\Theta(n^2)$\\módszerek};
+  \node[flow, below right=10mm and -3mm of comp, minimum width=29mm] (divide) {Oszd meg\\és uralkodj};
+  \node[flow, below=10mm of noncomp, minimum width=34mm] (linear) {Kulcstartományt\\kihasználó\\módszerek};
+  \node[flow, below=8mm of simple, minimum width=32mm] (s1) {beszúró\\buborék\\minimum kiválasztásos};
+  \node[flow, below=8mm of divide, minimum width=31mm] (s2) {összefésülő\\gyorsrendezés};
+  \node[flow, below=8mm of linear, minimum width=31mm] (s3) {leszámláló\\számjegyes};
+  \draw[arrow] (root) -- (comp);
+  \draw[arrow] (root) -- (noncomp);
+  \draw[arrow] (comp) -- (simple);
+  \draw[arrow] (comp) -- (divide);
+  \draw[arrow] (noncomp) -- (linear);
+  \draw[arrow] (simple) -- (s1);
+  \draw[arrow] (divide) -- (s2);
+  \draw[arrow] (linear) -- (s3);
+\end{tikzpicture}
+\end{center}

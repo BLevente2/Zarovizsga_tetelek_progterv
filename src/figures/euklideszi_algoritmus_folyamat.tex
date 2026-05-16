@@ -1,0 +1,16 @@
+\begin{center}
+\begin{tikzpicture}[node distance=9mm]
+  \node[terminator] (start) {START};
+  \node[flow, below=of start] (input) {$a,b$ beolvasása};
+  \node[pred, below=of input] (test) {$b=0$?};
+  \node[flow, below left=14mm and 17mm of test] (return) {$d\leftarrow a$};
+  \node[flow, below right=14mm and 18mm of test] (step) {$r\leftarrow a\bmod b$\\$a\leftarrow b$\\$b\leftarrow r$};
+  \node[terminator, below=18mm of return] (stop) {STOP};
+  \draw[arrow] (start) -- (input);
+  \draw[arrow] (input) -- (test);
+  \draw[arrow] (test) -- node[left] {i} (return);
+  \draw[arrow] (return) -- (stop);
+  \draw[arrow] (test) -- node[right] {h} (step);
+  \draw[arrow] (step.east) -- ++(8mm,0) |- (test.east);
+\end{tikzpicture}
+\end{center}

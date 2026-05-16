@@ -11,7 +11,7 @@
 \usepackage{listings}
 \usepackage[most]{tcolorbox}
 \usepackage{tikz}
-\usetikzlibrary{positioning,shapes.geometric,shapes.misc,arrows.meta}
+\usetikzlibrary{positioning,shapes.geometric,shapes.misc,arrows.meta,decorations.pathreplacing}
 \usepackage{caption}
 
 \setlength{\headheight}{16pt}
@@ -72,6 +72,12 @@
 \rhead{\ZVHEADERRIGHT}
 \cfoot{\thepage}
 
+\lstdefinelanguage{pseudocode}{
+  morekeywords={IF,THEN,ELSE,WHILE,DO,FOR,TO,DOWNTO,REPEAT,UNTIL,RETURN,CALL,INPUT,OUTPUT,AND,OR,NOT,TRUE,FALSE},
+  sensitive=true,
+  morecomment=[l]{//}
+}
+
 \lstdefinestyle{code}{
   basicstyle=\ttfamily\small,
   backgroundcolor=\color{codebg},
@@ -81,9 +87,36 @@
   keepspaces=true,
   breaklines=true,
   tabsize=2,
-  showstringspaces=false
+  showstringspaces=false,
+  numbers=left,
+  numberstyle=\tiny\color{black!55},
+  numbersep=7pt,
+  xleftmargin=2.2em,
+  framexleftmargin=1.7em,
+  captionpos=b
 }
+
+\lstdefinestyle{pseudo}{
+  style=code,
+  language=pseudocode,
+  keywordstyle=\bfseries\color{accent!85!black},
+  commentstyle=\itshape\color{black!55}
+}
+
+\lstdefinestyle{csource}{
+  style=code,
+  language=C,
+  keywordstyle=\bfseries\color{accent!85!black},
+  commentstyle=\itshape\color{black!55},
+  stringstyle=\color{orange!70!black}
+}
+
 \lstset{style=code}
+\renewcommand{\lstlistingname}{Kódrészlet}
+\renewcommand{\lstlistlistingname}{Kódrészletek}
+\newcommand{\zvcode}[2][]{\lstinputlisting[style=code,#1]{#2}}
+\newcommand{\zvpseudocode}[2][]{\lstinputlisting[style=pseudo,#1]{#2}}
+\newcommand{\zvccode}[2][]{\lstinputlisting[style=csource,#1]{#2}}
 
 \newtcolorbox{summarybox}{
   enhanced,

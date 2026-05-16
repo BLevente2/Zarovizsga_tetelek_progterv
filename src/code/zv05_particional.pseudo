@@ -1,0 +1,12 @@
+PARTICIONÁL(A, p, r)
+// Input paraméter: A - a tömb
+//                  p..r - particionálandó intervallum
+// Output paraméter: q - a pivot végleges indexe
+pivot ← A[r]
+i ← p - 1
+FOR j ← p TO r - 1 DO
+    IF A[j] ≤ pivot
+        THEN INC(i)
+             csere A[i] ↔ A[j]
+csere A[i + 1] ↔ A[r]
+RETURN(i + 1)

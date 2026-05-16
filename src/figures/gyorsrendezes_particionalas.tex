@@ -1,0 +1,16 @@
+\begin{center}
+\begin{tikzpicture}[x=0.72cm,y=0.72cm]
+  \foreach \i/\val in {0/3,1/1,2/4,3/2,4/5,5/8,6/7,7/6} {
+    \draw[fill=black!5] (\i,0) rectangle +(1,0.8);
+    \node at (\i+0.5,0.4) {$\val$};
+  }
+  \draw[decorate, decoration={brace, mirror}, thick] (0,-0.12) -- (4,-0.12);
+  \node at (2,-0.55) {$\leq$ pivot};
+  \draw[decorate, decoration={brace, mirror}, thick] (5,-0.12) -- (8,-0.12);
+  \node at (6.5,-0.55) {$>$ pivot};
+  \draw[fill=warnbg, very thick] (4,0) rectangle +(1,0.8);
+  \node at (4.5,0.4) {$5$};
+  \node[align=center] at (4.5,1.35) {pivot a végleges\\helyén};
+  \draw[->, thick] (4.5,1.05) -- (4.5,0.85);
+\end{tikzpicture}
+\end{center}

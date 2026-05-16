@@ -1,0 +1,15 @@
+i <- 1
+talalt <- hamis
+WHILE i <= n AND talalt = hamis DO
+  IF X[i] > 0 AND X[i] mod 2 = 0 THEN
+    talalt <- igaz
+    ertek <- X[i]
+  ELSE
+    i <- i + 1
+  END IF
+END WHILE
+IF talalt THEN
+  ertek kiirasa
+ELSE
+  nincs_talalat kiirasa
+END IF

@@ -41,9 +41,7 @@ Az \textbf{információ} jelentéssel bíró ismeret. A számítógép szempontj
 
 Például a következő bitsorozat önmagában csak adat:
 
-\begin{lstlisting}
-01000001
-\end{lstlisting}
+\zvcode[caption={Egyszerű bitminta többféle értelmezéssel},label={lst:zv01_bitminta_pelda}]{src/code/zv01_bitminta_pelda.txt}
 
 Hogy ez mit jelent, az értelmezéstől függ:
 
@@ -191,12 +189,7 @@ A \textbf{típuskonverzió} egy érték más típusú értékként való értelm
 
 Példák:
 
-\begin{lstlisting}[language=C]
-int a = 5;
-int b = 2;
-double x = (double)a / b;  // 2.5
-int y = (int)3.9;          // 3, a tortrész elveszik
-\end{lstlisting}
+\zvccode[caption={C példa explicit típuskonverzióra},label={lst:zv01_tipuskonverzio_c}]{src/code/zv01_tipuskonverzio_c.c}
 
 \begin{warningbox}
 Konverziónál mindig el kell különíteni a \emph{bitminta újraértelmezését} és az \emph{érték tényleges átalakítását}. Az első esetben ugyanazokat a biteket más típus szerint olvassuk, a második esetben új reprezentáció keletkezik.
@@ -580,11 +573,7 @@ Példák:
 
 Sok programozási nyelvben a logikai operátorok rövidzár-tulajdonságúak. Például $A\land B$ esetén, ha $A$ hamis, akkor $B$ kiértékelése már nem szükséges. Ez hatékonysági és biztonsági szempontból is fontos:
 
-\begin{lstlisting}[language=C]
-if (p != NULL && p->value > 0) {
-    /* p->value csak akkor erodozik ki, ha p nem NULL */
-}
-\end{lstlisting}
+\zvccode[caption={C példa rövidzáras logikai kiértékelésre},label={lst:zv01_rovidzaras_c}]{src/code/zv01_rovidzaras_c.c}
 
 \section{Halmaz absztrakt adattípus}
 
@@ -725,12 +714,7 @@ Gyakori kódolások:
 
 UTF-8 keretformátum:
 
-\begin{lstlisting}
-0xxxxxxx
-110xxxxx 10xxxxxx
-1110xxxx 10xxxxxx 10xxxxxx
-11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-\end{lstlisting}
+\zvcode[caption={UTF-8 keretformátumok},label={lst:zv01_utf8_keretformatum}]{src/code/zv01_utf8_keretformatum.txt}
 
 \subsection{Karakter és glyph különbsége}
 
@@ -797,19 +781,13 @@ s\bullet t\neq t\bullet s.
 
 \textbf{Hossz-prefixes sztring.} A tárolt adat elején szerepel a hossz, utána következnek a karakterek vagy byte-ok. Ezt gyakran Pascal-szerű konvenciónak is nevezik.
 
-\begin{lstlisting}
-05 6D 69 6E 74 61
-hossz=5, tartalom="minta"
-\end{lstlisting}
+\zvcode[caption={Hosszmezős sztring elvi tárolása},label={lst:zv01_hosszmezos_sztring}]{src/code/zv01_hosszmezos_sztring.txt}
 
 Előnye, hogy a hossz gyorsan lekérdezhető. Hátránya, hogy a maximális hossz a hosszmező méretétől függhet.
 
 \textbf{Nullával lezárt sztring.} A C nyelv hagyományos konvenciója szerint a karakterek után egy $0$ byte jelzi a végét.
 
-\begin{lstlisting}
-6D 69 6E 74 61 00
-"minta" + lezaro nulla
-\end{lstlisting}
+\zvcode[caption={Nullával lezárt sztring elvi tárolása},label={lst:zv01_nullaval_lezart_sztring}]{src/code/zv01_nullaval_lezart_sztring.txt}
 
 Előnye az egyszerű reprezentáció. Hátránya, hogy a hossz meghatározásához végig kell olvasni a sztringet, és bináris adatban a 0 byte problémát okozhat, ha nem megfelelően kezeljük.
 
@@ -963,13 +941,7 @@ r=(x_1,x_2,\ldots,x_n),\quad x_i\in T_i.
 
 Programozásban a mezőknek általában neve van. Példa C-szerű szintaxissal:
 
-\begin{lstlisting}[language=C]
-struct Student {
-    int id;
-    char neptun[7];
-    double average;
-};
-\end{lstlisting}
+\zvccode[caption={C rekord/struktúra példa},label={lst:zv01_student_rekord_c}]{src/code/zv01_student_rekord_c.c}
 
 \subsection{Rekordműveletek}
 

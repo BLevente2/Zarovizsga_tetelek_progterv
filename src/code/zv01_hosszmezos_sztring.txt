@@ -1,0 +1,2 @@
+05 6D 69 6E 74 61
+hossz=5, tartalom="minta"
