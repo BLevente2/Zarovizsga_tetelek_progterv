@@ -143,7 +143,61 @@ A dokumentum LuaLaTeX-re épül, ezért nem ajánlott `pdflatex` paranccsal ford
 
 ## Fordítás
 
+### Ajánlott: párhuzamos fordítás
+
+A teljes projekt fordítása hosszú lehet, ha a PDF-ek egymás után készülnek el. Mivel az egyes tételek külön PDF-ek, a fordítás jól párhuzamosítható GNU Make segítségével.
+
+Ajánlott parancs erősebb gépen:
+
+```bash
+make -j16 all
+```
+
+A `-j16` azt jelenti, hogy a Make legfeljebb 16 feladatot futtathat párhuzamosan. Ezt érdemes a gép processzorszálainak számához igazítani.
+
+Linux alatt automatikus szál-/maghasználattal:
+
+```bash
+make -j$(nproc) all
+```
+
+Windows PowerShellben:
+
+```powershell
+make -j$env:NUMBER_OF_PROCESSORS all
+```
+
+Windows CMD-ben:
+
+```cmd
+make -j%NUMBER_OF_PROCESSORS% all
+```
+
+Ha Windows alatt `mingw32-make` érhető el `make` helyett, akkor ugyanígy használható:
+
+```powershell
+mingw32-make -j$env:NUMBER_OF_PROCESSORS all
+```
+
+A Makefile tartalmaz kényelmi célokat is. Ezek automatikusan megpróbálják a rendszer szálainak számát használni:
+
+```bash
+make fast
+```
+
+vagy kézzel megadott szál-/feladatszámmal:
+
+```bash
+make fast JOBS=16
+```
+
 ### Az összes tétel fordítása
+
+```bash
+make all
+```
+
+vagy röviden:
 
 ```bash
 make
@@ -159,6 +213,68 @@ Ez a kidolgozott tételeket és a teljes tételsort fordítja le:
 - `output/zv_tetelsor.pdf`
 
 A sima `make` nem fordítja le külön az ábragyűjteményt és a táblázatgyűjteményt.
+
+### Teljes fordítás ábra- és táblázatgyűjteménnyel együtt
+
+Ha a tételek mellett az összesített ábra- és táblázatdokumentumot is le kell fordítani:
+
+```bash
+make -j16 full
+```
+
+vagy kényelmi célként:
+
+```bash
+make fast-full JOBS=16
+```
+
+Eredményként a tételek és a tételsor mellett ezek is elkészülnek:
+
+- `output/zv_abrak.pdf`
+- `output/zv_tablazatok.pdf`
+
+### Csak egy tétel fordítása
+
+Ha csak egy adott tételt módosítottál, akkor nem kell mindent újrafordítani. Például az 5. tétel fordítása:
+
+```bash
+make tetel05
+```
+
+vagy közvetlen PDF-célként:
+
+```bash
+make output/zv_tetel_05.pdf
+```
+
+A `tetelXX` forma a többi tételre is működik, például:
+
+```bash
+make tetel01
+make tetel04
+```
+
+### Ideiglenes fájlok és sebesség
+
+A Makefile már nem törli automatikusan minden fordítás végén az ideiglenes LaTeX-fájlokat. Ez párhuzamos fordításnál biztonságosabb, és ismételt fordításoknál is kényelmesebb lehet.
+
+Ha tiszta `output` mappát szeretnél a PDF-ek megtartásával:
+
+```bash
+make clean
+```
+
+Ha fordítás után automatikusan törölni szeretnéd az ideiglenes fájlokat, használható például:
+
+```bash
+make -j16 all-clean
+```
+
+vagy teljes fordításnál:
+
+```bash
+make -j16 full-clean
+```
 
 ### Csak az ábragyűjtemény fordítása
 

@@ -19,18 +19,40 @@ PDF_FILES := $(patsubst $(SRC_DIR)/%.tex,$(OUT_DIR)/%.pdf,$(TEX_FILES))
 TETELSOR_PDF := $(OUT_DIR)/zv_tetelsor.pdf
 FIGURES_PDF := $(OUT_DIR)/zv_abrak.pdf
 TABLES_PDF := $(OUT_DIR)/zv_tablazatok.pdf
+FULL_PDF_FILES := $(PDF_FILES) $(FIGURES_PDF) $(TABLES_PDF)
 
 ifeq ($(OS),Windows_NT)
+DEFAULT_JOBS := $(NUMBER_OF_PROCESSORS)
 MKDIR_OUT = if not exist "$(OUT_DIR)" mkdir "$(OUT_DIR)"
 CLEAN_TEMP = -del /Q /F "$(OUT_DIR)\*.aux" "$(OUT_DIR)\*.log" "$(OUT_DIR)\*.out" "$(OUT_DIR)\*.toc" "$(OUT_DIR)\*.fls" "$(OUT_DIR)\*.fdb_latexmk" "$(OUT_DIR)\*.synctex.gz" "$(OUT_DIR)\*.bbl" "$(OUT_DIR)\*.bcf" "$(OUT_DIR)\*.blg" "$(OUT_DIR)\*.run.xml" "$(OUT_DIR)\*.lof" "$(OUT_DIR)\*.lot" "$(OUT_DIR)\*.lol" "$(OUT_DIR)\*.idx" "$(OUT_DIR)\*.ilg" "$(OUT_DIR)\*.ind" 2>NUL
 CLEAN_PDF = -del /Q /F "$(OUT_DIR)\*.pdf" 2>NUL
 else
+DEFAULT_JOBS := $(shell nproc 2>/dev/null || getconf _NPROCESSORS_ONLN 2>/dev/null || echo 4)
 MKDIR_OUT = mkdir -p "$(OUT_DIR)"
 CLEAN_TEMP = rm -f "$(OUT_DIR)"/*.aux "$(OUT_DIR)"/*.log "$(OUT_DIR)"/*.out "$(OUT_DIR)"/*.toc "$(OUT_DIR)"/*.fls "$(OUT_DIR)"/*.fdb_latexmk "$(OUT_DIR)"/*.synctex.gz "$(OUT_DIR)"/*.bbl "$(OUT_DIR)"/*.bcf "$(OUT_DIR)"/*.blg "$(OUT_DIR)"/*.run.xml "$(OUT_DIR)"/*.lof "$(OUT_DIR)"/*.lot "$(OUT_DIR)"/*.lol "$(OUT_DIR)"/*.idx "$(OUT_DIR)"/*.ilg "$(OUT_DIR)"/*.ind
 CLEAN_PDF = rm -f "$(OUT_DIR)"/*.pdf
 endif
 
-all: prepare $(PDF_FILES)
+ifeq ($(strip $(DEFAULT_JOBS)),)
+DEFAULT_JOBS := 4
+endif
+
+JOBS ?= $(DEFAULT_JOBS)
+
+all: $(PDF_FILES)
+
+full: $(FULL_PDF_FILES)
+
+fast:
+	$(MAKE) -j$(JOBS) all
+
+fast-full:
+	$(MAKE) -j$(JOBS) full
+
+all-clean: all
+	$(MAKE) clean
+
+full-clean: full
 	$(MAKE) clean
 
 prepare:
@@ -40,13 +62,11 @@ $(OUT_DIR)/%.pdf: $(SRC_DIR)/%.tex $(COMMON_FILES) $(TETELSOR_MAIN) $(FIGURE_FIL
 	$(LUALATEX) $(LATEX_FLAGS) $<
 	$(LUALATEX) $(LATEX_FLAGS) $<
 
-figures: prepare $(FIGURES_PDF)
-	$(MAKE) clean
+figures: $(FIGURES_PDF)
 
 abrak: figures
 
-tables: prepare $(TABLES_PDF)
-	$(MAKE) clean
+tables: $(TABLES_PDF)
 
 tablazatok: tables
 
@@ -57,6 +77,9 @@ $(FIGURES_PDF): $(FIGURES_MAIN) $(COMMON_FILES) $(FIGURE_FILES) | prepare
 $(TABLES_PDF): $(TABLES_MAIN) $(COMMON_FILES) $(TABLE_FILES) | prepare
 	$(LUALATEX) $(LATEX_FLAGS) $(TABLES_MAIN)
 	$(LUALATEX) $(LATEX_FLAGS) $(TABLES_MAIN)
+
+tetel%: $(OUT_DIR)/zv_tetel_%.pdf
+	@:
 
 clean:
 	$(CLEAN_TEMP)
@@ -70,4 +93,14 @@ list:
 	@echo $(FIGURES_PDF)
 	@echo $(TABLES_PDF)
 
-.PHONY: all prepare figures abrak tables tablazatok clean distclean list
+help:
+	@echo "Gyakori celok:"
+	@echo "  make -j$(JOBS) all      - tetelek es tetelsor parhuzamos forditasa"
+	@echo "  make fast JOBS=$(JOBS)  - ugyanaz kenyelmi celkent"
+	@echo "  make -j$(JOBS) full     - tetelek, tetelsor, abrak es tablazatok"
+	@echo "  make tetel05            - csak az 5. tetel forditasa"
+	@echo "  make clean              - ideiglenes fajlok torlese"
+	@echo "  make distclean          - ideiglenes fajlok es PDF-ek torlese"
+
+.DELETE_ON_ERROR:
+.PHONY: all full fast fast-full all-clean full-clean prepare figures abrak tables tablazatok clean distclean list help
