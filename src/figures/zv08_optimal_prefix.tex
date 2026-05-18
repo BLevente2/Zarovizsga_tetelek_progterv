@@ -1,0 +1,22 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small, x=0.85cm, y=0.85cm]
+  \tikzset{block/.style={draw, rounded corners, fill=lightaccent, minimum width=2.45cm, minimum height=8mm, align=center},
+           aux/.style={draw, rounded corners, fill=warnbg, minimum width=1.6cm, minimum height=8mm, align=center}}
+  \node[block] (b1) at (0,3) {$B_1$\\helyi prefix};
+  \node[block] (b2) at (3,3) {$B_2$\\helyi prefix};
+  \node[block] (b3) at (6,3) {$B_3$\\helyi prefix};
+  \node[block] (b4) at (9,3) {$B_4$\\helyi prefix};
+  \node[aux] (z1) at (0,1.7) {$z_1$};
+  \node[aux] (z2) at (3,1.7) {$z_2$};
+  \node[aux] (z3) at (6,1.7) {$z_3$};
+  \node[aux] (z4) at (9,1.7) {$z_4$};
+  \node[draw, rounded corners, fill=warnbg, minimum width=8.0cm, minimum height=9mm] (crew) at (4.5,0.45) {prefix a blokkzáró értékeken: $W=\code{CREW\_PREFIX}(Z)$};
+  \node[block] (out) at (4.5,-1.0) {blokkonkénti korrekció\\$B_j$ elemeihez $w_{j-1}$ hozzáadása};
+  \foreach \i in {1,2,3,4} {\draw[arrow] (b\i) -- (z\i); \draw[arrow] (z\i) -- (crew);}
+  \draw[arrow] (crew) -- (out);
+  \draw[decorate, decoration={brace, amplitude=5pt}] (-1.2,3.65) -- (10.2,3.65) node[midway, above=6pt] {$b\approx\log n$ méretű blokkok};
+\end{tikzpicture}
+\caption{Az optimális prefixszámítás blokkos felépítése}
+\label{fig:zv08_optimal_prefix}
+\end{figure}

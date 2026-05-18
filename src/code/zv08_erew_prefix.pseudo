@@ -1,0 +1,13 @@
+EREW_PREFIX(X, n, Y)
+// Input: X, n elemű sorozat
+// Output: Y, az összes prefix
+PARALLEL FOR i <- 1 TO n DO
+    y_i <- x_i
+k <- 1
+WHILE k < n DO
+    PARALLEL FOR i <- 1 TO n DO
+        temp_i <- y_i
+    PARALLEL FOR i <- k + 1 TO n DO
+        y_i <- temp_(i - k) ⊕ temp_i
+    k <- 2 * k
+RETURN Y

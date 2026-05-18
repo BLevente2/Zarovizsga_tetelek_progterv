@@ -1,0 +1,10 @@
+\begin{tabularx}{\textwidth}{L{33mm}L{45mm}X}
+\toprule
+\textbf{Feladat} & \textbf{Képlet} & \textbf{Párhuzamosítási lehetőség} \\
+\midrule
+Teljes aggregáció & $z=x_1\oplus x_2\oplus\cdots\oplus x_n$ & Fa alakú redukcióval az idő $\Theta(\log n)$ lehet, ha elég számítási egység áll rendelkezésre. \\
+Inkluzív prefix & $y_k=x_1\oplus\cdots\oplus x_k$ & Minden $k$-ra eredményt ad. Nehezebb, mint a redukció, mert sok részaggregátumot kell egyszerre előállítani. \\
+Exkluzív prefix & $y_k=x_1\oplus\cdots\oplus x_{k-1}$ & Gyakran indexszámításnál és párhuzamos adatelhelyezésnél használják. Semleges elemmel indul. \\
+Blokkos prefix & Lokális prefix + blokkprefix & A munkaoptimalitás tipikus módja: először résztömbökön dolgozunk, majd a blokkhatárok eredményét terjesztjük vissza. \\
+\bottomrule
+\end{tabularx}

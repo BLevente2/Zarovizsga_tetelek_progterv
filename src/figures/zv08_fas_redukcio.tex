@@ -1,0 +1,30 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small, x=1.1cm, y=0.9cm]
+  \tikzset{leaf/.style={draw, rounded corners, fill=lightaccent, minimum width=8mm, minimum height=6mm},
+           opnode/.style={draw, circle, fill=warnbg, minimum size=7mm, inner sep=0pt}}
+  \foreach \i/\x in {1/0,2/1,3/2,4/3,5/4,6/5,7/6,8/7} {
+    \node[leaf] (x\i) at (\x,0) {$x_\i$};
+  }
+  \foreach \i/\x in {1/0.5,2/2.5,3/4.5,4/6.5} {
+    \node[opnode] (a\i) at (\x,1.2) {$\oplus$};
+  }
+  \foreach \i/\x in {1/1.5,2/5.5} {
+    \node[opnode] (b\i) at (\x,2.4) {$\oplus$};
+  }
+  \node[opnode] (c1) at (3.5,3.6) {$\oplus$};
+  \node[draw=none, above=1mm of c1] {$z$};
+  \draw[arrow] (x1) -- (a1); \draw[arrow] (x2) -- (a1);
+  \draw[arrow] (x3) -- (a2); \draw[arrow] (x4) -- (a2);
+  \draw[arrow] (x5) -- (a3); \draw[arrow] (x6) -- (a3);
+  \draw[arrow] (x7) -- (a4); \draw[arrow] (x8) -- (a4);
+  \draw[arrow] (a1) -- (b1); \draw[arrow] (a2) -- (b1);
+  \draw[arrow] (a3) -- (b2); \draw[arrow] (a4) -- (b2);
+  \draw[arrow] (b1) -- (c1); \draw[arrow] (b2) -- (c1);
+  \node[align=center] at (3.5,-0.8) {Fa alakú redukció: minden szinten feleződik az aktív értékek száma.};
+  \node[anchor=west] at (8.1,1.2) {$\Theta(\log n)$ idő};
+  \node[anchor=west] at (8.1,0.65) {$\Theta(n)$ munka};
+\end{tikzpicture}
+\caption{Aggregáció/redukció fa alakú párhuzamosítása}
+\label{fig:zv08_fas_redukcio}
+\end{figure}

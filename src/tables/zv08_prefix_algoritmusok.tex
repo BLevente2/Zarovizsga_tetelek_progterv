@@ -1,0 +1,9 @@
+\begin{tabularx}{\textwidth}{L{38mm}L{17mm}L{17mm}L{20mm}X}
+\toprule
+\textbf{Algoritmus} & \textbf{PRAM modell} & \textbf{Idő} & \textbf{Munka} & \textbf{Megjegyzés} \\
+\midrule
+\code{CREW\_PREFIX} & CREW & $\Theta(\log n)$ & $\Theta(n\log n)$ & Egyszerű rekurzív felépítés, de nem munkaoptimális. A második fél minden eleme olvashatja az első fél utolsó prefixét. \\
+\code{EREW\_PREFIX} & EREW & $\Theta(\log n)$ & $\Theta(n\log n)$ & Duplázó távolságú módszer. Szigorúbb memóriahozzáférést feltételez, ezért a fázisok eredményét biztonságosan kell kezelni. \\
+\code{OPTIMAL\_PREFIX} & CREW & $\Theta(\log n)$ & $\Theta(n)$ & Blokkos felosztással munkaoptimális: a lokális prefixek sorosan, a blokkok prefixei párhuzamosan készülnek. \\
+\bottomrule
+\end{tabularx}

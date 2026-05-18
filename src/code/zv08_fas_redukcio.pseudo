@@ -1,0 +1,10 @@
+TREE_REDUCE(X, n)
+// Input: X, n elemű sorozat, n egyszerűség kedvéért kettőhatvány
+// Output: az elemek aggregált értéke
+Y <- X
+k <- n
+WHILE k > 1 DO
+    PARALLEL FOR i <- 1 TO k / 2 DO
+        y_i <- y_(2i - 1) ⊕ y_(2i)
+    k <- k / 2
+RETURN y_1

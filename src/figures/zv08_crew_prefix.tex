@@ -1,0 +1,23 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small, x=0.9cm, y=0.85cm]
+  \tikzset{cell/.style={draw, minimum width=8mm, minimum height=7mm, fill=lightaccent},
+           cellb/.style={draw, minimum width=8mm, minimum height=7mm, fill=warnbg}}
+  \foreach \i/\v in {1/x_1,2/x_2,3/x_3,4/x_4,5/x_5,6/x_6,7/x_7,8/x_8} {
+    \node[cell] (x\i) at (\i,3) {$\v$};
+  }
+  \draw[decorate, decoration={brace, amplitude=5pt}] (0.55,2.55) -- (4.45,2.55) node[midway, below=6pt] {bal fél};
+  \draw[decorate, decoration={brace, amplitude=5pt}] (4.55,2.55) -- (8.45,2.55) node[midway, below=6pt] {jobb fél};
+  \node[draw, rounded corners, align=center, fill=lightaccent, minimum width=3.4cm] (left) at (2.5,1.25) {prefix a bal félben};
+  \node[draw, rounded corners, align=center, fill=lightaccent, minimum width=3.4cm] (right) at (6.5,1.25) {prefix a jobb félben};
+  \node[cellb] (last) at (4.1,0) {$y_4$};
+  \node[draw, rounded corners, fill=warnbg, align=center, minimum width=3.4cm] (add) at (6.5,0) {hozzáadás a jobb félhez};
+  \draw[arrow] (x2) -- (left); \draw[arrow] (x6) -- (right);
+  \draw[arrow] (left) -- (last);
+  \draw[arrow] (last) -- node[above] {közös olvasás} (add);
+  \draw[arrow] (right) -- (add);
+  \node[align=center] at (4.5,-1.05) {CREW modellben több PU egyszerre olvashatja a bal fél utolsó prefixét.};
+\end{tikzpicture}
+\caption{A \code{CREW\_PREFIX} rekurzív gondolata}
+\label{fig:zv08_crew_prefix}
+\end{figure}

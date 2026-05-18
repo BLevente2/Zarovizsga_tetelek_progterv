@@ -1,0 +1,10 @@
+\begin{tabularx}{\textwidth}{L{28mm}L{39mm}X}
+\toprule
+\textbf{Fogalom} & \textbf{Eredmény} & \textbf{Lényeg} \\
+\midrule
+Aggregáció & Egyetlen összesített érték & Több bemeneti elemet egy bináris, asszociatív művelettel egy értékké vonunk össze. Példa: összeg, szorzat, minimum, maximum. \\
+Redukció & Egyetlen csökkentett eredmény & Párhuzamos programozásban az aggregáció tipikus alakja: részaggregátumokat számítunk, majd ezeket egyesítjük. \\
+Prefixszámítás & Minden részösszeg/részaggregátum & Nem csak a teljes eredmény kell, hanem minden $k$-ra az $x_1\oplus\cdots\oplus x_k$ érték. \\
+Scan & Prefixek sorozata & A prefixszámítás gyakori angol neve. Lehet inkluzív vagy exkluzív scan. \\
+\bottomrule
+\end{tabularx}

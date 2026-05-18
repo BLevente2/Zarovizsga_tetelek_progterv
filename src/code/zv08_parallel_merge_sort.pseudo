@@ -1,0 +1,10 @@
+PARALLEL_MERGE_SORT(A, bal, jobb)
+// Input: A[bal..jobb]
+// Output: A[bal..jobb] rendezve
+IF bal < jobb THEN
+    kozep <- floor((bal + jobb) / 2)
+    PARALLEL DO
+        PARALLEL_MERGE_SORT(A, bal, kozep)
+        PARALLEL_MERGE_SORT(A, kozep + 1, jobb)
+    PARALLEL_MERGE(A, bal, kozep, jobb)
+RETURN A

@@ -1,0 +1,7 @@
+SEQUENTIAL_REDUCE(X, n, neutral)
+// Input: X, n elemű sorozat, neutral a művelet semleges eleme
+// Output: z = x_1 ⊕ x_2 ⊕ ... ⊕ x_n
+z <- neutral
+FOR i <- 1 TO n DO
+    z <- z ⊕ x_i
+RETURN z

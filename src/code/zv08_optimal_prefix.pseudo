@@ -1,0 +1,13 @@
+OPTIMAL_PREFIX(X, n, Y)
+// Input: X, n elemű sorozat, b = ceil(log2(n))
+// Output: Y, az összes prefix
+b <- ceil(log2(n))
+m <- ceil(n / b)
+PARALLEL FOR j <- 1 TO m DO
+    local_prefix(X, Y, (j - 1) * b + 1, min(j * b, n))
+    z_j <- Y_min(j * b, n)
+W <- CREW_PREFIX(Z, 1, m, W)
+PARALLEL FOR j <- 2 TO m DO
+    PARALLEL FOR i <- (j - 1) * b + 1 TO min(j * b, n) DO
+        y_i <- w_(j - 1) ⊕ y_i
+RETURN Y

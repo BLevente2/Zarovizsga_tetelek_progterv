@@ -1,0 +1,13 @@
+CREW_PREFIX(X, bal, jobb, Y)
+// Input: X[bal..jobb], asszociatív ⊕ művelet
+// Output: Y[bal..jobb], az adott intervallum prefixei
+IF bal = jobb THEN
+    y_bal <- x_bal
+ELSE
+    kozep <- floor((bal + jobb) / 2)
+    PARALLEL DO
+        CREW_PREFIX(X, bal, kozep, Y)
+        CREW_PREFIX(X, kozep + 1, jobb, Y)
+    PARALLEL FOR i <- kozep + 1 TO jobb DO
+        y_i <- y_kozep ⊕ y_i
+RETURN Y

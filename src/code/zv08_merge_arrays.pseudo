@@ -1,0 +1,23 @@
+MERGE_ARRAYS(A, n, B, m, C)
+// Input: A és B rendezett sorozatok
+// Output: C, a két sorozat rendezett összefésülése
+i <- 1
+j <- 1
+k <- 1
+WHILE i <= n AND j <= m DO
+    IF a_i <= b_j THEN
+        c_k <- a_i
+        i <- i + 1
+    ELSE
+        c_k <- b_j
+        j <- j + 1
+    k <- k + 1
+WHILE i <= n DO
+    c_k <- a_i
+    i <- i + 1
+    k <- k + 1
+WHILE j <= m DO
+    c_k <- b_j
+    j <- j + 1
+    k <- k + 1
+RETURN C

@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small, x=1.0cm, y=0.9cm]
+  \tikzset{task/.style={draw, rounded corners, fill=lightaccent, minimum width=1.9cm, minimum height=7mm, align=center},
+           merge/.style={draw, rounded corners, fill=warnbg, minimum width=1.9cm, minimum height=7mm, align=center}}
+  \node[task] (a1) at (0,0) {$A_1$ rendezése};
+  \node[task] (a2) at (2.4,0) {$A_2$ rendezése};
+  \node[task] (a3) at (4.8,0) {$A_3$ rendezése};
+  \node[task] (a4) at (7.2,0) {$A_4$ rendezése};
+  \node[merge] (m1) at (1.2,1.35) {összefésülés};
+  \node[merge] (m2) at (6.0,1.35) {összefésülés};
+  \node[merge] (m3) at (3.6,2.7) {végső\\összefésülés};
+  \draw[arrow] (a1) -- (m1); \draw[arrow] (a2) -- (m1);
+  \draw[arrow] (a3) -- (m2); \draw[arrow] (a4) -- (m2);
+  \draw[arrow] (m1) -- (m3); \draw[arrow] (m2) -- (m3);
+  \node[align=center] at (3.6,-0.85) {A részrendezések párhuzamosak, az összefésülési szintek egymásra épülnek.};
+\end{tikzpicture}
+\caption{Összefésülő rendezés párhuzamos végrehajtási fája}
+\label{fig:zv08_parhuzamos_osszefesulo}
+\end{figure}
