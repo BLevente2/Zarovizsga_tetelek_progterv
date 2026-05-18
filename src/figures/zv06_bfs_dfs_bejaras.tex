@@ -1,0 +1,23 @@
+\begin{center}
+\begin{tikzpicture}[x=1.05cm,y=1.0cm, every node/.style={circle, draw, minimum size=7mm, inner sep=0pt}]
+  \node[fill=lightaccent] (s) at (0,0) {$s$};
+  \node (a) at (1.6,1.0) {$a$};
+  \node (b) at (1.6,-1.0) {$b$};
+  \node (c) at (3.2,1.25) {$c$};
+  \node (d) at (3.2,0) {$d$};
+  \node (e) at (3.2,-1.25) {$e$};
+  \node (f) at (4.8,0) {$f$};
+
+  \draw (s)--(a) (s)--(b) (a)--(c) (a)--(d) (b)--(d) (b)--(e) (c)--(f) (d)--(f) (e)--(f);
+
+  \draw[accent, very thick] (s)--(a);
+  \draw[accent, very thick] (s)--(b);
+  \draw[accent, very thick] (a)--(c);
+  \draw[accent, very thick] (a)--(d);
+  \draw[accent, very thick] (b)--(e);
+  \draw[accent, very thick] (c)--(f);
+
+  \node[draw=none, rectangle, align=left, anchor=west] at (5.45,0.6) {BFS szintek $s$-ből:\\$0:\ s$\\$1:\ a,b$\\$2:\ c,d,e$\\$3:\ f$};
+  \node[draw=none, rectangle, align=center] at (2.4,-2.05) {A vastag élek egy lehetséges szélességi fát mutatnak.};
+\end{tikzpicture}
+\end{center}

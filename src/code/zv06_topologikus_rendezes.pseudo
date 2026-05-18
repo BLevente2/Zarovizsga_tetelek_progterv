@@ -1,0 +1,6 @@
+TOPOLOGIKUS_RENDEZES(G)
+  DFS(G)
+  L <- ures lista
+  amikor egy u csucs befejezodik DFS-ben:
+    LISTA_ELEJERE_BESZUR(L, u)
+  RETURN L

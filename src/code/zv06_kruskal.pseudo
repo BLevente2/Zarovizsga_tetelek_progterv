@@ -1,0 +1,10 @@
+KRUSKAL(G, w)
+  A <- ures halmaz
+  FOR minden v in V[G] DO
+    HALMAZT_KESZIT(v)
+  rendezd E[G] eleit suly szerint novekvo sorrendbe
+  FOR minden (u, v) in E[G] novekvo suly szerint DO
+    IF HALMAZT_KERES(u) != HALMAZT_KERES(v) THEN
+      A <- A unio {(u, v)}
+      EGYESIT(u, v)
+  RETURN A

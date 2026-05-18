@@ -1,0 +1,20 @@
+DFS(G)
+  FOR minden u in V[G] DO
+    szin[u] <- FEHER
+    elozo[u] <- NIL
+  ido <- 0
+  FOR minden u in V[G] DO
+    IF szin[u] = FEHER THEN
+      DFS_BEJAR(u)
+
+DFS_BEJAR(u)
+  szin[u] <- SZURKE
+  ido <- ido + 1
+  d[u] <- ido
+  FOR minden v in szomszed[u] DO
+    IF szin[v] = FEHER THEN
+      elozo[v] <- u
+      DFS_BEJAR(v)
+  szin[u] <- FEKETE
+  ido <- ido + 1
+  f[u] <- ido

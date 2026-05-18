@@ -1,0 +1,23 @@
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small, x=0.95cm, y=0.7cm]
+  \node at (0,6) {A szál};
+  \node at (4.2,6) {közös $x$};
+  \node at (8.4,6) {B szál};
+  \draw[dashed] (0,5.6) -- (0,0.3);
+  \draw[dashed] (4.2,5.6) -- (4.2,0.3);
+  \draw[dashed] (8.4,5.6) -- (8.4,0.3);
+  \node[draw, fill=black!5] at (4.2,5.2) {$x=0$};
+  \draw[->, thick] (4.2,4.6) -- node[above] {olvas: 0} (0,4.1);
+  \draw[->, thick] (4.2,3.9) -- node[above] {olvas: 0} (8.4,3.4);
+  \node[draw, fill=lightaccent] at (0,3.0) {$0+1$};
+  \node[draw, fill=lightaccent] at (8.4,2.5) {$0+1$};
+  \draw[->, thick] (0,2.1) -- node[above] {ír: 1} (4.2,1.7);
+  \node[draw, fill=black!5] at (4.2,1.35) {$x=1$};
+  \draw[->, thick] (8.4,1.35) -- node[below] {ír: 1} (4.2,0.95);
+  \node[draw, fill=warnbg] at (4.2,0.45) {hibás végeredmény: $x=1$};
+\end{tikzpicture}
+\caption{Lost update: két növelésből csak egy látszik a végeredményben}
+\label{fig:zv07_lost_update}
+\end{figure}

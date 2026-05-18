@@ -1,0 +1,17 @@
+\begingroup
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{L{0.23\textwidth}L{0.30\textwidth}L{0.20\textwidth}L{0.17\textwidth}}
+\toprule
+Reprezentáció & Lényege & Előny & Hátrány \\
+\midrule
+\endfirsthead
+\toprule
+Reprezentáció & Lényege & Előny & Hátrány \\
+\midrule
+\endhead
+Szomszédsági lista & Minden csúcshoz eltároljuk a belőle elérhető szomszédokat, súlyozott gráfnál a súlyokat is. & Ritka gráfnál tárhatékony, a BFS/DFS természetes bemenete. & Egy konkrét él létezésének ellenőrzése lassabb lehet. \\
+Szomszédsági mátrix & $n\times n$ mátrix, ahol a cella az él létezését vagy súlyát adja meg. & Él létezése gyorsan ellenőrizhető, Floyd--Warshallhoz természetes. & $\Theta(|V|^2)$ tár akkor is, ha kevés él van. \\
+Éllista & Az éleket külön listában tároljuk, például $(u,v,w)$ hármasokként. & Kruskal és Bellman--Ford esetén kényelmes. & Egy csúcs szomszédainak kigyűjtése külön index nélkül lassú lehet. \\
+\bottomrule
+\end{longtable}
+\endgroup

@@ -1,0 +1,10 @@
+\begin{center}
+\begin{tikzpicture}[node distance=22mm, v/.style={circle, draw, minimum size=9mm, inner sep=0pt}]
+  \node[v, fill=lightaccent] (u) {$u$};
+  \node[v, right=of u, fill=warnbg] (v) {$v$};
+  \draw[->, very thick] (u) -- node[above] {$w(u,v)$} (v);
+  \node[draw=none, rectangle, align=center, below=10mm of u] {$d[u]$\\ismert becslés};
+  \node[draw=none, rectangle, align=center, below=10mm of v] {$d[v]$\\jelenlegi becslés};
+  \node[draw=none, rectangle, align=center, above=9mm of v] {Ha $d[u]+w(u,v)<d[v]$,\\akkor $d[v]$ javítható és $\pi[v]\leftarrow u$.};
+\end{tikzpicture}
+\end{center}

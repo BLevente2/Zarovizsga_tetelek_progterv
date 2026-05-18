@@ -1,0 +1,10 @@
+EGY_FORRAS_KEZDOERTEK(G, s)
+  FOR minden v in V[G] DO
+    d[v] <- vegtelen
+    elozo[v] <- NIL
+  d[s] <- 0
+
+KOZELIT(u, v, w)
+  IF d[v] > d[u] + w(u, v) THEN
+    d[v] <- d[u] + w(u, v)
+    elozo[v] <- u

@@ -1,0 +1,8 @@
+FOR t = 1 TO n + k - 1 DO
+    PARALLEL_FOR(j = 1 TO k) DO
+        i := t - j + 1
+        IF 1 <= i AND i <= n THEN
+            stage[j] feldolgozza az i. elemet
+        END IF
+    END PARALLEL_FOR
+END FOR

@@ -1,0 +1,12 @@
+
+\begin{tabularx}{\textwidth}{L{30mm}X X}
+\toprule
+\textbf{Eszköz} & \textbf{Feladat} & \textbf{Megjegyzés} \\
+\midrule
+Kritikus szakasz & Olyan kódrészlet, amelyet egyszerre csak egy végrehajtó egység futtathat. & Tipikus példa: közös változó módosítása. \\
+Lock / mutex & Kizárólagos hozzáférést ad egy erőforráshoz. & Egyszerű, de holtpontot vagy várakozást okozhat rossz használatnál. \\
+Szemafor & Számlálóval korlátozza az egyszerre belépők számát. & Több azonos erőforrás kezelésére is használható. \\
+Atomikus művelet & A művelet megszakíthatatlan egységként hajtódik végre. & Például atomikus növelés, csere vagy compare-and-swap. \\
+Barrier & Megvárja, amíg minden résztvevő elér egy pontot. & Fázisokra bontott algoritmusoknál gyakori. \\
+\bottomrule
+\end{tabularx}

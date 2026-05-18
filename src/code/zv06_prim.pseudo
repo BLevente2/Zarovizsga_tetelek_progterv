@@ -1,0 +1,14 @@
+PRIM(G, w, r)
+  FOR minden v in V[G] DO
+    kulcs[v] <- vegtelen
+    elozo[v] <- NIL
+  kulcs[r] <- 0
+  Q <- V[G] minimum-elsobbsegi sor kulcs szerint
+  WHILE Q nem ures DO
+    u <- KIVESZ_MIN(Q)
+    FOR minden v in szomszed[u] DO
+      IF v eleme Q es w(u, v) < kulcs[v] THEN
+        elozo[v] <- u
+        kulcs[v] <- w(u, v)
+        CSOKKENT_KULCS(Q, v, kulcs[v])
+  RETURN elozo

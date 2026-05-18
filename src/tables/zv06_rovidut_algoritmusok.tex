@@ -1,0 +1,18 @@
+\begingroup
+\setlength{\tabcolsep}{3.5pt}
+\begin{longtable}{L{0.20\textwidth}L{0.27\textwidth}L{0.26\textwidth}L{0.17\textwidth}}
+\toprule
+Algoritmus & Megengedett súlyok & Mit ad vissza? & Mikor érdemes? \\
+\midrule
+\endfirsthead
+\toprule
+Algoritmus & Megengedett súlyok & Mit ad vissza? & Mikor érdemes? \\
+\midrule
+\endhead
+BFS & Minden él egységsúlyú vagy súlyozatlan. & $s$-ből mért legkevesebb élből álló távolságokat és elődfát. & Súlyozatlan gráfban egyforrású legrövidebb utakra. \\
+Dijkstra & Nincs negatív él. & $s$-ből minden csúcsba legrövidebb távolságot és elődfát. & Nemnegatív súlyoknál gyors egyforrású megoldás. \\
+Bellman--Ford & Negatív él lehet, de negatív kör esetén nincs véges megoldás. & Távolságokat, elődfát, illetve jelzi az elérhető negatív kört. & Ha negatív élek is előfordulhatnak. \\
+Floyd--Warshall & Negatív él lehet, negatív kör nélkül. & Minden rendezett csúcspár közti legrövidebb úthosszakat. & Sűrű gráfnál vagy minden csúcspárra kell eredmény. \\
+\bottomrule
+\end{longtable}
+\endgroup

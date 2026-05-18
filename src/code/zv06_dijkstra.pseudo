@@ -1,0 +1,12 @@
+DIJKSTRA(G, w, s)
+  EGY_FORRAS_KEZDOERTEK(G, s)
+  S <- ures halmaz
+  Q <- V[G] minimum-elsobbsegi sor d szerint
+  WHILE Q nem ures DO
+    u <- KIVESZ_MIN(Q)
+    S <- S unio {u}
+    FOR minden v in szomszed[u] DO
+      IF v eleme Q THEN
+        KOZELIT(u, v, w)
+        CSOKKENT_KULCS(Q, v, d[v])
+  RETURN d, elozo

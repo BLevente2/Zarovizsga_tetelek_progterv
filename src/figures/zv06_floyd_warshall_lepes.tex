@@ -1,0 +1,11 @@
+\begin{center}
+\begin{tikzpicture}[node distance=20mm, v/.style={circle, draw, minimum size=8mm, inner sep=0pt}]
+  \node[v] (i) {$i$};
+  \node[v, right=of i] (j) {$j$};
+  \node[v] (k) at (1.65,1.25) {$k$};
+  \draw[->, thick] (i) -- node[below] {$d_{ij}^{(k-1)}$} (j);
+  \draw[->, thick, accent] (i) -- node[left] {$d_{ik}^{(k-1)}$} (k);
+  \draw[->, thick, accent] (k) -- node[right] {$d_{kj}^{(k-1)}$} (j);
+  \node[draw=none, rectangle, align=center] at (2.1,-1.1) {$d_{ij}^{(k)}=\min\{d_{ij}^{(k-1)},\ d_{ik}^{(k-1)}+d_{kj}^{(k-1)}\}$};
+\end{tikzpicture}
+\end{center}

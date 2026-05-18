@@ -1,0 +1,12 @@
+
+\begin{tabularx}{\textwidth}{L{31mm}X X}
+\toprule
+\textbf{Minta} & \textbf{Lényege} & \textbf{Tipikus előny / veszély} \\
+\midrule
+Adatpárhuzamosság & Ugyanazt a műveletet sok adatelemen egyszerre hajtjuk végre. & Jó skálázódás független elemeknél, de adatfüggőség esetén szinkronizáció kellhet. \\
+Feladatpárhuzamosság & Különböző részfeladatok futnak párhuzamosan. & Jó szervezésnél gyors, de terheléskiegyenlítés és kommunikációs költség jelenhet meg. \\
+Oszd meg és uralkodj & A problémát részproblémákra bontjuk, az eredményeket egyesítjük. & Természetes rekurzív párhuzamosítás, de túl finom bontásnál nagy overhead. \\
+Pipeline & A feldolgozás fokozatokra bomlik, külön elemek más-más fokozatban járnak. & Nagy áteresztőképesség, de feltöltési és kiürítési idő van. \\
+Termelő-fogyasztó & Egyes egységek feladatokat termelnek, mások feldolgozzák őket. & Kiegyenlítheti a terhelést, de a sor szinkronizációja szűk keresztmetszet lehet. \\
+\bottomrule
+\end{tabularx}

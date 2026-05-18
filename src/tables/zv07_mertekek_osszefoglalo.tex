@@ -1,0 +1,13 @@
+
+\begin{tabularx}{\textwidth}{L{34mm}L{42mm}X}
+\toprule
+\textbf{Mérték} & \textbf{Képlet} & \textbf{Jelentés} \\
+\midrule
+Szekvenciális idő & $T_{seq}(n)$ & A legjobb ismert soros algoritmus ideje adott problémaméretre. \\
+Párhuzamos idő & $T_{par}(p,n)$ & A párhuzamos algoritmus futási ideje $p$ számítási egységgel. \\
+Költség & $C_p(n)=p\cdot T_{par}(p,n)$ & Mennyi processzoridőt foglal le a teljes végrehajtás. \\
+Munka & $W_p(n)$ & Az összes ténylegesen elvégzett művelet összege. \\
+Gyorsítás & $S_p(n)=\dfrac{T_{seq}(n)}{T_{par}(p,n)}$ & Hányszor gyorsabb a párhuzamos megoldás a sorosnál. \\
+Hatékonyság & $E_p(n)=\dfrac{S_p(n)}{p}$ & A processzorok átlagos kihasználtságának elvi mutatója. \\
+\bottomrule
+\end{tabularx}

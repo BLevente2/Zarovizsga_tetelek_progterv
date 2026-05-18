@@ -1,0 +1,22 @@
+\begingroup
+\setlength{\tabcolsep}{3.5pt}
+\begin{longtable}{L{0.20\textwidth}L{0.31\textwidth}L{0.22\textwidth}L{0.17\textwidth}}
+\toprule
+Algoritmus & Feladat & Fő adatstruktúra / ötlet & Időigény tipikusan \\
+\midrule
+\endfirsthead
+\toprule
+Algoritmus & Feladat & Fő adatstruktúra / ötlet & Időigény tipikusan \\
+\midrule
+\endhead
+Szélességi keresés & Elérhető csúcsok és legkevesebb élből álló utak súlyozatlan gráfban. & Sor, színek, távolság, előd. & $\Theta(|V|+|E|)$ \\
+Mélységi keresés & Gráf bejárása, mélységi erdő, felfedezési és befejezési idők. & Rekurzió vagy verem, színek, időbélyegek. & $\Theta(|V|+|E|)$ \\
+Topologikus rendezés & Irányított körmentes gráf csúcsainak függőségi sorrendje. & DFS befejezési idők csökkenő sorrendje. & $\Theta(|V|+|E|)$ \\
+Kruskal & Minimális feszítőfa összefüggő, súlyozott, irányítatlan gráfban. & Élek rendezése, diszjunkt halmazok. & $O(|E|\log |E|)$ \\
+Prim & Minimális feszítőfa egy kezdőcsúcsból növesztve. & Minimum-elsőbbségi sor, kulcsértékek. & $O(|E|\log |V|)$ \\
+Dijkstra & Egy kezdőcsúcsból induló legrövidebb utak nemnegatív élsúlyoknál. & Mohó választás, prioritási sor, közelítés. & $O((|V|+|E|)\log |V|)$ \\
+Bellman--Ford & Egy kezdőcsúcsból induló legrövidebb utak negatív élek mellett is. & Ismételt élközelítés, negatív kör ellenőrzése. & $O(|V|\,|E|)$ \\
+Floyd--Warshall & Minden csúcspár közti legrövidebb utak. & Dinamikus programozás mátrixon. & $\Theta(|V|^3)$ \\
+\bottomrule
+\end{longtable}
+\endgroup

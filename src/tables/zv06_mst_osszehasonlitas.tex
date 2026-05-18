@@ -1,0 +1,16 @@
+\begingroup
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{L{0.22\textwidth}L{0.33\textwidth}L{0.22\textwidth}L{0.13\textwidth}}
+\toprule
+Algoritmus & Alapelv & Tipikus megvalósítás & Eredmény \\
+\midrule
+\endfirsthead
+\toprule
+Algoritmus & Alapelv & Tipikus megvalósítás & Eredmény \\
+\midrule
+\endhead
+Kruskal & Globálisan növekvő súly szerint nézi az éleket, és csak akkor választ élt, ha az nem zár kört. & Élrendezés + diszjunkt halmaz adatszerkezet. & Minimális feszítőfa vagy feszítőerdő. \\
+Prim & Egyetlen fát növeszt: mindig a már felépített részhez legolcsóbban csatlakozó külső csúcsot választja. & Prioritási sor kulcsértékekkel. & Minimális feszítőfa összefüggő gráfban. \\
+\bottomrule
+\end{longtable}
+\endgroup

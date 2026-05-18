@@ -1,0 +1,426 @@
+\documentclass[12pt,a4paper]{article}
+
+\newcommand{\TETELNUMBER}{6}
+\newcommand{\TETELTITLE}{Gráfalgoritmusok}
+\newcommand{\TETELSHORTTITLE}{Gráfalgoritmusok}
+
+\newcommand{\ZVTetelsorDataOnly}{}
+\input{src/zv_tetelsor.tex}
+\newcommand{\TETELKIIRAS}{\ZVTetelKiiras{\TETELNUMBER}}
+
+\input{src/preamble.tex}
+
+\begin{document}
+\zvfrontmatter
+
+\section{A tétel lényege és vizsgaszintű vázlata}
+
+\begin{summarybox}
+A gráfalgoritmusok olyan feladatokat oldanak meg, ahol objektumok és köztük lévő kapcsolatok rendszerét vizsgáljuk. A csúcsok az objektumokat, az élek a kapcsolatokat jelentik. A tétel fő gondolata az, hogy ugyanazon gráfmodellből sok alapvető probléma vezethető le: bejárás, függőségi sorrend meghatározása, minimális összekötő hálózat keresése és legrövidebb utak számítása.
+\end{summarybox}
+
+Vizsgán a tétel jól felépíthető a következő sorrendben:
+
+\begin{enumerate}
+  \item gráfok alapfogalmai, irányított és irányítatlan gráf, súlyozott gráf, út, kör, összefüggőség;
+  \item gráfreprezentációk: szomszédsági lista, szomszédsági mátrix, éllista;
+  \item szélességi keresés: sor, színezés, távolság, elődfa, súlyozatlan legrövidebb út;
+  \item mélységi keresés: rekurzió vagy verem, felfedezési és befejezési idő, mélységi erdő;
+  \item topologikus rendezés: irányított körmentes gráf és DFS befejezési sorrend;
+  \item minimális feszítőfa: biztonságos él, vágás, Kruskal és Prim algoritmus;
+  \item legrövidebb utak: közelítés, Dijkstra, Bellman--Ford, Floyd--Warshall.
+\end{enumerate}
+
+A legfontosabb vizsgamondat: a gráfalgoritmusoknál mindig tisztázni kell, hogy a gráf irányított-e, súlyozott-e, lehetnek-e negatív élek, egy forrásból vagy minden csúcspárra keresünk-e megoldást, és milyen reprezentációval dolgozunk.
+
+\begin{center}
+\input{src/tables/zv06_grafalgoritmusok_osszefoglalo.tex}
+\end{center}
+
+\section{Gráfelméleti alapfogalmak}
+
+\subsection{Gráf, csúcs és él}
+
+Egy gráfot általában
+\[
+G=(V,E)
+\]
+alakban adunk meg, ahol $V$ a csúcsok halmaza, $E$ pedig az élek halmaza. Irányítatlan gráfban egy él két csúcs közötti szimmetrikus kapcsolatot jelent, irányított gráfban, más néven digráfban, az él rendezett pár:
+\[
+(u,v)\in E.
+\]
+Ez azt jelenti, hogy az él $u$-ból $v$-be mutat.
+
+Súlyozott gráfban az élekhez egy súlyfüggvény tartozik:
+\[
+w:E\to\mathbb{R}.
+\]
+A súly jelenthet távolságot, költséget, időt, kapacitásveszteséget vagy bármilyen olyan mennyiséget, amelyet egy út mentén összegezni szeretnénk.
+
+\subsection{Út, kör, elérhetőség}
+
+Egy út csúcsok sorozata:
+\[
+p=\langle v_0,v_1,\dots,v_k\rangle,
+\]
+ahol minden egymást követő csúcspár között van él. Súlyozott gráfban az út súlya:
+\[
+w(p)=\sum_{i=1}^{k} w(v_{i-1},v_i).
+\]
+
+Fontos fogalmak:
+
+\begin{itemize}
+  \item \textbf{elérhetőség}: $v$ elérhető $s$-ből, ha van út $s$-ből $v$-be;
+  \item \textbf{kör}: olyan nemüres út, amely visszatér a kiinduló csúcshoz;
+  \item \textbf{egyszerű út}: nem ismétel csúcsot;
+  \item \textbf{összefüggő irányítatlan gráf}: bármely két csúcsa között van út;
+  \item \textbf{erősen összefüggő irányított gráf}: bármely két csúcs között mindkét irányban van irányított út.
+\end{itemize}
+
+\subsection{Gráfreprezentációk}
+
+A választott reprezentáció erősen befolyásolja az algoritmus idő- és tárigényét. Ritka gráfnál, ahol $|E|$ jóval kisebb $|V|^2$-nél, általában a szomszédsági lista hatékony. Sűrű gráfnál vagy mátrixos dinamikus programozásnál a szomszédsági mátrix természetesebb.
+
+\begin{center}
+\input{src/tables/zv06_graf_reprezentaciok.tex}
+\end{center}
+
+A BFS, DFS, Dijkstra és Prim tipikusan szomszédsági listával kényelmes. Kruskalhoz az éllista, Floyd--Warshallhoz pedig a súlymátrix illeszkedik jól.
+
+\section{Szélességi keresés}
+
+\subsection{Alapelv}
+
+A \textbf{szélességi keresés} (BFS, breadth-first search) egy kezdőcsúcsból indul, és először a kezdőcsúcstól egy él távolságra lévő csúcsokat, majd a két él távolságra lévőket, és így tovább dolgozza fel. Ezért a gráfot rétegenként járja be.
+
+A módszer legfontosabb adatstruktúrája a \textbf{sor}. A sorban azok a csúcsok vannak, amelyeket már elértünk, de amelyeknek még nem vizsgáltuk meg az összes kimenő élét.
+
+\begin{summarybox}
+Súlyozatlan gráfban a BFS kiszámítja az $s$ kezdőcsúcsból mért legrövidebb, azaz legkevesebb élből álló utak hosszát minden elérhető csúcsra.
+\end{summarybox}
+
+\input{src/figures/zv06_bfs_dfs_bejaras.tex}
+
+\subsection{Színezés, távolság és előd}
+
+A BFS gyakran három állapotot használ:
+
+\begin{itemize}
+  \item \textbf{fehér}: a csúcsot még nem értük el;
+  \item \textbf{szürke}: a csúcsot már elértük, de még van feldolgozatlan éle;
+  \item \textbf{fekete}: a csúcs összes kimenő élét megvizsgáltuk.
+\end{itemize}
+
+Minden csúcshoz eltárolunk egy $d[v]$ távolságot és egy $\pi[v]$ elődöt. A $\pi$ értékekből elődfa épül, amely megadja, hogy melyik csúcson keresztül értük el először az adott csúcsot.
+
+\subsection{Pszeudókód}
+
+\zvpseudocode[caption={Szélességi keresés},label={lst:zv06_szelessegi_kereses}]{src/code/zv06_szelessegi_kereses.pseudo}
+
+\subsection{Időigény}
+
+Szomszédsági listás reprezentációban minden csúcsot legfeljebb egyszer veszünk ki a sorból, és minden élt legfeljebb konstans sokszor vizsgálunk meg. Ezért:
+\[
+T(|V|,|E|)=\Theta(|V|+|E|).
+\]
+
+A BFS előnye, hogy súlyozatlan gráfban egyszerűen és lineáris időben ad legrövidebb utakat. Hátránya, hogy általános súlyozott gráfban nem használható legrövidebb utakra, mert ott nem az élek száma, hanem az élek súlyösszege számít.
+
+\section{Mélységi keresés}
+
+\subsection{Alapelv}
+
+A \textbf{mélységi keresés} (DFS, depth-first search) mindig egy még nem teljesen feldolgozott csúcsból próbál továbbmenni egy új csúcsba. Ha egy csúcsból már nincs fehér szomszéd, az algoritmus visszalép. Ez a működés természetesen megvalósítható rekurzívan, illetve explicit veremmel is.
+
+A DFS nem egyetlen fát, hanem általában \textbf{mélységi erdőt} hoz létre, mert ha a gráf nem összefüggő, akkor több kezdőcsúcsból is új bejárást kell indítani.
+
+\subsection{Felfedezési és befejezési idő}
+
+A DFS minden csúcshoz két időpontot rendel:
+
+\begin{itemize}
+  \item $d[v]$: a csúcs felfedezési ideje;
+  \item $f[v]$: a csúcs befejezési ideje, amikor minden belőle elérhető további lehetőséget megvizsgáltunk.
+\end{itemize}
+
+A felfedezési és befejezési idők alapján a csúcsok intervallumai vagy diszjunktak, vagy egymásba ágyazottak. Ez a DFS egyik fontos szerkezeti tulajdonsága, és több algoritmus alapja.
+
+\subsection{Éltípusok}
+
+Irányított gráfban DFS alapján az élek osztályozhatók:
+
+\begin{itemize}
+  \item \textbf{faél}: olyan él, amelyen keresztül új csúcsot fedeztünk fel;
+  \item \textbf{visszamutató él}: egy csúcsból valamely őséhez vezet a DFS-fában;
+  \item \textbf{előremutató él}: egy csúcsból valamely leszármazottjához vezet, de nem faél;
+  \item \textbf{keresztél}: a fenti kategóriákba nem tartozó él.
+\end{itemize}
+
+Irányított gráf akkor és csak akkor körmentes, ha a DFS során nincs visszamutató él. Ez a topologikus rendezés szempontjából különösen fontos.
+
+\subsection{Pszeudókód}
+
+\zvpseudocode[caption={Mélységi keresés},label={lst:zv06_melysegi_kereses}]{src/code/zv06_melysegi_kereses.pseudo}
+
+\subsection{Időigény}
+
+Szomszédsági listával a DFS is lineáris időigényű:
+\[
+T(|V|,|E|)=\Theta(|V|+|E|).
+\]
+
+\section{Topologikus rendezés}
+
+\subsection{A feladat}
+
+Egy irányított gráf \textbf{topologikus rendezése} a csúcsok olyan sorrendje, amelyben minden $(u,v)$ élre $u$ megelőzi $v$-t. Ez tipikusan függőségi feladatoknál jelenik meg: például egy tárgyat csak akkor lehet felvenni, ha az előfeltételeit már teljesítettük, vagy egy fordítási egység csak akkor fordítható, ha a függőségei rendelkezésre állnak.
+
+Topologikus rendezés csak \textbf{irányított körmentes gráfban} létezik. Az ilyen gráfot gyakran DAG-nak nevezzük (directed acyclic graph).
+
+\subsection{DFS alapú megoldás}
+
+A DFS alapú topologikus rendezés lényege:
+
+\begin{enumerate}
+  \item futtatunk egy mélységi keresést;
+  \item amikor egy csúcs befejeződik, beszúrjuk egy lista elejére;
+  \item a kapott lista topologikus sorrend lesz, ha a gráf körmentes.
+\end{enumerate}
+
+A szemléletes ok: ha van $(u,v)$ él, akkor $u$-nak a topologikus sorrendben $v$ előtt kell állnia. DFS-ben a befejezési idők csökkenő sorrendje pontosan ezt a függőségi irányt adja vissza körmentes gráfban.
+
+\zvpseudocode[caption={Topologikus rendezés DFS-sel},label={lst:zv06_topologikus_rendezes}]{src/code/zv06_topologikus_rendezes.pseudo}
+
+Az időigény:
+\[
+\Theta(|V|+|E|).
+\]
+
+\begin{warningbox}
+Ha a gráfban irányított kör van, akkor nincs topologikus rendezés. Ilyenkor a kör csúcsai kölcsönösen függenek egymástól, ezért nem lehet őket minden él irányát tiszteletben tartó lineáris sorrendbe állítani.
+\end{warningbox}
+
+\section{Minimális feszítőfák}
+
+\subsection{Feszítőfa és minimális feszítőfa}
+
+Legyen $G=(V,E)$ összefüggő, irányítatlan, súlyozott gráf. Egy \textbf{feszítőfa} olyan részgráf, amely:
+
+\begin{itemize}
+  \item tartalmazza a gráf összes csúcsát;
+  \item fa, tehát összefüggő és körmentes;
+  \item pontosan $|V|-1$ éle van.
+\end{itemize}
+
+Egy $T$ feszítőfa súlya:
+\[
+w(T)=\sum_{(u,v)\in T} w(u,v).
+\]
+
+\textbf{Minimális feszítőfának} azt a feszítőfát nevezzük, amelynek súlya minimális az összes feszítőfa között. A minimális feszítőfa nem feltétlenül egyértelmű: ha több azonos súlyú optimális választás van, több különböző MST is létezhet.
+
+\subsection{Biztonságos él és vágás}
+
+A minimális feszítőfa algoritmusok közös alapgondolata, hogy fokozatosan építik az $A$ élhalmazt. Egy él \textbf{biztonságos} az $A$ halmazra nézve, ha hozzávéve $A$ továbbra is kiegészíthető valamely minimális feszítőfává.
+
+Egy vágás a csúcshalmaz kettéosztása:
+\[
+(S,V\setminus S).
+\]
+Egy él keresztezi a vágást, ha egyik végpontja $S$-ben, a másik $V\setminus S$-ben van. Ha egy vágás nem vág el egyetlen már kiválasztott $A$-beli élt sem, akkor az adott vágást keresztező legkisebb súlyú él biztonságos választás.
+
+\input{src/figures/zv06_mst_vagas.tex}
+
+\subsection{Kruskal algoritmus}
+
+A \textbf{Kruskal algoritmus} az éleket súly szerint növekvő sorrendben vizsgálja. Egy élt akkor vesz fel, ha annak két végpontja még külön komponensben van, vagyis az él nem hozna létre kört.
+
+A körképződés hatékony ellenőrzésére diszjunkt halmaz adatszerkezetet használunk:
+
+\begin{itemize}
+  \item \code{HALMAZT\_KESZIT}: minden csúcs kezdetben külön komponens;
+  \item \code{HALMAZT\_KERES}: megadja, melyik komponensben van egy csúcs;
+  \item \code{EGYESIT}: két komponenst összevon.
+\end{itemize}
+
+\zvpseudocode[caption={Kruskal algoritmus},label={lst:zv06_kruskal}]{src/code/zv06_kruskal.pseudo}
+
+Ha az éleket rendezni kell, az időigény tipikusan:
+\[
+O(|E|\log |E|).
+\]
+Mivel egyszerű gráfnál $|E|\leq |V|^2$, ez gyakran $O(|E|\log |V|)$ alakban is írható.
+
+\subsection{Prim algoritmus}
+
+A \textbf{Prim algoritmus} egy kezdőcsúcsból indul, és mindig a már felépített részfához legolcsóbban csatlakozó külső csúcsot választja. A csúcsokhoz egy \code{kulcs} értéket tartunk nyilván: ez azt mutatja, milyen olcsón lehet az adott csúcsot a már kiválasztott fához kapcsolni.
+
+\zvpseudocode[caption={Prim algoritmus},label={lst:zv06_prim}]{src/code/zv06_prim.pseudo}
+
+Prioritási sorral megvalósítva az időigény tipikusan:
+\[
+O(|E|\log |V|).
+\]
+
+\begin{center}
+\input{src/tables/zv06_mst_osszehasonlitas.tex}
+\end{center}
+
+\begin{warningbox}
+Kruskal és Prim minimális feszítőfát irányítatlan, összefüggő, súlyozott gráfra ad. Ha a gráf nem összefüggő, akkor minimális feszítőfa helyett minimális feszítőerdőről beszélhetünk.
+\end{warningbox}
+
+\section{Legrövidebb utak alapelvei}
+
+\subsection{Legrövidebb út súlya}
+
+Súlyozott gráfban az $u$-ból $v$-be vezető legrövidebb út súlyát $\delta(u,v)$ jelöli:
+\[
+\delta(u,v)=
+\begin{cases}
+\min\{w(p):p\text{ út }u\text{-ból }v\text{-be}\}, & \text{ha van ilyen út},\\
+\infty, & \text{ha nincs út.}
+\end{cases}
+\]
+
+A legrövidebb utaknál az egyik legfontosabb probléma az, hogy a negatív élsúlyok hogyan viselkednek. Negatív él önmagában még nem feltétlenül baj, de ha egy kezdőcsúcsból elérhető negatív összsúlyú kör van, akkor nincs jól definiált véges legrövidebb út, mert a kör ismételt bejárásával az út súlya tetszőlegesen csökkenthető.
+
+\subsection{Kezdőérték és közelítés}
+
+Az egyforrású legrövidebb út algoritmusok közös alapművelete a \textbf{közelítés} vagy relaxáció. Minden csúcshoz fenntartunk egy $d[v]$ becslést, amely kezdetben $\infty$, kivéve a kezdőcsúcsot, ahol $d[s]=0$.
+
+Ha van egy $(u,v)$ él, és az $u$-n keresztül vezető út jobb, mint az eddig ismert $v$-be vezető út, akkor javítjuk a becslést:
+\[
+\text{ha }d[v]>d[u]+w(u,v),\text{ akkor }d[v]\leftarrow d[u]+w(u,v).
+\]
+
+\input{src/figures/zv06_rovidut_kozelites.tex}
+
+\zvpseudocode[caption={Kezdőértékadás és közelítés},label={lst:zv06_rovidut_init_relax}]{src/code/zv06_rovidut_init_relax.pseudo}
+
+A Dijkstra és a Bellman--Ford algoritmus is ezt az alapműveletet használja, de más sorrendben és más feltételekkel.
+
+\section{Dijkstra algoritmus}
+
+\subsection{Feladat és feltétel}
+
+A \textbf{Dijkstra algoritmus} egy kezdőcsúcsból számítja ki a legrövidebb utakat minden csúcsba olyan súlyozott gráfban, ahol nincs negatív él:
+\[
+w(u,v)\geq 0\qquad \text{minden }(u,v)\in E\text{ élre.}
+\]
+
+Az algoritmus mohó elven működik: mindig azt a még nem véglegesített csúcsot választja, amelynek a legkisebb az aktuális $d$ becslése. Nemnegatív élsúlyok mellett ez a választás biztonságos, mert később már nem találhatunk hozzá rövidebb utat egy még távolabbi csúcson keresztül.
+
+\subsection{Pszeudókód}
+
+\zvpseudocode[caption={Dijkstra algoritmus},label={lst:zv06_dijkstra}]{src/code/zv06_dijkstra.pseudo}
+
+\subsection{Időigény és értelmezés}
+
+Egyszerű tömbös minimumkereséssel az időigény lehet $O(|V|^2)$. Prioritási sorral, például bináris kupaccal, tipikus alak:
+\[
+O((|V|+|E|)\log |V|).
+\]
+
+A Dijkstra algoritmus eredménye a $d$ távolságtömb és az $\pi$ elődtömb. Az elődökből felépíthető az $s$ gyökerű legrövidebb-utak fa.
+
+\begin{warningbox}
+Dijkstra algoritmusa negatív él esetén általában nem helyes. Ilyenkor előfordulhat, hogy egy már véglegesített csúcshoz később mégis rövidebb út kerülne elő.
+\end{warningbox}
+
+\section{Bellman--Ford algoritmus}
+
+\subsection{Feladat és előny}
+
+A \textbf{Bellman--Ford algoritmus} szintén egy kezdőcsúcsból induló legrövidebb utakat számít, de megengedi a negatív élsúlyokat is. Emellett képes jelezni, ha a kezdőcsúcsból elérhető negatív összsúlyú kör van.
+
+A módszer alapötlete, hogy ha nincs negatív kör, akkor egy egyszerű legrövidebb út legfeljebb $|V|-1$ élt tartalmazhat. Ezért az algoritmus $|V|-1$ menetben minden élt megpróbál közelíteni.
+
+\subsection{Pszeudókód}
+
+\zvpseudocode[caption={Bellman--Ford algoritmus},label={lst:zv06_bellman_ford}]{src/code/zv06_bellman_ford.pseudo}
+
+\subsection{Időigény és negatív kör}
+
+Az algoritmus $|V|-1$ menetben minden élt megvizsgál, majd még egyszer végigmegy az éleken negatív kör ellenőrzésére. Ezért:
+\[
+T(|V|,|E|)=O(|V|\,|E|).
+\]
+
+Ha a végső ellenőrzés során még mindig található olyan $(u,v)$ él, amelyre
+\[
+d[v]>d[u]+w(u,v),
+\]
+akkor van a kezdőcsúcsból elérhető negatív kör, így nincs véges optimális legrövidebb út megoldás.
+
+\section{Floyd--Warshall algoritmus}
+
+\subsection{Minden csúcspárra legrövidebb út}
+
+A \textbf{Floyd--Warshall algoritmus} nem egyetlen kezdőcsúcsból indul, hanem minden rendezett csúcspár között meghatározza a legrövidebb úthosszt. A bemenete egy $W$ súlymátrix:
+\[
+W[i,j]=
+\begin{cases}
+0, & \text{ha } i=j,\\
+w(i,j), & \text{ha van }(i,j)\text{ él},\\
+\infty, & \text{ha nincs }(i,j)\text{ él}.
+\end{cases}
+\]
+
+Az algoritmus negatív éleket is kezelhet, de negatív összsúlyú kör nem lehet a gráfban, ha értelmes véges legrövidebb úthosszakat akarunk.
+
+\subsection{Dinamikus programozási összefüggés}
+
+Legyen $d_{ij}^{(k)}$ az $i$-ből $j$-be vezető legrövidebb olyan út hossza, amelynek belső csúcsai csak az $\{1,2,\dots,k\}$ halmazból kerülhetnek ki. Ekkor:
+\[
+d_{ij}^{(k)}=\min\left(d_{ij}^{(k-1)},\ d_{ik}^{(k-1)}+d_{kj}^{(k-1)}\right).
+\]
+
+Ez azt fejezi ki, hogy az optimális út vagy nem használja belső csúcsként a $k$ csúcsot, vagy használja, és akkor felbontható egy $i\to k$ és egy $k\to j$ részútra.
+
+\input{src/figures/zv06_floyd_warshall_lepes.tex}
+
+\subsection{Pszeudókód és időigény}
+
+\zvpseudocode[caption={Floyd--Warshall algoritmus},label={lst:zv06_floyd_warshall}]{src/code/zv06_floyd_warshall.pseudo}
+
+A három egymásba ágyazott ciklus miatt az időigény:
+\[
+\Theta(|V|^3),
+\]
+a tárigény pedig a távolságmátrix miatt legalább $\Theta(|V|^2)$.
+
+\section{A legrövidebb út algoritmusok összehasonlítása}
+
+\begin{center}
+\input{src/tables/zv06_rovidut_algoritmusok.tex}
+\end{center}
+
+A legfontosabb különbségek:
+
+\begin{itemize}
+  \item BFS súlyozatlan gráfban ad legrövidebb utat, mert minden él azonos költségűnek tekinthető.
+  \item Dijkstra gyors, de csak nemnegatív élsúlyok mellett helyes.
+  \item Bellman--Ford lassabb, viszont negatív éleket is kezel, és negatív kört is jelez.
+  \item Floyd--Warshall minden csúcspárra dolgozik, ezért különösen akkor jó, ha sok különböző kezdőcsúcsra kell lekérdezés, vagy a gráf mátrixos formában adott.
+\end{itemize}
+
+\section{Összefoglalás vizsgára}
+
+Rövid, vizsgán jól használható összehasonlítás:
+
+\begin{itemize}
+  \item A \textbf{szélességi keresés} sorral, rétegenként járja be a gráfot, és súlyozatlan gráfban legrövidebb utakat ad: $\Theta(|V|+|E|)$.
+  \item A \textbf{mélységi keresés} mélyre halad, majd visszalép; felfedezési és befejezési időket ad, éltípusokat különböztet meg: $\Theta(|V|+|E|)$.
+  \item A \textbf{topologikus rendezés} irányított körmentes gráfban létezik, és DFS befejezési sorrendből előállítható.
+  \item A \textbf{minimális feszítőfa} összefüggő, irányítatlan, súlyozott gráfban keresi a legkisebb összsúlyú összekötő fát.
+  \item A \textbf{Kruskal algoritmus} éleket választ növekvő súly szerint, és diszjunkt halmazokkal kerüli a köröket.
+  \item A \textbf{Prim algoritmus} egy fát növeszt, mindig a legolcsóbb külső csatlakozást választva.
+  \item A \textbf{legrövidebb utaknál} a közös művelet a közelítés: $d[v]$ javítása $u$-n keresztül.
+  \item A \textbf{Dijkstra algoritmus} nemnegatív súlyokra gyors egyforrású megoldás.
+  \item A \textbf{Bellman--Ford algoritmus} negatív élekkel is működik, és jelzi az elérhető negatív kört.
+  \item A \textbf{Floyd--Warshall algoritmus} dinamikus programozással minden csúcspárra kiszámítja a legrövidebb úthosszt $\Theta(|V|^3)$ időben.
+\end{itemize}
+
+\end{document}

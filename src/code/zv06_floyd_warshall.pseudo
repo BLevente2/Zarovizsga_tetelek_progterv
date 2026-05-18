@@ -1,0 +1,8 @@
+FLOYD_WARSHALL(W)
+  n <- sorok_szama[W]
+  D <- W
+  FOR k <- 1 TO n DO
+    FOR i <- 1 TO n DO
+      FOR j <- 1 TO n DO
+        D[i, j] <- min(D[i, j], D[i, k] + D[k, j])
+  RETURN D

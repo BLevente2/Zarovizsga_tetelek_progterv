@@ -1,0 +1,9 @@
+BELLMAN_FORD(G, w, s)
+  EGY_FORRAS_KEZDOERTEK(G, s)
+  FOR i <- 1 TO |V[G]| - 1 DO
+    FOR minden (u, v) in E[G] DO
+      KOZELIT(u, v, w)
+  FOR minden (u, v) in E[G] DO
+    IF d[v] > d[u] + w(u, v) THEN
+      RETURN HAMIS
+  RETURN IGAZ

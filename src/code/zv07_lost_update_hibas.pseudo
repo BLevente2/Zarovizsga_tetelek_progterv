@@ -1,0 +1,8 @@
+// Kezdetben x = 0
+A: tempA := x
+B: tempB := x
+A: tempA := tempA + 1
+B: tempB := tempB + 1
+A: x := tempA
+B: x := tempB
+// A helyes eredmeny 2 lenne, de x erteke 1 lesz.

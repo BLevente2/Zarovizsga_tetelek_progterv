@@ -1,0 +1,3 @@
+PARALLEL_FOR(i = 1 TO n) DO
+    y[i] := f(x[i])
+END PARALLEL_FOR

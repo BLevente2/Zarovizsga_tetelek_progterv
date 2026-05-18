@@ -1,0 +1,27 @@
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm, v/.style={circle, draw, minimum size=7mm, inner sep=0pt}, lab/.style={font=\small, fill=white, inner sep=1pt}]
+  \node[v] (a) at (0,1) {$a$};
+  \node[v] (b) at (0,-0.8) {$b$};
+  \node[v] (c) at (2.0,0.7) {$c$};
+  \node[v] (d) at (2.0,-1.0) {$d$};
+  \node[v] (e) at (4.2,0.9) {$e$};
+  \node[v] (f) at (4.2,-0.9) {$f$};
+
+  \draw[rounded corners, dashed, fill=lightaccent, opacity=0.35] (-0.7,-1.6) rectangle (2.65,1.65);
+  \draw[rounded corners, dashed, fill=warnbg, opacity=0.35] (3.35,-1.6) rectangle (4.95,1.65);
+
+  \draw (a)--node[lab]{$2$}(b);
+  \draw (a)--node[lab]{$3$}(c);
+  \draw (b)--node[lab]{$4$}(d);
+  \draw (c)--node[lab]{$1$}(d);
+  \draw[very thick, accent] (c)--node[lab]{$5$}(e);
+  \draw (d)--node[lab]{$7$}(f);
+  \draw (c)--node[lab]{$9$}(f);
+  \draw (e)--node[lab]{$2$}(f);
+
+  \draw[very thick, dashed] (3.05,-1.85) -- (3.05,1.85);
+  \node[draw=none, rectangle] at (1.0,1.95) {$S$};
+  \node[draw=none, rectangle] at (4.2,1.95) {$V\setminus S$};
+  \node[draw=none, rectangle, align=center] at (2.5,-2.15) {A vágást keresztező legkönnyebb él biztonságos választás.};
+\end{tikzpicture}
+\end{center}

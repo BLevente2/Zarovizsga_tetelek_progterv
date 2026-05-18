@@ -1,0 +1,21 @@
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small, x=0.9cm, y=0.72cm]
+  \node[anchor=east] at (0,4) {1. fokozat};
+  \node[anchor=east] at (0,3) {2. fokozat};
+  \node[anchor=east] at (0,2) {3. fokozat};
+  \node[anchor=east] at (0,1) {4. fokozat};
+  \draw[->] (0,0.3) -- (9.3,0.3) node[right] {ütem};
+  \foreach \x in {1,...,9} {\draw[black!18] (\x,0.2) -- (\x,4.4);}
+  \foreach \i/\y in {1/4,2/3,3/2,4/1} {
+    \foreach \j in {1,2,3,4,5} {
+      \pgfmathtruncatemacro{\x}{\i+\j-1}
+      \draw[draw=accent, fill=lightaccent] (\x-0.75,\y-0.28) rectangle (\x-0.05,\y+0.28) node[pos=.5] {$e_{\j}$};
+    }
+  }
+  \node[align=center] at (4.6,-0.65) {A csővezeték feltöltése után minden ütemben elkészülhet egy új elem.};
+\end{tikzpicture}
+\caption{Pipeline párhuzamosítás négy fokozattal és öt bemeneti elemmel}
+\label{fig:zv07_pipeline}
+\end{figure}

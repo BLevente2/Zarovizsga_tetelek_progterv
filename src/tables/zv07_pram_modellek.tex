@@ -1,0 +1,11 @@
+
+\begin{tabularx}{\textwidth}{L{25mm}X X}
+\toprule
+\textbf{Modell} & \textbf{Olvasás} & \textbf{Írás} \\
+\midrule
+EREW & Egy memóriacellát egyszerre csak egy PU olvashat. & Egy memóriacellát egyszerre csak egy PU írhat. \\
+CREW & Több PU is olvashatja ugyanazt a cellát. & Íráskor kizárólagosság van. \\
+CRCW & Több PU is olvashatja ugyanazt a cellát. & Több PU is írhatná ugyanazt a cellát, ezért ütközésfeloldási szabály kell. \\
+ERCW & Elméletileg kizárólagos olvasás, de konkurens írás. & Ritkán használt, kevésbé természetes kombináció. \\
+\bottomrule
+\end{tabularx}

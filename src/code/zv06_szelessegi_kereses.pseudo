@@ -1,0 +1,18 @@
+BFS(G, s)
+  FOR minden u in V[G] DO
+    szin[u] <- FEHER
+    tav[u] <- vegtelen
+    elozo[u] <- NIL
+  szin[s] <- SZURKE
+  tav[s] <- 0
+  Q <- ures sor
+  SORBA(Q, s)
+  WHILE Q nem ures DO
+    u <- KIVESZ(Q)
+    FOR minden v in szomszed[u] DO
+      IF szin[v] = FEHER THEN
+        szin[v] <- SZURKE
+        tav[v] <- tav[u] + 1
+        elozo[v] <- u
+        SORBA(Q, v)
+    szin[u] <- FEKETE

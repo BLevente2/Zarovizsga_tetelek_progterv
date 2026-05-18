@@ -1,0 +1,5 @@
+LOCK(mutex)
+temp := x
+temp := temp + 1
+x := temp
+UNLOCK(mutex)
