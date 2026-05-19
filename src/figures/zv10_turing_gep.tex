@@ -1,0 +1,31 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small]
+  \tikzset{cell/.style={draw, minimum width=9mm, minimum height=7mm, fill=black!3},
+           head/.style={draw, rounded corners, fill=warnbg, minimum width=17mm, minimum height=7mm, align=center},
+           ctrl/.style={draw, rounded corners, fill=lightaccent, minimum width=34mm, minimum height=10mm, align=center},
+           lab/.style={font=\scriptsize}}
+
+  \node[cell] (cell0) at (-2.7,0) {$B$};
+  \node[cell] (cell1) at (-1.8,0) {$B$};
+  \node[cell] (cell2) at (-0.9,0) {$1$};
+  \node[cell] (cell3) at (0,0) {$0$};
+  \node[cell] (cell4) at (0.9,0) {$1$};
+  \node[cell] (cell5) at (1.8,0) {$1$};
+  \node[cell] (cell6) at (2.7,0) {$B$};
+  \node[cell] (cell7) at (3.6,0) {$B$};
+
+  \node[lab] at (-3.25,0.58) {balra végtelen};
+  \node[lab] at (3.25,0.58) {jobbra végtelen};
+  \draw[->, thick] (-2.95,0.45) -- (-3.35,0.45);
+  \draw[->, thick] (3.85,0.45) -- (4.25,0.45);
+
+  \node[head] (h) at (0,-1.00) {író-olvasó fej};
+  \draw[->, thick] (h.north) -- (cell3.south);
+  \node[ctrl] (q) at (0,-2.25) {véges vezérlés\\aktuális állapot: $q$};
+  \draw[<->, thick] (q.north) -- (h.south);
+  \node[align=center, font=\scriptsize] at (0,-3.15) {$\delta(q,a)=(q',b,D)$: olvas $a$, ír $b$, majd $D$ irányba lép};
+\end{tikzpicture}
+\caption{Turing-gép szemléletes felépítése: szalag, fej és véges vezérlés}
+\label{fig:zv10_turing_gep}
+\end{figure}

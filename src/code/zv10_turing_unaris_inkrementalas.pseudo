@@ -1,0 +1,7 @@
+UNARY_INCREMENT_ONES
+// Input: a szalagon 1^n áll, a fej az első 1-en
+// Output: 1^(n+1)
+WHILE current_symbol = 1 DO
+    MOVE_RIGHT
+WRITE 1
+HALT_ACCEPT

@@ -1,0 +1,32 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small]
+  \tikzset{inputnode/.style={draw, circle, fill=black!5, minimum size=8mm},
+           gate/.style={draw, rounded corners, fill=lightaccent, minimum width=15mm, minimum height=8mm, align=center},
+           outputnode/.style={draw, circle, fill=warnbg, minimum size=9mm},
+           wire/.style={->, >=stealth, thick}}
+
+  \node[inputnode] (x) at (0,1.4) {$x$};
+  \node[inputnode] (y) at (0,0.0) {$y$};
+  \node[inputnode] (z) at (0,-1.4) {$z$};
+
+  \node[gate] (notx) at (1.7,1.4) {NOT};
+  \node[gate] (and1) at (3.5,0.9) {AND};
+  \node[gate] (and2) at (3.5,-0.9) {AND};
+  \node[gate] (or1) at (5.4,0.0) {OR};
+  \node[outputnode] (f) at (7.0,0.0) {$f$};
+
+  \draw[wire] (x) -- (notx);
+  \draw[wire] (notx) -- (and1);
+  \draw[wire] (y) -- (and1);
+  \draw[wire] (x) to[out=-20,in=160] (and2);
+  \draw[wire] (z) -- (and2);
+  \draw[wire] (and1) -- (or1);
+  \draw[wire] (and2) -- (or1);
+  \draw[wire] (or1) -- (f);
+
+  \node[align=center, font=\scriptsize] at (3.7,-2.0) {$f(x,y,z)=(\overline{x}\wedge y)\vee(x\wedge z)$};
+\end{tikzpicture}
+\caption{Egyszerű aciklikus logikai hálózat egy Boole-függvény kiszámítására}
+\label{fig:zv10_logikai_halozat}
+\end{figure}

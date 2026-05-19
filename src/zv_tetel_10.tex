@@ -1,0 +1,568 @@
+\documentclass[12pt,a4paper]{article}
+
+\newcommand{\TETELNUMBER}{10}
+\newcommand{\TETELTITLE}{Turing-gép, RAM-gép, Boole-függvények és logikai hálózatok}
+\newcommand{\TETELSHORTTITLE}{Számítási modellek}
+
+\newcommand{\ZVTetelsorDataOnly}{}
+\input{src/zv_tetelsor.tex}
+\newcommand{\TETELKIIRAS}{\ZVTetelKiiras{\TETELNUMBER}}
+
+\input{src/preamble.tex}
+
+\begin{document}
+\zvfrontmatter
+
+\section{A tétel lényege és vizsgaszintű vázlata}
+
+\begin{summarybox}
+A tétel három, egymással szorosan összefüggő számítási modellt mutat be. A Turing-gép az algoritmus és a kiszámíthatóság klasszikus, matematikailag tiszta modellje. A RAM-gép a valódi programvezérlésű számítógépekhez közelebb álló absztrakt gép, amely közvetlen memóriaeléréssel dolgozik. A Boole-függvények és logikai hálózatok a bitenkénti, kapuáramkörös számítást írják le, különösen rögzített bemenethossz esetén.
+\end{summarybox}
+
+Vizsgán a tétel jól felépíthető a következő sorrendben:
+
+\begin{enumerate}
+  \item miért kell számítási modellt bevezetni az algoritmus fogalmának pontosításához;
+  \item Turing-gép: szalag, fej, véges vezérlés, állapot, átmeneti függvény;
+  \item Turing-gép működése: konfiguráció, lépés, megállás, elfogadás, nem megállás;
+  \item univerzális Turing-gép gondolata;
+  \item RAM-gép: programtár, memóriarekeszek, közvetlen és közvetett címzés;
+  \item RAM költségmodell: egységköltség és logaritmikus költség;
+  \item Turing-gép és RAM-gép kapcsolata, szimulációs szemlélet;
+  \item Boole-függvények, igazságtábla, alapműveletek, DNF és KNF;
+  \item logikai hálózatok: aciklikus irányított gráf, kapuk, bemenet, kimenet, méret, mélység;
+  \item a három modell összehasonlítása.
+\end{enumerate}
+
+A legfontosabb vizsgamondat: a Turing-gép, a RAM-gép és a logikai hálózat különböző nézőpontból írja le a számítást. A Turing-gép az elméleti kiszámíthatóság alapmodellje, a RAM-gép a programozható, közvetlen memóriájú gépet idealizálja, a logikai hálózat pedig rögzített bemenethosszú Boole-függvények kapuszerkezetű kiszámítását modellezi.
+
+\begin{center}
+\input{src/tables/zv10_szamitasi_modellek_osszefoglalo.tex}
+\end{center}
+
+\section{Számítási modellek szerepe}
+
+\subsection{Miért nem elég az intuitív algoritmusfogalom?}
+
+Az algoritmus hétköznapi értelemben olyan végesen leírható eljárás, amelyet mechanikusan végre lehet hajtani. Ez a megfogalmazás jó kiindulás, de matematikai bizonyításokhoz nem elég pontos. Ha például azt szeretnénk állítani, hogy egy feladat nem oldható meg algoritmussal, akkor először tisztázni kell, mit nevezünk algoritmusnak.
+
+Ezért vezetünk be \textbf{számítási modelleket}. Egy számítási modell megadja:
+
+\begin{itemize}
+  \item milyen alakú a bemenet és a kimenet;
+  \item milyen belső állapotai lehetnek a gépnek;
+  \item milyen memória áll rendelkezésre;
+  \item milyen elemi lépések hajthatók végre;
+  \item mikor tekintjük a számítást befejezettnek;
+  \item hogyan mérjük az idő- és tárigényt.
+\end{itemize}
+
+A tételben szereplő modellek közül a Turing-gép és a RAM-gép általános számítási modellek. A logikai hálózat ezzel szemben rögzített bemenethosszhoz tartozó, véges kapuszerkezetű modell.
+
+\subsection{Kiszámíthatóság és bonyolultság}
+
+A számítási modelleket két fő célra használjuk:
+
+\begin{itemize}
+  \item \textbf{kiszámíthatóság}: egyáltalán létezik-e algoritmus a feladatra;
+  \item \textbf{bonyolultság}: ha létezik algoritmus, mennyi erőforrást, például időt vagy tárat igényel.
+\end{itemize}
+
+Kiszámíthatósági szempontból sok természetes modell ekvivalens: ugyanazokat a függvényeket tudják kiszámítani. Bonyolultsági szempontból viszont a részletek számítanak. Nem mindegy, hogy egy memóriarekesz elérése egy lépés, vagy a szalag fejének oda kell lépkednie; az sem mindegy, hogy egy nagyon nagy egész számmal végzett műveletet egységnyi vagy a szám hosszával arányos költségűnek tekintünk.
+
+\section{A Turing-gép fogalma}
+
+\subsection{Szemléletes felépítés}
+
+A \textbf{Turing-gép} olyan absztrakt gép, amely egy végtelen szalagon dolgozik. A szalag cellákra van osztva, minden cellában egy szimbólum áll. A gépnek van egy író-olvasó feje, amely egy adott cellán áll, és van egy véges vezérlőegysége, amely mindig valamelyik belső állapotban van.
+
+\input{src/figures/zv10_turing_gep.tex}
+
+Egy lépésben a gép:
+
+\begin{enumerate}
+  \item leolvassa a fej alatti jelet;
+  \item az aktuális állapot és a leolvasott jel alapján új állapotba megy;
+  \item felülírja a fej alatti cella tartalmát;
+  \item a fejet balra, jobbra vagy bizonyos definíciókban helyben mozgatja.
+\end{enumerate}
+
+A szalagon a bemenet kezdetben egymás után szerepel, a többi cellában pedig az üres jel, gyakran $B$ vagy $\ast$, áll. A Turing-gép fontos sajátossága, hogy a memória nem közvetlenül címezhető: ha egy távoli cellát akar elérni, a fejnek lépésenként oda kell mozognia.
+
+\subsection{Formális megadás}
+
+Egy egyszerű, egyszalagos determinisztikus Turing-gép megadható például a következő adatokkal:
+\[
+  M=(K,\Sigma,\Gamma,\delta,q_0,B,F),
+\]
+ahol:
+
+\begin{itemize}
+  \item $K$ a belső állapotok véges halmaza;
+  \item $\Sigma$ a bemeneti ábécé;
+  \item $\Gamma$ a szalagábécé, amelyre $\Sigma\subseteq\Gamma$;
+  \item $B\in\Gamma$ az üres jel, amely nem bemeneti jel;
+  \item $q_0\in K$ a kezdőállapot;
+  \item $F\subseteq K$ az elfogadó állapotok halmaza;
+  \item $\delta$ az átmeneti függvény.
+\end{itemize}
+
+Az átmeneti függvény tipikus alakja:
+\[
+  \delta:K\times\Gamma \rightharpoonup K\times\Gamma\times\{L,R,S\}.
+\]
+A $\rightharpoonup$ jel azt fejezi ki, hogy a függvény lehet parciális. Ha például
+\[
+  \delta(q,a)=(q',b,R),
+\]
+akkor a gép $q$ állapotban $a$ jelet olvasva $q'$ állapotba megy, $b$ jelet ír az aktuális cellába, majd jobbra lép.
+
+\begin{warningbox}
+A Turing-gép nem azért állhat meg, mert elfogy a szalag. A szalag elvileg végtelen. A megállás oka az, hogy elér egy kijelölt végállapotot, vagy olyan konfigurációba jut, amelyre az átmeneti függvény nincs értelmezve.
+\end{warningbox}
+
+\section{A Turing-gép működése}
+
+\subsection{Konfiguráció}
+
+A Turing-gép pillanatnyi állapotát \textbf{konfigurációnak} nevezzük. Egy konfiguráció tartalmazza:
+
+\begin{itemize}
+  \item a szalag aktuális, lényeges tartalmát;
+  \item az aktuális belső állapotot;
+  \item a fej aktuális helyét.
+\end{itemize}
+
+Gyakori jelölés:
+\[
+  \alpha q \beta,
+\]
+ahol $\alpha$ a fej bal oldalán levő szalagrész, $q$ az aktuális állapot, $\beta$ pedig a fej alatti jellel kezdődő jobb oldali szalagrész. Ha $\beta$ első jele $a$, akkor a következő lépést a $\delta(q,a)$ átmenet határozza meg.
+
+A kezdőkonfiguráció tipikusan:
+\[
+  q_0 w,
+\]
+ahol $w\in\Sigma^\ast$ a bemeneti szó, a fej pedig a bemenet első jelén áll. Ha az üres szó a bemenet, akkor a fej az első üres cellán áll.
+
+\subsection{Számítási folyamat}
+
+A \textbf{számítási folyamat} konfigurációk sorozata:
+\[
+  C_0,C_1,C_2,\ldots,
+\]
+ahol $C_0$ a kezdőkonfiguráció, és minden $C_{i+1}$ a $C_i$ konfigurációból egyetlen átmeneti lépéssel áll elő.
+
+Egy számítás háromféleképpen viselkedhet:
+
+\begin{itemize}
+  \item \textbf{elfogad}: a gép elfogadó állapotban áll meg;
+  \item \textbf{elutasít}: a gép nem elfogadó megállási állapotba jut, vagy explicit elutasító állapotot ér el;
+  \item \textbf{nem áll meg}: a konfigurációk sorozata végtelen.
+\end{itemize}
+
+Ez utóbbi különösen fontos. A Turing-gép képes végtelen ideig futni, például ide-oda mozoghat két cella között, vagy mindig újabb üres cellák felé haladhat.
+
+\subsection{Felismerés és eldöntés}
+
+Egy Turing-gép \textbf{felismer} egy nyelvet, ha a nyelv szavait elfogadja. Olyan szavakra, amelyek nem tartoznak a nyelvbe, vagy elutasíthat, vagy akár végtelen ciklusba is kerülhet.
+
+Egy Turing-gép \textbf{eldönt} egy nyelvet, ha minden bemenetre megáll, és pontosan a nyelv szavait fogadja el. Ez erősebb követelmény, mert nem engedi meg a nem megállást.
+
+\begin{summarybox}
+Felismerésnél az igen esetekben biztosan meg kell állni elfogadással, de a nem esetekben előfordulhat végtelen futás. Eldöntésnél minden bemeneten meg kell állni, és igen/nem választ kell adni.
+\end{summarybox}
+
+\subsection{Egyszerű példa: unáris növelés}
+
+Tegyük fel, hogy a szalagon $1^n$ áll, vagyis $n$ darab egyes egymás után. A feladat az, hogy a gép írjon a végére még egy $1$ jelet, tehát az eredmény $1^{n+1}$ legyen.
+
+\zvpseudocode[caption={Turing-gép szemléletű unáris növelés},label={lst:zv10_turing_unaris}]{src/code/zv10_turing_unaris_inkrementalas.pseudo}
+
+A módszer lényege egyszerű: a gép jobbra mozog, amíg $1$ jeleket lát. Amikor eléri az első üres cellát, oda egy $1$ jelet ír, majd megáll. A példa azért hasznos, mert mutatja a Turing-gép alapvető működését: a távoli pozíció eléréséhez a fejnek végig kell lépkednie a szalagon.
+
+\section{Univerzális Turing-gép és szimuláció}
+
+\subsection{Az univerzalitás gondolata}
+
+A Turing-gép eredeti szemléletben egy konkrét gép egy konkrét számítási feladathoz tartozik. A valódi számítógépek viszont programvezéreltek: ugyanaz a hardver sokféle programot képes futtatni.
+
+Az \textbf{univerzális Turing-gép} ezt az ötletet formalizálja. Olyan Turing-gép, amely bemenetként megkapja egy másik Turing-gép leírását és annak bemenetét, majd szimulálja a leírt gép működését.
+
+Szemléletesen:
+\[
+  U(\langle M\rangle,w)
+\]
+azt jelenti, hogy az $U$ univerzális gép az $M$ Turing-gép kódját és a $w$ bemenetet kapja meg, majd úgy viselkedik, mintha $M$ futna $w$-n.
+
+\subsection{Miért fontos?}
+
+Az univerzális Turing-gép jelentősége:
+
+\begin{itemize}
+  \item elméleti alapot ad a programvezérelt számítógép fogalmához;
+  \item megmutatja, hogy a gép és a program elválasztható;
+  \item lehetővé teszi, hogy gépek leírásairól mint adatokról beszéljünk;
+  \item alapvető szerepe van az eldönthetetlenségi bizonyításokban, például a megállási probléma vizsgálatában.
+\end{itemize}
+
+A tétel szintjén elég azt érteni, hogy az univerzális gép nem új számítási erőt ad, hanem azt mutatja meg, hogy egyetlen rögzített gép megfelelő kódolással bármely másik Turing-gép működését tudja utánozni.
+
+\section{A RAM-gép fogalma}
+
+\subsection{Motiváció}
+
+A Turing-gép matematikailag tiszta, de konkrét algoritmusok leírására kényelmetlen. Ha a fej egy távoli cellát akar elérni, lépésenként végig kell mennie a szalagon. A valódi számítógépek viszont címzett memóriával dolgoznak: egy memóriarekesz a címével közvetlenül elérhető.
+
+A \textbf{RAM-gép}, azaz \emph{Random Access Machine}, ezt a szemléletet modellezi. Magyarul közvetlen elérésű gépnek is nevezhető.
+
+\input{src/figures/zv10_ram_gep.tex}
+
+\subsection{Felépítés}
+
+A RAM-gép fő részei:
+
+\begin{itemize}
+  \item \textbf{programtár}: véges programot tartalmazó, sorokra bontott utasítássorozat;
+  \item \textbf{memória}: elvileg végtelen sok, egész számmal címzett rekesz;
+  \item \textbf{programszámláló}: megadja, hogy éppen melyik programsor hajtódik végre;
+  \item \textbf{utasításkészlet}: egyszerű aritmetikai, értékadó és ugró utasítások.
+\end{itemize}
+
+A memóriarekeszeket gyakran így jelöljük:
+\[
+  x[0],x[1],x[2],\ldots
+\]
+A bemenet lehet például számok véges sorozata. Ilyenkor $x[0]$ tartalmazhatja a sorozat hosszát, $x[1],\ldots,x[n]$ pedig a bemeneti számokat.
+
+\subsection{Tipikus utasítások}
+
+Egy egyszerű RAM-modellben elegendő lehet például a következő utasítások használata:
+\[
+\begin{array}{lll}
+  x[i]\leftarrow 0, & x[i]\leftarrow x[i]+1, & x[i]\leftarrow x[i]-1,\\
+  x[i]\leftarrow x[i]+x[j], & x[i]\leftarrow x[i]-x[j], & \text{IF }x[i]\leq 0\text{ THEN GOTO }p.
+\end{array}
+\]
+
+Fontos a \textbf{közvetett címzés} is:
+\[
+  x[x[i]]\leftarrow x[j],
+  \qquad
+  x[i]\leftarrow x[x[j]].
+\]
+Az első alak azt jelenti, hogy az $x[i]$ rekesz tartalma adja meg, melyik rekeszbe írunk. Ez a tömbök, mutatók és indexelt adatszerkezetek elméleti modellezéséhez hasznos.
+
+\subsection{RAM példa: sorozat összege}
+
+A következő pszeudókód azt mutatja, hogyan lehet a RAM-szemléletben egy bemeneti sorozat összegét kiszámítani. A bemenet hossza az $x[0]$ rekeszben van, az elemek az $x[1],\ldots,x[n]$ rekeszekben.
+
+\zvpseudocode[caption={RAM-szemléletű összegzés közvetett memóriaeléréssel},label={lst:zv10_ram_osszegzes}]{src/code/zv10_ram_osszegzes.pseudo}
+
+A példa nem egy konkrét gépi nyelv szintaxisa, hanem a RAM-modell gondolkodásmódját szemlélteti: rekeszek, indexek, közvetlen memóriaelérés és vezérlési feltétel jelenik meg benne.
+
+\section{RAM költségmodell és kapcsolata a Turing-géppel}
+
+\subsection{Egységköltségű és logaritmikus költségű RAM}
+
+A RAM-modellben óvatosnak kell lenni az időméréssel. Ha minden utasítást egységnyi költségűnek tekintünk, akkor egyetlen lépésben akár nagyon nagy számokon is végezhetnénk műveletet. Ez elméletileg túl erős modellhez vezethet, mert nagy számokba sok információt lehet becsomagolni.
+
+Két gyakori megközelítés:
+
+\begin{itemize}
+  \item \textbf{egységköltségű RAM}: minden alaputasítás költsége $1$;
+  \item \textbf{logaritmikus költségű RAM}: egy művelet költsége arányos a benne szereplő címek és számok bitjeinek számával.
+\end{itemize}
+
+A logaritmikus költségű modell realisztikusabb, mert egy $m$ nagyságrendű szám leírásához körülbelül $\log_2 m$ bit kell. Ha tehát nagy számokkal dolgozunk, akkor a művelet költségét nem célszerű függetleníteni a számok hosszától.
+
+\subsection{Turing-gép és RAM összehasonlítása}
+
+\begin{center}
+\input{src/tables/zv10_turing_ram_osszehasonlitas.tex}
+\end{center}
+
+A két modell közötti fő különbség a memóriaelérés. Turing-gépnél a fej lépésenként mozog, RAM-nál a címzett rekesz közvetlenül elérhető. Ennek ellenére kiszámíthatósági szempontból a két modell lényegében ekvivalens: amit az egyik ki tud számítani, azt megfelelő kódolással a másik is ki tudja számítani.
+
+Bonyolultsági szempontból viszont megjelenhet szimulációs többlet. Egy Turing-gép RAM-on általában természetesen szimulálható, mert a szalag celláit memóriarekeszekbe lehet kódolni. Egy RAM-program Turing-gépen való szimulációja nehezebb, mert a Turing-gépnek meg kell keresnie a megfelelő című rekeszt a szalagon tárolt memóriaábrázolásban.
+
+\begin{summarybox}
+A vizsgán elég a fő gondolatot hangsúlyozni: a Turing-gép és a RAM-gép nem azért fontos, mert tényleges hardverleírások, hanem mert pontos számítási modellek. A Turing-gép elméletileg tiszta, a RAM pedig algoritmusleírásra kényelmesebb.
+\end{summarybox}
+
+\section{Boole-függvények}
+
+\subsection{Definíció}
+
+Egy $n$ változós \textbf{Boole-függvény} olyan leképezés, amely $n$ darab logikai értékből egy logikai értéket állít elő:
+\[
+  f:\{0,1\}^n\to\{0,1\}.
+\]
+Itt a $0$ értéket hamisnak, az $1$ értéket igaznak tekintjük. A változókat Boole-változóknak vagy logikai változóknak nevezzük.
+
+Az $n$ változós Boole-függvények száma:
+\[
+  2^{2^n}.
+\]
+Ennek oka, hogy $n$ bemenet esetén $2^n$ különböző bemeneti sor van, és minden sorhoz kétféle kimeneti érték választható.
+
+Például két változó esetén $2^{2^2}=16$ különböző Boole-függvény létezik.
+
+\subsection{Alapműveletek}
+
+\begin{center}
+\input{src/tables/zv10_boole_kapuk.tex}
+\end{center}
+
+A leggyakoribb azonosságok:
+\[
+  \overline{\overline{x}}=x,
+\]
+\[
+  x\wedge y=y\wedge x,
+  \qquad
+  x\vee y=y\vee x,
+\]
+\[
+  x\wedge(y\vee z)=(x\wedge y)\vee(x\wedge z),
+\]
+\[
+  x\vee(y\wedge z)=(x\vee y)\wedge(x\vee z).
+\]
+
+A De Morgan-azonosságok különösen fontosak:
+\[
+  \overline{x\wedge y}=\overline{x}\vee\overline{y},
+  \qquad
+  \overline{x\vee y}=\overline{x}\wedge\overline{y}.
+\]
+
+Ezek segítségével logikai kifejezéseket lehet átalakítani, egyszerűsíteni, illetve különböző kapukészletekre átírni.
+
+\subsection{Igazságtábla}
+
+Egy Boole-függvény teljesen megadható igazságtáblával. Például az XOR művelet:
+
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+$x$ & $y$ & $x\oplus y$ \\
+\midrule
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Az XOR pontosan akkor igaz, ha a két bemenet különböző. Algebrai alakban:
+\[
+  x\oplus y=(\overline{x}\wedge y)\vee(x\wedge\overline{y}).
+\]
+
+\section{Normálformák}
+
+\subsection{DNF és KNF}
+
+A Boole-függvények többféle logikai formulával is felírhatók. A normálformák célja, hogy szabványos alakot adjanak.
+
+\begin{center}
+\input{src/tables/zv10_normalformak.tex}
+\end{center}
+
+A \textbf{diszjunktív normálforma} olyan alak, amely elemi konjunkciók diszjunkciója. Igazságtáblából úgy állítható elő, hogy minden olyan sorhoz, ahol a függvény értéke $1$, felírunk egy konjunkciós tagot.
+
+Ha például $f(x,y)$ csak a $(0,1)$ és $(1,0)$ sorokban igaz, akkor:
+\[
+  f(x,y)=(\overline{x}\wedge y)\vee(x\wedge\overline{y}).
+\]
+Ez éppen az XOR művelet.
+
+A \textbf{konjunktív normálforma} elemi diszjunkciók konjunkciója. Igazságtáblából a hamis sorok alapján építhető fel.
+
+\subsection{Teljesség}
+
+Fontos tétel, hogy minden Boole-függvény felírható DNF-ben, ezért a $\neg$, $\wedge$, $\vee$ műveletek elegendőek minden Boole-függvény kifejezéséhez.
+
+Más teljes kapukészletek is léteznek. Például önmagában a NAND vagy önmagában a NOR is funkcionálisan teljes, mert belőlük előállítható a negáció, az ÉS és a VAGY.
+
+\section{Logikai hálózatok}
+
+\subsection{Fogalom}
+
+A \textbf{logikai hálózat} egy aciklikus irányított gráf, amely Boole-függvényt számít ki. A gráfban:
+
+\begin{itemize}
+  \item a forráscsúcsok a bemenetek;
+  \item a belső csúcsok logikai kapuk;
+  \item az élek a jelek továbbítását jelentik;
+  \item a nyelőcsúcsok a kimenetek.
+\end{itemize}
+
+A hálózat aciklikus, mert a kapuk kimenete nem vezethet vissza olyan helyre, amelytől saját maga függne. Így a kapuk kiértékelhetők topologikus sorrendben: először a bemenetek értéke ismert, utána azok a kapuk számíthatók, amelyeknek minden bemenete ismert, és így tovább.
+
+\input{src/figures/zv10_logikai_halozat.tex}
+
+Az ábrán látható hálózat a következő függvényt számítja ki:
+\[
+  f(x,y,z)=(\overline{x}\wedge y)\vee(x\wedge z).
+\]
+
+\subsection{Méret és mélység}
+
+A logikai hálózat két fontos mértéke a \textbf{méret} és a \textbf{mélység}.
+
+\begin{center}
+\input{src/tables/zv10_halozat_mertekek.tex}
+\end{center}
+
+A \textbf{méret} általában a kapuk száma. Ez azt mutatja, hogy mennyi elemi művelet vagy hardverelem szükséges.
+
+A \textbf{mélység} a leghosszabb bemenettől kimenetig vezető út hossza. Ez párhuzamos végrehajtás szempontjából fontos, mert azonos szinten levő, egymástól független kapuk egyszerre számolhatók. Ha egy hálózat mérete $s$, mélysége $d$, akkor egy processzorral nagyjából $O(s)$ művelet kell, sok párhuzamos végrehajtó egységgel pedig ideális esetben a mélység adja a kritikus utat.
+
+\subsection{Kapuáramkör és Boole-polinom kapcsolata}
+
+Egy logikai formula felfogható fa alakú logikai hálózatként. Például az
+\[
+  (\overline{x}\wedge y)\vee(x\wedge z)
+\]
+formula egy olyan hálózatot ad, ahol a részformulák kapukként jelennek meg.
+
+A logikai hálózat ennél általánosabb, mert egy már kiszámított részeredményt több későbbi kapu is felhasználhat. Ez gyakran rövidebb vagy kisebb hálózatot eredményezhet, mint ha ugyanazt a részformulát többször külön felírnánk.
+
+\subsection{Félösszeadó példa}
+
+A félösszeadó két bitet ad össze. Bemenetei $x$ és $y$, kimenetei:
+
+\begin{itemize}
+  \item $s$: összegbit;
+  \item $c$: átviteli bit.
+\end{itemize}
+
+A függvények:
+\[
+  s=x\oplus y,
+  \qquad
+  c=x\wedge y.
+\]
+
+Igazságtáblája:
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+$x$ & $y$ & $c$ & $s$ \\
+\midrule
+0 & 0 & 0 & 0 \\
+0 & 1 & 0 & 1 \\
+1 & 0 & 0 & 1 \\
+1 & 1 & 1 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Ez jól mutatja, hogy a logikai hálózatok nemcsak elméleti modellek, hanem digitális áramkörök leírására is használhatók.
+
+\section{A három modell kapcsolata}
+
+\subsection{Közös szemlélet}
+
+Mindhárom modell ugyanazt a kérdést vizsgálja: hogyan lehet formálisan leírni egy számítást?
+
+\begin{itemize}
+  \item A \textbf{Turing-gép} a számítást lépésenként, szalagon mozgó fejjel írja le.
+  \item A \textbf{RAM-gép} a számítást programként és címzett memóriarekeszek műveleteként írja le.
+  \item A \textbf{logikai hálózat} a számítást Boole-kapuk aciklikus függőségi gráfjaként írja le.
+\end{itemize}
+
+A Turing-gép és a RAM-gép általános modell: különböző hosszúságú bemenetekre is ugyanaz a gép vagy program fut. A logikai hálózatnál viszont a bemenethossz rögzített. Ha minden $n$ bemenethosszra külön hálózatot adunk, akkor hálózatcsaládról beszélhetünk.
+
+\subsection{Szimulációs gondolat}
+
+A modellek közötti kapcsolat megérthető szimulációval:
+
+\begin{itemize}
+  \item Turing-gép szimulálható RAM-on: a szalag celláit memóriarekeszekbe kódoljuk, a fej pozícióját és az állapotot külön rekeszben tároljuk.
+  \item RAM-program szimulálható Turing-gépen: a memóriarekeszek tartalmát a szalagon kell tárolni és keresni.
+  \item Rögzített ideig futó, rögzített bemenethosszú Turing-gép működése logikai hálózattal is leírható, mert minden időpillanat és szalagpozíció állapota Boole-változókkal kódolható.
+\end{itemize}
+
+A szimulációk gyakran többletidőt vagy többletméretet okoznak, de elméletileg azt mutatják, hogy a modellek között mély kapcsolat van.
+
+\section{Gyakori félreértések}
+
+\subsection{A Turing-gép nem fizikai gépterv}
+
+A Turing-gép nem egy modern processzor modellje, hanem absztrakt matematikai eszköz. Nem az a célja, hogy hardveresen hatékony legyen, hanem hogy pontosan megfoghatóvá tegye az algoritmikus számítás fogalmát.
+
+\subsection{A RAM-gép végtelen memóriája idealizáció}
+
+A RAM-gép memóriája elvileg korlátlan, és a rekeszek tetszőleges nagy számokat is tartalmazhatnak. Ez nem valós hardverállítás, hanem matematikai egyszerűsítés. Ezért kell figyelni arra, hogy milyen költségmodellt választunk.
+
+\subsection{A logikai hálózat nem ugyanaz, mint egy ciklust tartalmazó program}
+
+A logikai hálózat aciklikus. Nincs benne ciklus, ezért rögzített számú kapukiértékeléssel eredményt ad. Egy általános program ciklusokat, rekurziót és változó futási időt is tartalmazhat, ezért általánosabb, mint egyetlen rögzített logikai hálózat.
+
+\section{Tipikus vizsgakérdések és rövid válaszvázlatok}
+
+\subsection{Mi a Turing-gép?}
+
+Véges vezérléssel, szalaggal és író-olvasó fejjel rendelkező absztrakt gép. Egy lépésben állapot és olvasott jel alapján ír, állapotot vált és mozgatja a fejet.
+
+\subsection{Mit jelent a konfiguráció?}
+
+A gép pillanatnyi teljes leírása: a lényeges szalagtartalom, az aktuális állapot és a fej pozíciója.
+
+\subsection{Mi a különbség felismerés és eldöntés között?}
+
+Felismerésnél a nyelv szavait a gép elfogadja, de a nyelven kívüli szavakon futhat végtelenül. Eldöntésnél minden bemeneten meg kell állnia, és helyes igen/nem választ kell adnia.
+
+\subsection{Mi a RAM-gép fő előnye a Turing-géphez képest?}
+
+A közvetlen memóriaelérés. A RAM-gép rekeszeket címez, ezért konkrét algoritmusok leírására közelebb áll a valós programozási szemlélethez.
+
+\subsection{Miért kell logaritmikus költségű RAM-modell?}
+
+Mert nagy számokkal végzett műveletek egységköltségűnek vétele irreálisan erős modellhez vezethet. Logaritmikus költségnél a számok bitmérete is beleszámít az időbe.
+
+\subsection{Mi a Boole-függvény?}
+
+Olyan függvény, amely $n$ darab $0/1$ bemenetből egy $0/1$ kimenetet számít:
+\[
+  f:\{0,1\}^n\to\{0,1\}.
+\]
+
+\subsection{Mi a logikai hálózat?}
+
+Aciklikus irányított gráf, amelyben a bemenetekből logikai kapukon keresztül kimeneteket számítunk. A kapuk Boole-függvényeket valósítanak meg.
+
+\subsection{Mit jelent a hálózat mérete és mélysége?}
+
+A méret a kapuk száma, a mélység a leghosszabb bemenettől kimenetig vezető út hossza. A méret a teljes munkát, a mélység a párhuzamos kritikus utat szemlélteti.
+
+\section{Összefoglalás vizsgára}
+
+Rövid, vizsgán jól használható összefoglalás:
+
+\begin{itemize}
+  \item A számítási modell célja az algoritmus fogalmának pontosítása.
+  \item A Turing-gép véges vezérlésből, szalagból, író-olvasó fejből és átmeneti függvényből áll.
+  \item Egy Turing-lépés: olvasás, írás, állapotváltás, fejmozgatás.
+  \item A konfiguráció a teljes pillanatnyi gépállapotot írja le.
+  \item A Turing-gép megállhat elfogadással, elutasítással, vagy futhat végtelen ideig.
+  \item Felismerésnél a nemleges esetekben megengedett a nem megállás; eldöntésnél minden bemeneten meg kell állni.
+  \item Az univerzális Turing-gép más Turing-gépek leírását programként kezeli és szimulálja.
+  \item A RAM-gép programtárból és közvetlenül címezhető memóriarekeszekből áll.
+  \item A RAM konkrét algoritmusok leírására kényelmesebb, mint a Turing-gép, de a költségmodellre figyelni kell.
+  \item Egységköltségű RAM-nál minden alaputasítás ára $1$; logaritmikus költségnél a számok és címek bithossza is számít.
+  \item A Turing-gép és a RAM-gép kiszámíthatósági értelemben lényegében ekvivalens.
+  \item A Boole-függvény $f:\{0,1\}^n\to\{0,1\}$ alakú logikai függvény.
+  \item Az $n$ változós Boole-függvények száma $2^{2^n}$.
+  \item Minden Boole-függvény felírható DNF-ben, ezért a $\neg,\wedge,\vee$ műveletek elegendőek.
+  \item A logikai hálózat aciklikus irányított gráf, amely kapukkal számít ki Boole-függvényt.
+  \item A hálózat mérete a kapuk száma, mélysége a leghosszabb függőségi lánc hossza.
+  \item A logikai hálózat rögzített bemenethosszú modell; általános feladatokhoz hálózatcsaládokkal dolgozunk.
+\end{itemize}
+
+\end{document}

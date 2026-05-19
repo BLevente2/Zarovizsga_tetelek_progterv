@@ -1,0 +1,31 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\scriptsize]
+  \tikzset{box/.style={draw, rounded corners, fill=lightaccent, minimum width=31mm, minimum height=8mm, align=center},
+           mem/.style={draw, fill=black!3, minimum width=16mm, minimum height=6mm, align=center},
+           instr/.style={draw, fill=warnbg, minimum width=36mm, minimum height=6mm, align=left},
+           arr/.style={->, >=stealth, thick}}
+
+  \node[box] (pc) at (0,2.2) {programszámláló\\aktuális sor};
+  \node[instr, anchor=west] (p0) at (-1.8,1.0) {0: $x[1]\leftarrow 0$};
+  \node[instr, anchor=west] (p1) at (-1.8,0.35) {1: $x[1]\leftarrow x[1]+x[2]$};
+  \node[instr, anchor=west] (p2) at (-1.8,-0.30) {2: IF $x[3]\leq 0$ GOTO $p$};
+  \node[instr, anchor=west] (p3) at (-1.8,-0.95) {3: $x[x[4]]\leftarrow x[5]$};
+  \node[box] (prog) at (0,-1.75) {programtár\\véges program};
+
+  \node[mem] (m0) at (4.9,1.0) {$x[0]$};
+  \node[mem] (m1) at (4.9,0.35) {$x[1]$};
+  \node[mem] (m2) at (4.9,-0.30) {$x[2]$};
+  \node[mem] (m3) at (4.9,-0.95) {$x[3]$};
+  \node[mem] (md) at (4.9,-1.60) {$\vdots$};
+  \node[mem] (mi) at (4.9,-2.25) {$x[i]$};
+  \node[box] (memtitle) at (4.9,2.2) {címzett memória\\elvileg korlátlan};
+
+  \draw[arr] (pc) -- (p0.north);
+  \draw[arr] (p1.east) -- node[above] {közvetlen elérés} (m1.west);
+  \draw[arr] (p3.east) to[out=-20,in=180] node[below, sloped] {közvetett címzés} (mi.west);
+  \draw[arr] (pc.east) -- node[above] {ugrás} (memtitle.west);
+\end{tikzpicture}
+\caption{RAM-gép: programtár és közvetlenül címezhető memóriarekeszek}
+\label{fig:zv10_ram_gep}
+\end{figure}

@@ -17,6 +17,7 @@ Jelenleg a projekt az alábbi tételeket tartalmazza:
 - `zv_tetel_07.tex` - 7. tétel: párhuzamos algoritmusok alapjai, PRAM, gyorsítás, Amdahl törvénye, pipeline, szinkronizáció
 - `zv_tetel_08.tex` - 8. tétel: aggregáció, redukció, prefixszámítás és párhuzamos összefésülő rendezés
 - `zv_tetel_09.tex` - 9. tétel: kommunikációs topológiák, CSP, Publish--Subscribe, Aktor modell, async/await és coroutine-ok
+- `zv_tetel_10.tex` - 10. tétel: Turing-gép, RAM-gép, Boole-függvények és logikai hálózatok
 
 Minden tétel külön PDF-be fordul, így az egyes tételek önálló dokumentumként is használhatók.
 
@@ -46,6 +47,7 @@ A tételek fedlapján szereplő hivatalos tételkiírások is ebből a fájlból
     ├── zv_tetel_07.tex
     ├── zv_tetel_08.tex
     ├── zv_tetel_09.tex
+    ├── zv_tetel_10.tex
     ├── figures/
     │   ├── zv_abrak.tex
     │   └── ... külön TikZ-ábrák ...
