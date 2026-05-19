@@ -1,0 +1,14 @@
+INPUT formula F, assignment a
+FOR EACH clause C in F DO
+    satisfied := FALSE
+    FOR EACH literal l in C DO
+        IF l is true under assignment a THEN
+            satisfied := TRUE
+        ENDIF
+    ENDFOR
+
+    IF satisfied = FALSE THEN
+        REJECT
+    ENDIF
+ENDFOR
+ACCEPT

@@ -1,0 +1,25 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small]
+  \tikzset{labelbox/.style={font=\bfseries, align=center},
+           note/.style={font=\scriptsize, align=center},
+           pbox/.style={draw, rounded corners, fill=white, minimum width=24mm, minimum height=10mm, align=center}}
+
+  \draw[thick, fill=lightaccent, fill opacity=0.55] (-1.55,0) ellipse (2.45cm and 1.45cm);
+  \draw[thick, fill=warnbg, fill opacity=0.55] (1.55,0) ellipse (2.45cm and 1.45cm);
+
+  \node[labelbox] at (-2.35,0.75) {$\mathrm{NP}$};
+  \node[note] at (-2.35,0.32) {igen esetekhez\\tanú};
+  \node[labelbox] at (2.35,0.75) {$\mathrm{coNP}$};
+  \node[note] at (2.35,0.32) {nem esetekhez\\tanú};
+
+  \node[pbox] at (0,0) {$\mathrm{P}$};
+  \node[note] at (0,-0.58) {minden bemeneten\\polinomiális döntés};
+
+  \node[note] at (-2.65,-1.85) {$\mathrm{P}\subseteq\mathrm{NP}$};
+  \node[note] at (2.65,-1.85) {$\mathrm{P}\subseteq\mathrm{coNP}$};
+  \node[note] at (0,-2.45) {Nem ismert, hogy $\mathrm{P}=\mathrm{NP}$ vagy $\mathrm{NP}=\mathrm{coNP}$.};
+\end{tikzpicture}
+\caption{A $\mathrm{P}$, $\mathrm{NP}$ és $\mathrm{coNP}$ osztályok szokásos szemléltetése}
+\label{fig:zv12_np_conp_kapcsolatok}
+\end{figure}

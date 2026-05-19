@@ -1,0 +1,10 @@
+\begin{tabularx}{\textwidth}{L{31mm}L{52mm}X}
+\toprule
+\textbf{Fogalom} & \textbf{Jelölés / definíció} & \textbf{Vizsgán fontos értelmezés} \\
+\midrule
+Polinomiális visszavezetés & $A\leq_p B$, ha van polinomiális időben kiszámítható $f$, amelyre $x\in A\Leftrightarrow f(x)\in B$. & Az $A$ probléma példányait hatékonyan átfordítjuk $B$ példányaivá. \\
+NP-teljes & $B\in\mathrm{NP}$ és minden $A\in\mathrm{NP}$ esetén $A\leq_p B$. & $B$ legalább olyan nehéz, mint bármely NP-beli probléma, de maga is NP-beli. \\
+NP-nehéz & Minden $A\in\mathrm{NP}$ esetén $A\leq_p B$. & A probléma lehet NP-n kívüli is; optimalizálási változatoknál gyakori. \\
+Bizonyítási séma & Ismert NP-teljes $A$ problémából mutatjuk: $A\leq_p B$, majd belátjuk, hogy $B\in\mathrm{NP}$. & Így nem kell minden NP-beli problémából külön visszavezetést adni. \\
+\bottomrule
+\end{tabularx}

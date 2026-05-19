@@ -1,0 +1,14 @@
+INPUT instance x, certificate y
+IF length(y) > q(length(x)) THEN
+    REJECT
+ENDIF
+
+IF y describes a valid proposed solution for x THEN
+    IF the proposed solution satisfies every condition of x THEN
+        ACCEPT
+    ELSE
+        REJECT
+    ENDIF
+ELSE
+    REJECT
+ENDIF

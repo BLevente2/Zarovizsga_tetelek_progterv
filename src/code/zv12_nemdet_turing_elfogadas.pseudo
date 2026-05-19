@@ -1,0 +1,17 @@
+INPUT w
+CREATE initial configuration c0 of M on w
+levels[0] := {c0}
+
+FOR t := 0 TO p(length(w)) DO
+    FOR EACH configuration c IN levels[t] DO
+        IF c is accepting THEN
+            ACCEPT
+        ENDIF
+
+        FOR EACH legal nondeterministic transition from c DO
+            ADD successor configuration to levels[t + 1]
+        ENDFOR
+    ENDFOR
+ENDFOR
+
+REJECT

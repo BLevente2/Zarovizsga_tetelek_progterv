@@ -1,0 +1,24 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small, node distance=12mm]
+  \tikzset{prob/.style={draw, rounded corners, fill=lightaccent, minimum width=28mm, minimum height=8mm, align=center},
+           hard/.style={draw, rounded corners, fill=warnbg, minimum width=30mm, minimum height=8mm, align=center},
+           arr/.style={->, >=stealth, thick},
+           lab/.style={font=\scriptsize, align=center}}
+
+  \node[prob] (sat) at (0,1.8) {SAT};
+  \node[prob] (threesat) at (0,0.45) {3-SAT};
+  \node[hard] (clique) at (-3.2,-1.05) {Klikk};
+  \node[hard] (cover) at (0,-1.05) {Csúcslefedés};
+  \node[hard] (ham) at (3.2,-1.05) {Hamilton-kör};
+  \node[hard] (subset) at (0,-2.55) {Részletösszeg};
+
+  \draw[arr] (sat) -- node[right, lab] {$\leq_p$} (threesat);
+  \draw[arr] (threesat) -- node[above left, lab] {$\leq_p$} (clique);
+  \draw[arr] (threesat) -- node[right, lab] {$\leq_p$} (cover);
+  \draw[arr] (threesat) -- node[above right, lab] {$\leq_p$} (ham);
+  \draw[arr] (threesat) -- node[right, lab] {$\leq_p$} (subset);
+\end{tikzpicture}
+\caption{NP-teljességi bizonyítások tipikus visszavezetési lánca}
+\label{fig:zv12_np_teljesseg_redukciok}
+\end{figure}

@@ -1,0 +1,11 @@
+\begin{tabularx}{\textwidth}{L{22mm}L{38mm}L{38mm}X}
+\toprule
+\textbf{Osztály} & \textbf{Jelentés} & \textbf{Gépi / tanúsítványos jellemzés} & \textbf{Fontos megjegyzés} \\
+\midrule
+$\mathrm{P}$ & Polinomiális időben eldönthető nyelvek. & Determinisztikus Turing-gép eldönti $O(n^k)$ időben. & A gyakorlatban elméleti értelemben hatékonyan megoldhatónak tekintjük. \\
+$\mathrm{NP}$ & Polinomiális időben nemdeterminisztikusan eldönthető nyelvek. & Van polinomiális hosszú tanú, amely polinomiális időben ellenőrizhető. & $\mathrm{P}\subseteq\mathrm{NP}$, de nem ismert, hogy egyenlők-e. \\
+$\mathrm{coNP}$ & Olyan nyelvek, amelyek komplementere $\mathrm{NP}$-beli. & A nem válaszokhoz van polinomiálisan ellenőrizhető tanú. & Nem ismert, hogy $\mathrm{NP}=\mathrm{coNP}$ teljesül-e. \\
+$\mathrm{NPC}$ & NP-teljes nyelvek. & $L\in\mathrm{NP}$ és minden $L'\in\mathrm{NP}$ visszavezethető rá polinomiálisan. & A legnehezebb NP-beli döntési problémák. \\
+$\mathrm{NP}$-nehéz & Legalább olyan nehéz, mint minden NP-beli probléma. & Minden $L'\in\mathrm{NP}$-re $L'\leq_p L$. & Nem kell feltétlenül $\mathrm{NP}$-belinek, sőt döntési problémának sem lennie. \\
+\bottomrule
+\end{tabularx}

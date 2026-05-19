@@ -19,6 +19,7 @@ Jelenleg a projekt az alábbi tételeket tartalmazza:
 - `zv_tetel_09.tex` - 9. tétel: kommunikációs topológiák, CSP, Publish--Subscribe, Aktor modell, async/await és coroutine-ok
 - `zv_tetel_10.tex` - 10. tétel: Turing-gép, RAM-gép, Boole-függvények és logikai hálózatok
 - `zv_tetel_11.tex` - 11. tétel: algoritmikus eldönthetőség, Church-tézis, rekurzív és rekurzívan felsorolható nyelvek, eldönthetetlen problémák, polinomiális idő
+- `zv_tetel_12.tex` - 12. tétel: nemdeterminisztikus Turing-gépek, NP és coNP, tanú-tétel, nemdeterminisztikus bonyolultság, NP-teljesség, Cook--Levin-tétel
 
 Minden tétel külön PDF-be fordul, így az egyes tételek önálló dokumentumként is használhatók.
 
@@ -50,6 +51,7 @@ A tételek fedlapján szereplő hivatalos tételkiírások is ebből a fájlból
     ├── zv_tetel_09.tex
     ├── zv_tetel_10.tex
     ├── zv_tetel_11.tex
+    ├── zv_tetel_12.tex
     ├── figures/
     │   ├── zv_abrak.tex
     │   └── ... külön TikZ-ábrák ...

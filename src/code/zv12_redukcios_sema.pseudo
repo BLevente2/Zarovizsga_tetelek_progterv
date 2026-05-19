@@ -1,0 +1,8 @@
+INPUT instance x of problem A
+COMPUTE y := f(x) in polynomial time
+RUN solver_B on y
+IF solver_B accepts y THEN
+    ACCEPT
+ELSE
+    REJECT
+ENDIF
