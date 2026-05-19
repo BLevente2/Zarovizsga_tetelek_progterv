@@ -13,6 +13,10 @@ Jelenleg a projekt az alábbi tételeket tartalmazza:
 - `zv_tetel_03.tex` - 3. tétel: strukturált programozás, programgráf, vezérlőgráf, struktogram, ciklikus bonyolultság
 - `zv_tetel_04.tex` - 4. tétel: számelméleti algoritmusok, euklideszi algoritmus, kongruenciák, moduláris hatványozás, Fermat-prímteszt, RSA
 - `zv_tetel_05.tex` - 5. tétel: rendezések, oszd meg és uralkodj, lineáris idejű rendezések, időelemzés, rendezési pszeudókódok
+- `zv_tetel_06.tex` - 6. tétel: gráfalgoritmusok, bejárások, minimális feszítőfák és legrövidebb utak
+- `zv_tetel_07.tex` - 7. tétel: párhuzamos algoritmusok alapjai, PRAM, gyorsítás, Amdahl törvénye, pipeline, szinkronizáció
+- `zv_tetel_08.tex` - 8. tétel: aggregáció, redukció, prefixszámítás és párhuzamos összefésülő rendezés
+- `zv_tetel_09.tex` - 9. tétel: kommunikációs topológiák, CSP, Publish--Subscribe, Aktor modell, async/await és coroutine-ok
 
 Minden tétel külön PDF-be fordul, így az egyes tételek önálló dokumentumként is használhatók.
 
@@ -38,6 +42,10 @@ A tételek fedlapján szereplő hivatalos tételkiírások is ebből a fájlból
     ├── zv_tetel_03.tex
     ├── zv_tetel_04.tex
     ├── zv_tetel_05.tex
+    ├── zv_tetel_06.tex
+    ├── zv_tetel_07.tex
+    ├── zv_tetel_08.tex
+    ├── zv_tetel_09.tex
     ├── figures/
     │   ├── zv_abrak.tex
     │   └── ... külön TikZ-ábrák ...

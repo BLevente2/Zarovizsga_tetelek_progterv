@@ -1,0 +1,9 @@
+\begin{tabularx}{\textwidth}{L{28mm}L{31mm}L{35mm}X}
+\toprule
+\textbf{Modell} & \textbf{Kapcsolat} & \textbf{Állapotkezelés} & \textbf{Fő gondolat} \\
+\midrule
+CSP & Folyamatok csatornákon keresztül & Nincs közös memória; a folyamatok saját állapottal dolgoznak & A kommunikációt csatornák szervezik. A folyamatok nem közös változókat írnak, hanem üzeneteket adnak át. \\
+Publish--Subscribe & Kiadók, témák és feliratkozók & A kiadó és a feliratkozó laza kapcsolatban van; gyakran közvetítő kezeli a témákat & A kiadó egy témába publikál, a feliratkozók pedig megkapják az adott témához tartozó üzeneteket. \\
+Aktor modell & Aktorok egymás címeire küldenek üzenetet & Minden aktor saját, kívülről nem módosítható belső állapottal és postaládával rendelkezik & Az aktor üzenetet fogad, állapotot módosíthat, új üzenetet küldhet és új aktort hozhat létre. \\
+\bottomrule
+\end{tabularx}

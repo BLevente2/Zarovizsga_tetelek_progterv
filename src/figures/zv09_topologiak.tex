@@ -1,0 +1,61 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\scriptsize, scale=0.93]
+  \tikzset{toponode/.style={draw, circle, fill=lightaccent, minimum size=4.5mm, inner sep=0pt},
+           topoedge/.style={draw, thick},
+           topowrap/.style={draw, thick, dashed, accent!80!black}}
+
+  \begin{scope}[xshift=0cm,yshift=4.7cm]
+    \node[anchor=west,font=\bfseries] at (-0.25,0.55) {Busz};
+    \foreach \i in {0,...,4} {\node[toponode] (b\i) at (\i*0.55,0) {\i};}
+    \foreach \i/\j in {0/1,1/2,2/3,3/4} {\draw[topoedge] (b\i) -- (b\j);}
+  \end{scope}
+
+  \begin{scope}[xshift=4.0cm,yshift=4.7cm]
+    \node[anchor=west,font=\bfseries] at (-1.0,0.95) {Gyűrű};
+    \foreach \i/\a in {0/90,1/18,2/-54,3/-126,4/162} {\node[toponode] (r\i) at (\a:0.75) {\i};}
+    \foreach \i/\j in {0/1,1/2,2/3,3/4,4/0} {\draw[topoedge] (r\i) -- (r\j);}
+  \end{scope}
+
+  \begin{scope}[xshift=7.3cm,yshift=4.35cm]
+    \node[anchor=west,font=\bfseries] at (-0.35,1.05) {Rács};
+    \foreach \x in {0,1,2} {\foreach \y in {0,1,2} {\node[toponode] (g\x\y) at (\x*0.55,\y*0.55) {};}}
+    \foreach \x in {0,1,2} {\foreach \y/\z in {0/1,1/2} {\draw[topoedge] (g\x\y) -- (g\x\z);}}
+    \foreach \y in {0,1,2} {\foreach \x/\z in {0/1,1/2} {\draw[topoedge] (g\x\y) -- (g\z\y);}}
+  \end{scope}
+
+  \begin{scope}[xshift=0.25cm,yshift=1.4cm]
+    \node[anchor=west,font=\bfseries] at (-0.35,1.05) {Tórusz};
+    \foreach \x in {0,1,2} {\foreach \y in {0,1,2} {\node[toponode] (t\x\y) at (\x*0.55,\y*0.55) {};}}
+    \foreach \x in {0,1,2} {\foreach \y/\z in {0/1,1/2} {\draw[topoedge] (t\x\y) -- (t\x\z);}}
+    \foreach \y in {0,1,2} {\foreach \x/\z in {0/1,1/2} {\draw[topoedge] (t\x\y) -- (t\z\y);}}
+    \foreach \x in {0,1,2} {\draw[topowrap] (t\x0) to[bend right=38] (t\x2);}
+    \foreach \y in {0,1,2} {\draw[topowrap] (t0\y) to[bend left=38] (t2\y);}
+  \end{scope}
+
+  \begin{scope}[xshift=4.0cm,yshift=0.9cm]
+    \node[anchor=west,font=\bfseries] at (-0.65,1.35) {Hiperkocka $Q_3$};
+    \foreach \x/\y/\n in {0/0/000,1.0/0/001,1.0/1/011,0/1/010,0.35/0.35/100,1.35/0.35/101,1.35/1.35/111,0.35/1.35/110} {
+      \node[toponode] (h\n) at (\x,\y) {};
+    }
+    \foreach \a/\b in {000/001,001/011,011/010,010/000,100/101,101/111,111/110,110/100,000/100,001/101,011/111,010/110} {\draw[topoedge] (h\a) -- (h\b);}
+    \node[below=1mm of h000] {000};
+    \node[below=1mm of h001] {001};
+    \node[above=1mm of h111] {111};
+  \end{scope}
+
+  \begin{scope}[xshift=7.8cm,yshift=0.75cm]
+    \node[anchor=west,font=\bfseries] at (-0.55,1.55) {Fa};
+    \node[toponode] (a) at (0.75,1.2) {};
+    \node[toponode] (c) at (0.25,0.55) {};
+    \node[toponode] (d) at (1.25,0.55) {};
+    \node[toponode] (e) at (0,0) {};
+    \node[toponode] (f) at (0.5,0) {};
+    \node[toponode] (g) at (1.0,0) {};
+    \node[toponode] (i) at (1.5,0) {};
+    \foreach \u/\v in {a/c,a/d,c/e,c/f,d/g,d/i} {\draw[topoedge] (\u) -- (\v);}
+  \end{scope}
+\end{tikzpicture}
+\caption{Gyakori kommunikációs topológiák szemléltetése}
+\label{fig:zv09_topologiak}
+\end{figure}

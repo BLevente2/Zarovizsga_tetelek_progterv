@@ -1,0 +1,14 @@
+\begin{tabularx}{\textwidth}{L{31mm}X}
+\toprule
+\textbf{Fogalom} & \textbf{Jelentés} \\
+\midrule
+Konkurrencia & Több tevékenység végrehajtása időben átfedésben szervezhető. Nem feltétlenül jelent több processzormagon futó valódi párhuzamosságot. \\
+Párhuzamosság & Több tevékenység ténylegesen ugyanabban az időben fut, például több processzormagon. \\
+Aszinkron végrehajtás & A program nem blokkol minden várakozásnál, hanem a futtatókörnyezet más feladatot is futtathat. \\
+Coroutine & Olyan végrehajtási egység, amely bizonyos pontokon felfüggeszthető, majd később ugyanonnan folytatható. \\
+\code{async} & Aszinkron függvény vagy coroutine létrehozását jelzi. Sok nyelvben a visszatérési érték ígéret, task vagy coroutine objektum. \\
+\code{await} & Felfüggeszti az aktuális aszinkron végrehajtási egységet addig, amíg a várt művelet eredménye elkészül. \\
+Event loop & Olyan ütemező ciklus, amely figyeli az elkészült aszinkron műveleteket, és folytatja a hozzájuk tartozó coroutine-okat. \\
+Promise / Future / Task & Egy később elkészülő eredmény objektumszerű reprezentációja. Lehet sikeres, hibás vagy még folyamatban lévő állapotban. \\
+\bottomrule
+\end{tabularx}

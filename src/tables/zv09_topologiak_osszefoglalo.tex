@@ -1,0 +1,14 @@
+{\small
+\begin{tabularx}{\textwidth}{L{28mm}L{30mm}X L{25mm}}
+\toprule
+\textbf{Topológia} & \textbf{Élek száma} & \textbf{Távolság két csúcs között} & \textbf{Átmérő} \\
+\midrule
+Busz / lánc & $p-1$ & $d(i,j)=|i-j|$ & $p-1$ \\
+Gyűrű & $p$ & $d(i,j)=\min(|i-j|,p-|i-j|)$ & $\lfloor p/2\rfloor$ \\
+$n\times m$ rács & $(n-1)m+n(m-1)$ & $d=|x_1-x_2|+|y_1-y_2|$ & $(n-1)+(m-1)$ \\
+$n\times m$ tórusz & $2nm$ & $d=\min(\Delta x,n-\Delta x)+\min(\Delta y,m-\Delta y)$ & $\lfloor n/2\rfloor+\lfloor m/2\rfloor$ \\
+$d$ dimenziós hiperkocka & $d2^{d-1}$ & Hamming-távolság a bináris címek között & $d$ \\
+Fa & $p-1$ & Az egyetlen egyszerű út hossza & A leghosszabb csúcspár távolsága \\
+\bottomrule
+\end{tabularx}
+}

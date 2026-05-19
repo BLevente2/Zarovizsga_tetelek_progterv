@@ -1,0 +1,9 @@
+CREATE_TOPIC(hirek)
+
+SUBSCRIBE(hirek, hallgato_ertesites)
+SUBSCRIBE(hirek, naplozas)
+
+PUBLISH(hirek, "uj uzenet")
+
+FOR handler IN SUBSCRIBERS(hirek) DO
+  CALL handler("uj uzenet")
