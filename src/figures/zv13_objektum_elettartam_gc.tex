@@ -1,0 +1,22 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small,node distance=12mm]
+  \node[terminator, fill=lightaccent, minimum width=27mm] (start) {\code{new}};
+  \node[flow, right=of start, minimum width=31mm] (alloc) {Heap-terület\\lefoglalása};
+  \node[flow, right=of alloc, minimum width=31mm] (ctor) {Konstruktor\\lefut};
+  \node[flow, below=13mm of ctor, minimum width=33mm] (reachable) {Elérhető objektum\\GC rootból};
+  \node[pred, left=of reachable, minimum width=28mm] (lost) {Van még\\referencia?};
+  \node[flow, left=of lost, minimum width=34mm, fill=warnbg] (eligible) {Elérhetetlen,\\GC-re jelölt};
+  \node[terminator, below=13mm of eligible, fill=black!6, minimum width=32mm] (free) {Memória\\felszabadul};
+
+  \draw[arrow] (start) -- (alloc);
+  \draw[arrow] (alloc) -- (ctor);
+  \draw[arrow] (ctor) -- (reachable);
+  \draw[arrow] (reachable) -- (lost);
+  \draw[arrow] (lost) -- node[above,font=\scriptsize]{nem} (eligible);
+  \draw[arrow] (eligible) -- (free);
+  \draw[arrow] (lost.north) .. controls +(0,14mm) and +(0,-16mm) .. node[right,font=\scriptsize]{igen} (reachable.north);
+\end{tikzpicture}
+\caption{Java objektum életútja a létrehozástól a szemétgyűjtésig}
+\label{fig:zv13_objektum_elettartam_gc}
+\end{figure}

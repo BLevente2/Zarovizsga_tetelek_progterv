@@ -1,0 +1,12 @@
+\begin{tabularx}{\textwidth}{L{30mm}X X}
+\toprule
+\textbf{Alapelv} & \textbf{Jelentése} & \textbf{Java-beli megvalósítási eszközök} \\
+\midrule
+Absztrakció & A lényeges tulajdonságok és műveletek kiemelése, a részletek elhagyása. & Osztályok, absztrakt osztályok, interfészek, metódusdeklarációk. \\
+Egységbezárás & Az adatok és a rajtuk dolgozó műveletek egy egységbe, osztályba zárása. & Adattagok és metódusok ugyanabban az osztályban; objektumok állapottal és viselkedéssel. \\
+Információrejtés & A belső reprezentáció és implementáció elrejtése a külvilág elől. & \code{private}, \code{protected}, \code{public}, csomagszintű láthatóság; getter/setter metódusok. \\
+Öröklés & Új osztály létrehozása meglévő osztály specializálásával. & \code{extends}, metódusfelüldefiniálás, \code{super}; Java-ban osztályok között egyszeres öröklés van. \\
+Kompozíció & Egy objektum más objektumokat tartalmaz, és azok szolgáltatásait használja. & Adattagként tárolt objektumreferenciák; gyakran rugalmasabb, mint az öröklés. \\
+Polimorfizmus & Ugyanaz az üzenet/metódushívás többféle tényleges működést válthat ki. & Felüldefiniált metódusok dinamikus kötése, interfészek, absztrakt típusú referenciák. \\
+\bottomrule
+\end{tabularx}

@@ -1,0 +1,13 @@
+\begin{tabularx}{\textwidth}{L{28mm}L{38mm}X}
+\toprule
+\textbf{Fogalom} & \textbf{Szerep} & \textbf{Vizsgán fontos megjegyzés} \\
+\midrule
+Java nyelv & Általános célú, erősen objektumorientált programozási nyelv. & C/C++ jellegű szintaxisra épít, de magasabb szintű: nincs explicit pointeraritmetika, automatikus memóriakezelést használ. \\
+JDK & Java Development Kit, fejlesztői csomag. & Tartalmazza többek között a \code{javac} fordítót, a futtatáshoz szükséges eszközöket és a szabványos könyvtárakat. \\
+JRE & Java Runtime Environment, futtatókörnyezet. & A lefordított Java program futtatásához szükséges környezet; a fejlesztéshez önmagában nem elég. \\
+JVM & Java Virtual Machine, virtuális gép. & A \code{.class} fájlok bájtkódját tölti be, ellenőrzi, értelmezi vagy JIT-fordítja. \\
+Bájtkód & Gépfüggetlen köztes kód. & A \code{javac} eredménye nem közvetlen natív gépi kód, hanem JVM által végrehajtható \code{.class} állomány. \\
+Platformfüggetlenség & A forrásból fordított bájtkód több rendszeren is futtatható. & A gyakorlati elv: ``write once, run anywhere'', feltéve hogy az adott platformon van megfelelő JVM. \\
+Szabványos könyvtár & Kész osztályok és interfészek gyűjteménye. & Ide tartozik például a \code{java.lang}, \code{java.util}, \code{java.io}, \code{java.time}. \\
+\bottomrule
+\end{tabularx}

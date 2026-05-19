@@ -1,0 +1,22 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small,node distance=11mm]
+  \node[zvflowprocess, fill=lightaccent, minimum width=31mm] (source) {Java forrás\\\code{Hello.java}};
+  \node[zvflowprocess, fill=warnbg, right=of source, minimum width=26mm] (javac) {Fordítás\\\code{javac}};
+  \node[zvflowprocess, fill=lightaccent, right=of javac, minimum width=30mm] (class) {Bájtkód\\\code{Hello.class}};
+  \node[zvflowprocess, fill=warnbg, below=13mm of class, minimum width=30mm] (jvm) {JVM\\betöltés, ellenőrzés};
+  \node[zvflowprocess, fill=lightaccent, left=of jvm, minimum width=31mm] (jit) {Értelmezés vagy\\JIT-fordítás};
+  \node[zvflowprocess, fill=black!6, left=of jit, minimum width=31mm] (native) {Végrehajtás\\adott platformon};
+
+  \draw[arrow] (source) -- (javac);
+  \draw[arrow] (javac) -- (class);
+  \draw[arrow] (class) -- (jvm);
+  \draw[arrow] (jvm) -- (jit);
+  \draw[arrow] (jit) -- (native);
+
+  \node[font=\scriptsize, align=center, below=4mm of source] {Programozó által\\írt szöveg};
+  \node[font=\scriptsize, align=center, below=4mm of native] {Az operációs rendszer és\\processzor konkrét környezete};
+\end{tikzpicture}
+\caption{Java program fordításának és futtatásának szemléletes folyamata}
+\label{fig:zv13_java_forditas_futtatas}
+\end{figure}

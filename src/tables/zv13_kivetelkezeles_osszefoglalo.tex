@@ -1,0 +1,13 @@
+\begin{tabularx}{\textwidth}{L{29mm}L{48mm}X}
+\toprule
+\textbf{Elem} & \textbf{Feladat} & \textbf{Megjegyzés} \\
+\midrule
+\code{try} & A potenciálisan kivételt dobó normál kód helye. & A hibakezelő kódot nem ide, hanem a megfelelő \code{catch} ágba tesszük. \\
+\code{catch} & A megadott típusú kivétel elkapása és kezelése. & Több \code{catch} esetén a specifikusabb kivételt kell előre írni. \\
+\code{finally} & Mindenképpen lefutó lezáró blokk. & Erőforrás-felszabadításra használható, de Java-ban gyakran kiváltható \code{try-with-resources} szerkezettel. \\
+\code{throw} & Kivétel kézi dobása. & Például hibás paraméter esetén saját kivétel dobható. \\
+\code{throws} & Metódusfejlécben jelzi, hogy a metódus milyen ellenőrzött kivételt továbbíthat. & A hívónak kezelnie kell, vagy tovább kell jeleznie. \\
+Ellenőrzött kivétel & Fordító által kikényszerített kezelés vagy továbbjelzés. & Példa: sok \code{IOException} jellegű hiba. \\
+Nem ellenőrzött kivétel & \code{RuntimeException} vagy leszármazottja. & Általában programozási hibát vagy előfeltétel-sértést jelez, például \code{NullPointerException}. \\
+\bottomrule
+\end{tabularx}
