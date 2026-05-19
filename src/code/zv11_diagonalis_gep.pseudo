@@ -1,0 +1,8 @@
+INPUT <M>
+IF H(<M>, <M>) says "halts" THEN
+    WHILE TRUE DO
+        CONTINUE
+    ENDWHILE
+ELSE
+    ACCEPT
+ENDIF

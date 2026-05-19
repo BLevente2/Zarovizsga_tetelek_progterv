@@ -1,0 +1,8 @@
+INPUT w
+n := length(w)
+RUN the decision procedure for at most c * n^k steps
+IF the procedure accepts THEN
+    ACCEPT
+ELSE
+    REJECT
+ENDIF

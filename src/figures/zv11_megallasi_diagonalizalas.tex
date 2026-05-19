@@ -1,0 +1,25 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small]
+  \tikzset{box/.style={draw, rounded corners, fill=lightaccent, minimum width=34mm, minimum height=9mm, align=center},
+           warn/.style={draw, rounded corners, fill=warnbg, minimum width=36mm, minimum height=9mm, align=center},
+           arr/.style={->, >=stealth, thick},
+           lab/.style={font=\scriptsize, align=center}}
+
+  \node[box] (in) at (-3.9,0) {bemenet\\$\langle M\rangle$};
+  \node[warn] (d) at (0,0) {diagonális\\gép $D$};
+  \node[box] (h) at (0,1.55) {feltételezett\\döntő $H$};
+  \node[box] (query) at (3.9,0) {$H(\langle M\rangle,\langle M\rangle)$\\kérdés};
+  \node[warn] (contr) at (0,-1.55) {$D(\langle D\rangle)$\\ellentmondás};
+
+  \draw[arr] (in) -- (d);
+  \draw[arr] (d) -- (query);
+  \draw[arr] (query) -- (h);
+  \draw[arr] (h) -- (d);
+  \draw[arr] (d) -- (contr);
+
+  \node[lab] at (3.9,-0.82) {önmagára alkalmazás};
+\end{tikzpicture}
+\caption{A megállási probléma eldönthetetlenségének diagonális gondolata}
+\label{fig:zv11_megallasi_diagonalizalas}
+\end{figure}

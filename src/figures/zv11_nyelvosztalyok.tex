@@ -1,0 +1,25 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small]
+  \tikzset{mainlabel/.style={font=\bfseries, align=center},
+           smallnote/.style={font=\scriptsize, align=center},
+           rbox/.style={draw, rounded corners, fill=white, minimum width=31mm, minimum height=11mm, align=center},
+           outbox/.style={draw, rounded corners, fill=black!4, minimum width=55mm, minimum height=9mm, align=center}}
+
+  \draw[thick, fill=lightaccent, fill opacity=0.55] (-1.55,0) ellipse (2.45cm and 1.45cm);
+  \draw[thick, fill=warnbg, fill opacity=0.55] (1.55,0) ellipse (2.45cm and 1.45cm);
+
+  \node[mainlabel] at (-2.45,0.85) {$\mathrm{RE}$};
+  \node[smallnote] at (-2.45,0.45) {felismerhető\\nyelvek};
+  \node[mainlabel] at (2.45,0.85) {$\mathrm{coRE}$};
+  \node[smallnote] at (2.45,0.45) {komplementere\\felismerhető};
+
+  \node[rbox] at (0,0) {$\mathrm{R}=\mathrm{RE}\cap\mathrm{coRE}$\\eldönthető};
+
+  \node[smallnote] at (-2.55,-0.75) {példa: $\mathrm{HALT}$\\$\mathrm{RE}$, de nem $\mathrm{R}$};
+  \node[smallnote] at (2.55,-0.75) {példa: $\overline{\mathrm{HALT}}$\\$\mathrm{coRE}$, de nem $\mathrm{R}$};
+  \node[outbox] at (0,-2.2) {vannak nyelvek, amelyek sem $\mathrm{RE}$-, sem $\mathrm{coRE}$-beliek};
+\end{tikzpicture}
+\caption{A legfontosabb kiszámíthatósági nyelvosztályok kapcsolata}
+\label{fig:zv11_nyelvosztalyok}
+\end{figure}

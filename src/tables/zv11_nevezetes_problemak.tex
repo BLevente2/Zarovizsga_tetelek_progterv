@@ -1,0 +1,13 @@
+\small
+\begin{tabularx}{\textwidth}{L{32mm}L{38mm}X}
+\toprule
+\textbf{Probléma} & \textbf{Nyelv alakja} & \textbf{Besorolás} \\
+\midrule
+Megállási probléma & $\mathrm{HALT}$: $M$ megáll $w$-n & $\mathrm{RE}$, de nem $\mathrm{R}$. Szimulációval felismerhető, de általánosan nem eldönthető. \\
+Elfogadási probléma & $\mathrm{A}_{TM}$: $M$ elfogadja $w$-t & $\mathrm{RE}$, de nem $\mathrm{R}$. Ha a szimuláció elfogadást lát, megállhat. \\
+Nem-megállás & $\overline{\mathrm{HALT}}$ & $\mathrm{coRE}$, de nem $\mathrm{RE}$. Ha ez is $\mathrm{RE}$ lenne, akkor $\mathrm{HALT}$ eldönthető lenne. \\
+Üres-e a felismert nyelv? & $L(M)=\emptyset$ & Eldönthetetlen; tipikusan nem is $\mathrm{RE}$. Rice-tétel jellegű következmény. \\
+Reguláris nyelv szóproblémája & Véges automata elfogadja-e $w$-t & $\mathrm{R}$, sőt hatékonyan eldönthető. A véges automata futása mindig véges. \\
+\bottomrule
+\end{tabularx}
+\normalsize

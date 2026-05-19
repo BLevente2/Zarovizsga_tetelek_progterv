@@ -1,0 +1,23 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small]
+  \tikzset{box/.style={draw, rounded corners, fill=lightaccent, minimum width=34mm, minimum height=10mm, align=center},
+           good/.style={draw, rounded corners, fill=warnbg, minimum width=34mm, minimum height=10mm, align=center},
+           arr/.style={->, >=stealth, thick},
+           lab/.style={font=\scriptsize, align=center}}
+
+  \node[box] (w) at (0,1.8) {bemenet $w$};
+  \node[box] (ml) at (-2.5,0.35) {$M_L$ felismerő\\$L$-re};
+  \node[box] (mc) at (2.5,0.35) {$M_{\overline L}$ felismerő\\$\overline L$-re};
+  \node[good] (yes) at (-2.5,-1.25) {$M_L$ elfogad\\$\Rightarrow w\in L$};
+  \node[good] (no) at (2.5,-1.25) {$M_{\overline L}$ elfogad\\$\Rightarrow w\notin L$};
+  \node[lab] at (0,-2.25) {A két felismerőt váltogatva futtatva valamelyik biztosan megáll,\newline ezért $L$ eldönthető.};
+
+  \draw[arr] (w) -- (ml);
+  \draw[arr] (w) -- (mc);
+  \draw[arr] (ml) -- (yes);
+  \draw[arr] (mc) -- (no);
+\end{tikzpicture}
+\caption{Ha $L$ és komplementere is felismerhető, akkor $L$ eldönthető}
+\label{fig:zv11_eldontes_es_felismeres}
+\end{figure}

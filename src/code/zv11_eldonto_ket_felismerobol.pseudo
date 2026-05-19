@@ -1,0 +1,12 @@
+INPUT w
+FOR t := 1 TO infinity DO
+    SIMULATE recognizer M_L on w for t steps
+    IF M_L accepted within t steps THEN
+        ACCEPT
+    ENDIF
+
+    SIMULATE recognizer M_not_L on w for t steps
+    IF M_not_L accepted within t steps THEN
+        REJECT
+    ENDIF
+ENDFOR

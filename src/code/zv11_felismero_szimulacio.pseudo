@@ -1,0 +1,9 @@
+INPUT <M, w>
+SIMULATE M on input w step by step
+IF M accepts w THEN
+    ACCEPT
+ENDIF
+IF M rejects w THEN
+    REJECT
+ENDIF
+// If M does not halt, this recognizer also does not halt.

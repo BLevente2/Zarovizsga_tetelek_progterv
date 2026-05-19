@@ -1,0 +1,10 @@
+\begin{tabularx}{\textwidth}{L{22mm}L{34mm}L{38mm}X}
+\toprule
+\textbf{Osztály} & \textbf{Jelentés} & \textbf{Gépi jellemzés} & \textbf{Megjegyzés} \\
+\midrule
+$\mathrm{R}$ & Rekurzív, eldönthető nyelvek & Van olyan Turing-gép, amely minden bemeneten megáll, és helyes igen/nem választ ad. & Ezekre teljes algoritmus létezik. Ha $L\in\mathrm{R}$, akkor $\overline L\in\mathrm{R}$ is. \\
+$\mathrm{RE}$ & Rekurzívan felsorolható, felismerhető nyelvek & Van olyan Turing-gép, amely $w\in L$ esetén elfogadással megáll; $w\notin L$ esetén elutasíthat vagy futhat örökké. & Félig eldönthető osztály. Az igen esetek tanúsíthatók véges futással. \\
+$\mathrm{coR}$ & Az $\mathrm{R}$ komplementerosztálya & $L\in\mathrm{coR}$, ha $\overline L\in\mathrm{R}$. & Mivel $\mathrm{R}$ zárt komplementerre, $\mathrm{coR}=\mathrm{R}$. \\
+$\mathrm{coRE}$ & Az $\mathrm{RE}$ komplementerosztálya & $L\in\mathrm{coRE}$, ha $\overline L\in\mathrm{RE}$. & A nem esetek félig eldönthetők. Általában $\mathrm{RE}\neq\mathrm{coRE}$. \\
+\bottomrule
+\end{tabularx}
