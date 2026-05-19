@@ -1,33 +1,37 @@
 \begin{figure}[htbp]
 \centering
-\begin{tikzpicture}[font=\small, node distance=8mm]
-  \tikzset{proc/.style={draw, rounded corners, fill=lightaccent, minimum width=22mm, minimum height=8mm, align=center},
+\begin{tikzpicture}[font=\scriptsize]
+  \tikzset{proc/.style={draw, rounded corners, fill=lightaccent, minimum width=23mm, minimum height=8mm, align=center},
            chan/.style={draw, rounded corners, fill=warnbg, minimum width=24mm, minimum height=8mm, align=center},
            mailbox/.style={draw, rounded corners, fill=black!5, minimum width=24mm, minimum height=8mm, align=center},
-           msg/.style={->, >=stealth, thick}}
+           msg/.style={->, >=stealth, thick},
+           rowlabel/.style={font=\bfseries\sffamily\small, anchor=west}}
 
-  \node[proc] (cspA) at (0,2.2) {Folyamat A};
-  \node[chan] (cspC) at (2.6,2.2) {csatorna};
-  \node[proc] (cspB) at (5.2,2.2) {Folyamat B};
+  % CSP
+  \node[rowlabel] at (-0.9,3.35) {CSP};
+  \node[proc] (cspA) at (0,2.85) {Folyamat A};
+  \node[chan] (cspC) at (2.9,2.85) {csatorna};
+  \node[proc] (cspB) at (5.8,2.85) {Folyamat B};
   \draw[msg] (cspA) -- (cspC);
   \draw[msg] (cspC) -- (cspB);
-  \node[anchor=west,font=\bfseries] at (-1.0,2.75) {CSP};
 
-  \node[proc] (pub) at (0,0.55) {Publisher};
-  \node[chan] (topic) at (2.6,0.55) {Topic};
-  \node[proc] (sub1) at (5.25,0.95) {Subscriber 1};
-  \node[proc] (sub2) at (5.25,0.15) {Subscriber 2};
+  % Publish--Subscribe
+  \node[rowlabel] at (-0.9,1.45) {Publish--Subscribe};
+  \node[proc] (pub) at (0,0.95) {Publisher};
+  \node[chan] (topic) at (2.9,0.95) {Topic};
+  \node[proc] (sub1) at (5.8,1.35) {Subscriber 1};
+  \node[proc] (sub2) at (5.8,0.55) {Subscriber 2};
   \draw[msg] (pub) -- (topic);
   \draw[msg] (topic) -- (sub1);
   \draw[msg] (topic) -- (sub2);
-  \node[anchor=west,font=\bfseries] at (-1.0,1.1) {Publish--Subscribe};
 
-  \node[proc] (act1) at (0,-1.25) {Aktor A\\belső állapot};
-  \node[mailbox] (mail) at (2.6,-1.25) {B postaládája};
-  \node[proc] (act2) at (5.25,-1.25) {Aktor B\\belső állapot};
-  \draw[msg] (act1) -- node[above] {üzenet} (mail);
+  % Aktor modell
+  \node[rowlabel] at (-0.9,-0.55) {Aktor modell};
+  \node[proc] (act1) at (0,-1.15) {Aktor A\\belső állapot};
+  \node[mailbox] (mail) at (2.9,-1.15) {B postafiókja};
+  \node[proc] (act2) at (5.8,-1.15) {Aktor B\\belső állapot};
+  \draw[msg] (act1) -- (mail);
   \draw[msg] (mail) -- (act2);
-  \node[anchor=west,font=\bfseries] at (-1.0,-0.7) {Aktor modell};
 \end{tikzpicture}
 \caption{Üzenetküldési modellek kapcsolati szerkezete}
 \label{fig:zv09_uzenetkuldesi_modellek}
