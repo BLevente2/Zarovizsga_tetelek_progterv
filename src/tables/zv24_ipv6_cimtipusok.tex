@@ -1,0 +1,13 @@
+\begin{tabularx}{\textwidth}{L{31mm}L{34mm}X}
+\toprule
+\textbf{Címtípus} & \textbf{Jellemző prefix / példa} & \textbf{Feladat} \\
+\midrule
+Unicast & Egy konkrét interfész címe & Egyetlen célinterfésznek szóló csomag. Ide tartozik a globális unicast, link-local, unique local és loopback is. \\
+Global unicast & Tipikusan \texttt{2000::/3} & Globálisan irányítható IPv6 címek, hierarchikus aggregációval. \\
+Link-local & \texttt{fe80::/10} & Csak az adott linken érvényes; szomszédfelderítéshez, router discoveryhez, automatikus konfigurációhoz fontos. \\
+Unique local & \texttt{fc00::/7}, gyakorlatban főleg \texttt{fd00::/8} & Privát jellegű, szervezeten belüli IPv6 címzés; nem globális Internet-routingra szánt. \\
+Multicast & \texttt{ff00::/8} & Csoportnak szóló címzés; IPv6-ban broadcast helyett multicast címek vannak. \\
+Anycast & Unicast formájú cím több interfészen & A routing a topológiailag legközelebbi példányhoz továbbít. \\
+Special & \texttt{::}, \texttt{::1} & Unspecified cím és loopback cím. \\
+\bottomrule
+\end{tabularx}

@@ -1,0 +1,29 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=8mm]
+  \tikzset{addr/.style={draw, rounded corners, minimum width=42mm, minimum height=11mm, align=center}}
+  \node[addr, fill=warnbg] (ipv6) {IPv6 cím\\ 128 bit, prefix alapú};
+  \node[addr, fill=lightaccent, below left=14mm and 20mm of ipv6] (uni) {Unicast\\ egy interfész};
+  \node[addr, fill=black!5, below=14mm of ipv6] (multi) {Multicast\\ csoport};
+  \node[addr, fill=lightaccent, below right=14mm and 20mm of ipv6] (any) {Anycast\\ legközelebbi példány};
+
+  \node[addr, fill=black!5, below=9mm of uni] (global) {Global unicast\\ 2000::/3};
+  \node[addr, fill=black!5, below=9mm of global] (link) {Link-local\\ fe80::/10};
+  \node[addr, fill=black!5, below=9mm of link] (ula) {Unique local\\ fc00::/7};
+  \node[addr, fill=black!5, below=9mm of ula] (special) {Speciális\\ :: és ::1};
+
+  \draw[arrow] (ipv6) -- (uni);
+  \draw[arrow] (ipv6) -- (multi);
+  \draw[arrow] (ipv6) -- (any);
+  \draw[arrow] (uni) -- (global);
+  \draw[arrow] (global) -- (link);
+  \draw[arrow] (link) -- (ula);
+  \draw[arrow] (ula) -- (special);
+
+  \node[draw, rounded corners, fill=warnbg, below=10mm of multi, align=center, minimum width=42mm] {IPv6-ban nincs broadcast;\\ helyette multicast működik.};
+\end{tikzpicture}%
+}
+\caption{IPv6 címtípusok vizsgaszintű áttekintése}
+\label{fig:zv24_ipv6_cimtipusok}
+\end{figure}

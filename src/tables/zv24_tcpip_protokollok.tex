@@ -1,0 +1,12 @@
+\begin{tabularx}{\textwidth}{L{19mm}L{25mm}X}
+\toprule
+\textbf{Protokoll} & \textbf{Réteg} & \textbf{Funkció} \\
+\midrule
+ARP & Network Access / Link és Internet határa & IPv4-címhez tartozó adatkapcsolati címet, például MAC-címet keres a helyi hálózaton. Kérésnél broadcast, válasznál rendszerint unicast keretet használ. \\
+RARP & Network Access / Link és Internet határa & A régi fordított címfeloldási protokoll: MAC-címből próbált IP-címet meghatározni. Gyakorlatban a BOOTP és a DHCP váltotta fel. \\
+IP & Internet & Összeköttetésmentes, best effort datagram szolgáltatás. Logikai címzés, útválasztás, darabolás/összeállítás IPv4-nél, TTL/Hop Limit alapú élettartam-korlátozás. \\
+ICMP & Internet & Vezérlő- és hibajelző üzenetek az IP működéséhez. Példák: echo request/reply, destination unreachable, time exceeded. \\
+TCP & Transport & Összeköttetésalapú, megbízható bájtfolyam-szolgáltatás. Sorrendhelyesség, újraküldés, nyugtázás, adatfolyam- és torlódásvezérlés. \\
+UDP & Transport & Összeköttetésmentes datagram szolgáltatás. Kis fejrészt és egyszerű multiplexálást ad portokkal, de nem garantál kézbesítést, sorrendet vagy ismétlésmentességet. \\
+\bottomrule
+\end{tabularx}

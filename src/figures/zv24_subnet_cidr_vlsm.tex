@@ -1,0 +1,37 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize]
+  \draw[thick] (0,0) rectangle (12,0.7);
+  \fill[lightaccent] (0,0) rectangle (9,0.7);
+  \fill[warnbg] (9,0) rectangle (12,0.7);
+  \draw[thick] (9,0) -- (9,0.7);
+  \node at (4.5,0.35) {hálózati prefix};
+  \node at (10.5,0.35) {host rész};
+  \node[below] at (6,0) {példa: 193.6.5.0/24};
+
+  \draw[thick] (0,-1.2) rectangle (12,-0.5);
+  \fill[lightaccent] (0,-1.2) rectangle (9,-0.5);
+  \fill[black!10] (9,-1.2) rectangle (10.5,-0.5);
+  \fill[warnbg] (10.5,-1.2) rectangle (12,-0.5);
+  \draw[thick] (9,-1.2) -- (9,-0.5);
+  \draw[thick] (10.5,-1.2) -- (10.5,-0.5);
+  \node at (4.5,-0.85) {eredeti hálózati rész};
+  \node at (9.75,-0.85) {subnet};
+  \node at (11.25,-0.85) {host};
+  \node[below] at (6,-1.2) {subnetting: például /27, 8 alhálózat, 30 kiosztható host / alhálózat};
+
+  \draw[thick] (0,-2.8) rectangle (12,-2.1);
+  \fill[lightaccent] (0,-2.8) rectangle (8,-2.1);
+  \fill[warnbg] (8,-2.8) rectangle (12,-2.1);
+  \draw[thick] (8,-2.8) -- (8,-2.1);
+  \node at (4,-2.45) {rövidebb közös prefix};
+  \node at (10,-2.45) {több összefogott hálózat};
+  \node[below] at (6,-2.8) {supernetting / CIDR: például több C osztályú blokk összefogása /20 prefixszel};
+
+  \draw[decorate, decoration={brace, amplitude=4pt}, thick] (0,-3.55) -- (12,-3.55) node[midway, below=5pt, align=center]{VLSM esetén a belső alhálózatok különböző prefixhosszúak lehetnek,\\ az útválasztásnál pedig a leghosszabb prefix egyezés dönt.};
+\end{tikzpicture}%
+}
+\caption{Subnetting, supernetting, CIDR és VLSM kapcsolata}
+\label{fig:zv24_subnet_cidr_vlsm}
+\end{figure}

@@ -1,0 +1,12 @@
+\begin{tabularx}{\textwidth}{L{30mm}L{50mm}X}
+\toprule
+\textbf{Szempont} & \textbf{TCP} & \textbf{UDP} \\
+\midrule
+Kapcsolat jellege & Összeköttetésalapú; kapcsolatfelépítés és lezárás tartozik hozzá. & Összeköttetésmentes; minden datagram önálló. \\
+Szolgáltatás & Megbízható bájtfolyam. & Nem megbízható datagram szolgáltatás. \\
+Sorrend & Sorszámokkal sorrendhelyes átadást biztosít. & A datagramok sorrendje nem garantált. \\
+Hibakezelés & Nyugtázás, időzítés, újraküldés, duplikátumszűrés. & Ellenőrzőösszeg van, de nincs automatikus újraküldés vagy sorrendezés. \\
+Vezérlés & Adatfolyam-vezérlés és torlódásvezérlés. & Nincs beépített torlódás- és adatfolyam-vezérlés. \\
+Tipikus használat & HTTP/HTTPS, SMTP, SSH, FTP vezérlés, megbízható adatátvitel. & DNS-kérés, DHCP, VoIP, streaming, játékok, TFTP, ahol az alkalmazás kezeli a veszteséget vagy fontos a kis késleltetés. \\
+\bottomrule
+\end{tabularx}

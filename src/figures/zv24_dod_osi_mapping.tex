@@ -1,0 +1,33 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.92\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=2mm]
+  \tikzset{layer/.style={draw, rounded corners, minimum width=47mm, minimum height=8mm, align=center}}
+  \node[layer, fill=warnbg] (osi7) {7. Alkalmazási};
+  \node[layer, fill=lightaccent, below=of osi7] (osi6) {6. Megjelenítési};
+  \node[layer, fill=black!5, below=of osi6] (osi5) {5. Viszony};
+  \node[layer, fill=lightaccent, below=of osi5] (osi4) {4. Szállítási};
+  \node[layer, fill=black!5, below=of osi4] (osi3) {3. Hálózati};
+  \node[layer, fill=lightaccent, below=of osi3] (osi2) {2. Adatkapcsolati};
+  \node[layer, fill=warnbg, below=of osi2] (osi1) {1. Fizikai};
+
+  \node[above=4mm of osi7, font=\bfseries\small] {ISO--OSI};
+
+  \node[layer, fill=warnbg, minimum height=28mm, right=35mm of osi6] (app) {Application};
+  \node[layer, fill=lightaccent, minimum height=8mm, below=of app] (transport) {Host-to-Host\ / Transport};
+  \node[layer, fill=black!5, minimum height=8mm, below=of transport] (internet) {Internet};
+  \node[layer, fill=lightaccent, minimum height=18mm, below=of internet] (access) {Network Access\ / Link};
+  \node[above=4mm of app, font=\bfseries\small] {TCP/IP / DoD};
+
+  \draw[-{Stealth[length=2mm]}, thick] (osi7.east) -- (app.west);
+  \draw[-{Stealth[length=2mm]}, thick] (osi6.east) -- (app.west);
+  \draw[-{Stealth[length=2mm]}, thick] (osi5.east) -- (app.west);
+  \draw[-{Stealth[length=2mm]}, thick] (osi4.east) -- (transport.west);
+  \draw[-{Stealth[length=2mm]}, thick] (osi3.east) -- (internet.west);
+  \draw[-{Stealth[length=2mm]}, thick] (osi2.east) -- (access.west);
+  \draw[-{Stealth[length=2mm]}, thick] (osi1.east) -- (access.west);
+\end{tikzpicture}%
+}
+\caption{Az ISO--OSI és a TCP/IP / DoD modell rétegeinek megfeleltetése}
+\label{fig:zv24_dod_osi_mapping}
+\end{figure}

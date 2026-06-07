@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.94\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=2mm]
+  \tikzset{stack/.style={draw, rounded corners, minimum width=112mm, minimum height=10mm, align=center}}
+  \node[stack, fill=warnbg] (app) {Application\quad HTTP, DNS, SMTP, FTP, SSH, alkalmazási folyamatok};
+  \node[stack, fill=lightaccent, below=of app] (tr) {Transport / Host-to-Host\quad TCP \quad\quad UDP};
+  \node[stack, fill=black!5, below=of tr] (ip) {Internet\quad ICMP \quad IP \quad IGMP};
+  \node[stack, fill=lightaccent, below=of ip] (link) {Network Access / Link\quad ARP \quad Hardware Interface \quad RARP};
+  \node[stack, fill=warnbg, below=of link] (phys) {Physical layer\quad bitek, jelek, átviteli közeg};
+
+  \draw[arrow] ([xshift=-55mm]app.west) -- ([xshift=-55mm]phys.west) node[midway, left=2mm, align=center]{küldés:\\ enkapszuláció};
+  \draw[arrow] ([xshift=55mm]phys.east) -- ([xshift=55mm]app.east) node[midway, right=2mm, align=center]{fogadás:\\ dekapszuláció};
+
+  \node[draw, rounded corners, fill=black!5, below=5mm of phys, align=center, minimum width=102mm] {A TCP/IP protokollszövet nem egyetlen protokoll, hanem egymásra épülő protokollok együttese.};
+\end{tikzpicture}%
+}
+\caption{A TCP/IP protokollszövet főbb rétegei és protokolljai}
+\label{fig:zv24_tcpip_stack}
+\end{figure}

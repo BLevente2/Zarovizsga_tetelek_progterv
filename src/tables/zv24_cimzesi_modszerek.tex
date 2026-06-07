@@ -1,0 +1,11 @@
+\begin{tabularx}{\textwidth}{L{28mm}X X}
+\toprule
+\textbf{Fogalom} & \textbf{Lényege} & \textbf{Vizsgán fontos következmény} \\
+\midrule
+Maszk / prefix & A hálózati rész bitjeit jelöli; például /24 megfelel a 255.255.255.0 maszknak. & A hálózati cím az IP-cím és a maszk bitenkénti AND műveletével számolható. \\
+Subnetting & Egy nagyobb hálózat felosztása kisebb alhálózatokra úgy, hogy a host bitekből subnet biteket veszünk el. & Jobb belső szervezés és kevesebb pazarlás, de a host bitek száma csökken. \\
+VLSM & Változó hosszúságú maszkok használata ugyanazon címtartományon belül. & Különböző méretű alhálózatok alakíthatók ki; az útválasztásnál a leghosszabb prefix egyezés dönt. \\
+Supernetting & Több szomszédos hálózat összevonása rövidebb prefixszel. & Csökkenti a routing táblák méretét, ha a címkiosztás topológiailag is összefüggő. \\
+CIDR & Osztály nélküli címzés: a címblokkok nem az A/B/C osztályhatárokhoz kötődnek. & A prefixet mindig továbbítani és figyelembe venni kell; a router nem dönthet csak az első bitek klasszikus osztályjelentése alapján. \\
+\bottomrule
+\end{tabularx}

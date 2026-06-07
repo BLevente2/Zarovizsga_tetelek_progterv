@@ -1,0 +1,21 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.93\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=14mm]
+  \tikzset{host/.style={draw, rounded corners, fill=lightaccent, minimum width=32mm, minimum height=13mm, align=center}}
+  \node[host] (a) {A gép\\ IP: 192.168.1.10\\ MAC: AA:AA:AA};
+  \node[host, right=45mm of a] (b) {B gép\\ IP: 192.168.1.20\\ MAC: BB:BB:BB};
+  \node[draw, rounded corners, fill=black!5, below=16mm of $(a)!0.5!(b)$, minimum width=108mm, minimum height=11mm, align=center] (lan) {Helyi Ethernet / WLAN szegmens};
+
+  \draw[thick] (a.south) -- (lan.north -| a.south);
+  \draw[thick] (b.south) -- (lan.north -| b.south);
+
+  \draw[-{Stealth[length=2mm]}, thick] ([yshift=8mm]a.east) -- node[above, align=center]{ARP Request\\ Kié a 192.168.1.20?\\ Ethernet broadcast} ([yshift=8mm]b.west);
+  \draw[-{Stealth[length=2mm]}, thick] ([yshift=-2mm]b.west) -- node[below, align=center]{ARP Reply\\ 192.168.1.20 = BB:BB:BB\\ általában unicast} ([yshift=-2mm]a.east);
+
+  \node[draw, rounded corners, fill=warnbg, below=8mm of lan, align=center, minimum width=100mm] {Az ARP csak a helyi linken old fel IPv4-címet adatkapcsolati címre; távoli cél esetén a következő ugrás, vagyis a gateway MAC-címét kell feloldani.};
+\end{tikzpicture}%
+}
+\caption{ARP címfeloldás helyi hálózaton}
+\label{fig:zv24_arp_folyamat}
+\end{figure}

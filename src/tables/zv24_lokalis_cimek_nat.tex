@@ -1,0 +1,11 @@
+\begin{tabularx}{\textwidth}{L{37mm}L{39mm}X}
+\toprule
+\textbf{Tartomány / technika} & \textbf{Példa} & \textbf{Szerep} \\
+\midrule
+Privát IPv4 A tartomány & \texttt{10.0.0.0/8} & Belső hálózatokban szabadon használható, a globális Interneten nem irányítják. \\
+Privát IPv4 B tartomány & \texttt{172.16.0.0/12} & 172.16.0.0--172.31.255.255 közötti magánhálózati címek. \\
+Privát IPv4 C tartomány & \texttt{192.168.0.0/16} & Otthoni és kisvállalati hálózatok gyakori címtartománya. \\
+Loopback & \texttt{127.0.0.0/8}, tipikusan \texttt{127.0.0.1} & A helyi TCP/IP stack tesztelésére szolgál; nem kerül ki a hálózatra. \\
+NAT & Forrás NAT / PAT & A belső privát címeket egy vagy több külső címre és portokra fordítja; fordítási táblát tart fenn a válaszcsomagok visszairányításához. \\
+\bottomrule
+\end{tabularx}

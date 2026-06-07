@@ -1,0 +1,10 @@
+\begin{tabularx}{\textwidth}{L{31mm}L{34mm}X}
+\toprule
+\textbf{ISO--OSI réteg} & \textbf{TCP/IP / DoD megfelelő} & \textbf{Megjegyzés} \\
+\midrule
+Alkalmazási, megjelenítési, viszony & Application & A TCP/IP modell ezeket nem választja szét mereven; az alkalmazási protokollok maguk kezelik a formátumot, kódolást, viszonyt és alkalmazási logikát. \\
+Szállítási & Host-to-Host / Transport & Végpont--végpont kommunikáció: portok, multiplexálás, megbízhatóság, sorrendhelyesség, adatfolyam-vezérlés. Tipikus protokollok: TCP és UDP. \\
+Hálózati & Internet & Hálózatok összekapcsolása, globális logikai címzés, útválasztás, datagram továbbítás. Fő protokoll: IP, kiegészítő: ICMP, IGMP. \\
+Adatkapcsolati és fizikai & Network Access / Link & Konkrét hálózati technológia, keretképzés, MAC-címzés, fizikai átvitel. Ide illeszkedik például az Ethernet, Wi-Fi, PPP; ARP/RARP is ehhez a határterülethez kapcsolódik. \\
+\bottomrule
+\end{tabularx}

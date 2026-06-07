@@ -1,0 +1,21 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.94\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=17mm]
+  \tikzset{box/.style={draw, rounded corners, minimum width=31mm, minimum height=12mm, align=center}}
+  \node[box, fill=lightaccent] (client) {Belső kliens\\ 10.1.2.4:51500};
+  \node[box, fill=warnbg, right=32mm of client] (nat) {NAT átjáró\\ belső: 10.1.2.1\\ külső: 193.6.5.4};
+  \node[box, fill=black!5, right=32mm of nat] (server) {Külső szerver\\ 152.66.8.5:80};
+
+  \draw[-{Stealth[length=2mm]}, thick] ([yshift=4mm]client.east) -- node[above, align=center]{S=10.1.2.4:51500\\ D=152.66.8.5:80} ([yshift=4mm]nat.west);
+  \draw[-{Stealth[length=2mm]}, thick] ([yshift=4mm]nat.east) -- node[above, align=center]{S=193.6.5.4:62001\\ D=152.66.8.5:80} ([yshift=4mm]server.west);
+
+  \draw[-{Stealth[length=2mm]}, thick] ([yshift=-5mm]server.west) -- node[below, align=center]{S=152.66.8.5:80\\ D=193.6.5.4:62001} ([yshift=-5mm]nat.east);
+  \draw[-{Stealth[length=2mm]}, thick] ([yshift=-5mm]nat.west) -- node[below, align=center]{S=152.66.8.5:80\\ D=10.1.2.4:51500} ([yshift=-5mm]client.east);
+
+  \node[draw, rounded corners, fill=black!5, below=16mm of nat, align=center, minimum width=98mm] {A PAT/NAPT a cím mellett a portot is módosíthatja, így több belső kapcsolat osztozhat egyetlen külső IPv4 címen.};
+\end{tikzpicture}%
+}
+\caption{NAT/PAT működésének leegyszerűsített példája}
+\label{fig:zv24_nat_mukodes}
+\end{figure}
