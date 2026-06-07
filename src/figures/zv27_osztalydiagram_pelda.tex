@@ -1,0 +1,22 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize]
+  \tikzset{class/.style={draw, minimum width=36mm, minimum height=24mm, text width=34mm, align=left, fill=lightaccent}, relation/.style={>=stealth, thick}}
+
+  \node[class] (user) at (0,1.2) {\textbf{Felhasználó}\\[-1mm]\rule{34mm}{0.2pt}\\- név : String\\- email : String\\[-1mm]\rule{34mm}{0.2pt}\\+ bejelentkezik()};
+  \node[class, fill=warnbg] (customer) at (0,-1.8) {\textbf{Vevő}\\[-1mm]\rule{34mm}{0.2pt}\\- törzsvásárló : bool\\[-1mm]\rule{34mm}{0.2pt}\\+ rendeléstLead()};
+  \node[class] (order) at (5.5,1.2) {\textbf{Rendelés}\\[-1mm]\rule{34mm}{0.2pt}\\- dátum : Date\\- állapot : String\\[-1mm]\rule{34mm}{0.2pt}\\+ végösszeg() : int};
+  \node[class] (item) at (11.0,1.2) {\textbf{RendelésiTétel}\\[-1mm]\rule{34mm}{0.2pt}\\- mennyiség : int\\- egységár : int\\[-1mm]\rule{34mm}{0.2pt}\\+ részösszeg() : int};
+  \node[class] (product) at (11.0,-1.8) {\textbf{Termék}\\[-1mm]\rule{34mm}{0.2pt}\\- név : String\\- ár : int\\[-1mm]\rule{34mm}{0.2pt}\\+ árLekér() : int};
+
+  \draw[relation, -{Triangle[open]}] (customer.north) -- node[right, xshift=1mm]{általánosítás} (user.south);
+  \draw[relation] (user.east) -- node[below, yshift=-2mm, fill=white, inner sep=1pt]{lead} node[pos=0.08, above, yshift=2mm, fill=white, inner sep=1pt]{1} node[pos=0.92, above, yshift=2mm, fill=white, inner sep=1pt]{0..*} (order.west);
+  \draw[relation] (order.east) -- node[below, yshift=-2mm, fill=white, inner sep=1pt]{tartalmaz} node[pos=0.08, above, yshift=2mm, fill=white, inner sep=1pt]{1} node[pos=0.92, above, yshift=2mm, fill=white, inner sep=1pt]{1..*} (item.west);
+  \path[fill=black] (order.east) -- ++(0.18,0.18) -- ++(0.18,-0.18) -- ++(-0.18,-0.18) -- cycle;
+  \draw[relation] (item.south) -- node[right]{1} (product.north);
+\end{tikzpicture}%
+}
+\caption{Egyszerű osztálydiagram példa attribútumokkal, operációkkal, számosságokkal és kapcsolatokkal}
+\label{fig:zv27_osztalydiagram_pelda}
+\end{figure}

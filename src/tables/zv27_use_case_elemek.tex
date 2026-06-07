@@ -1,0 +1,13 @@
+\begin{tabularx}{\textwidth}{L{32mm}X X}
+\toprule
+\textbf{Elem / kapcsolat} & \textbf{Jelentés} & \textbf{Jelölés / megjegyzés} \\
+\midrule
+Aktor & Külső szereplő, amely kapcsolatba lép a rendszerrel. Lehet személy, másik rendszer, szervezet vagy eszköz. & Pálcikaember vagy szerepnév a rendszerhatáron kívül. \\
+Use case & A felhasználó által látható, célhoz kötött rendszerfunkció vagy szolgáltatás. & Ellipszis, benne a funkció neve. \\
+Rendszerhatár & Elválasztja a vizsgált rendszert a külső környezettől. & Téglalap, amelyen belül a use case-ek vannak. \\
+Asszociáció & Az aktor részt vesz a használati eset végrehajtásában vagy kommunikál vele. & Egyszerű vonal aktor és use case között. \\
+Include & Kötelezően végrehajtott, közös rész kiemelése és újrafelhasználása. & Szaggatott nyíl \texttt{<<include>>} jelöléssel a tartalmazott eset felé. \\
+Extend & Feltételes vagy opcionális bővítés egy alap használati esethez. & Szaggatott nyíl \texttt{<<extend>>} jelöléssel az alap eset felé. \\
+Általánosítás & Speciálisabb aktor vagy use case örökli az általánosabb kapcsolatait. & Üres háromszög fejű nyíl a speciálisabbtól az általánosabb felé. \\
+\bottomrule
+\end{tabularx}

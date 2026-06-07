@@ -1,0 +1,39 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize]
+  \tikzset{actor/.style={align=center}, usecase/.style={draw, ellipse, minimum width=34mm, minimum height=9mm, align=center, fill=lightaccent}, boundary/.style={draw, rounded corners, inner sep=7mm}}
+
+  \node[actor] (customer) at (-1.2,1.6) {Vevő};
+  \draw (customer) ++(0,0.45) circle (0.17);
+  \draw (customer) ++(0,0.28) -- ++(0,-0.55);
+  \draw (customer) ++(-0.32,0.02) -- ++(0.64,0);
+  \draw (customer) ++(0,-0.27) -- ++(-0.28,-0.38);
+  \draw (customer) ++(0,-0.27) -- ++(0.28,-0.38);
+
+  \node[actor] (admin) at (-1.2,-1.4) {Admin};
+  \draw (admin) ++(0,0.45) circle (0.17);
+  \draw (admin) ++(0,0.28) -- ++(0,-0.55);
+  \draw (admin) ++(-0.32,0.02) -- ++(0.64,0);
+  \draw (admin) ++(0,-0.27) -- ++(-0.28,-0.38);
+  \draw (admin) ++(0,-0.27) -- ++(0.28,-0.38);
+
+  \node[boundary, minimum width=88mm, minimum height=52mm, label={[font=\scriptsize]above:Webshop rendszer}] (system) at (4.4,0) {};
+
+  \node[usecase] (browse) at (3.1,1.7) {Termékek\ böngészése};
+  \node[usecase] (order) at (5.9,1.0) {Rendelés\ leadása};
+  \node[usecase] (login) at (3.1,0.0) {Bejelentkezés\ ellenőrzése};
+  \node[usecase] (coupon) at (5.9,-0.6) {Kupon\ beváltása};
+  \node[usecase] (manage) at (3.9,-1.8) {Termékek\ karbantartása};
+
+  \draw (customer.east) -- (browse.west);
+  \draw (customer.east) -- (order.west);
+  \draw (admin.east) -- (manage.west);
+
+  \draw[arrow, dashed] (order) -- node[above, sloped]{\texttt{<<include>>}} (login);
+  \draw[arrow, dashed] (coupon) -- node[below, sloped]{\texttt{<<extend>>}} (order);
+\end{tikzpicture}%
+}
+\caption{Egyszerű use case diagram példa include és extend kapcsolattal}
+\label{fig:zv27_use_case_pelda}
+\end{figure}

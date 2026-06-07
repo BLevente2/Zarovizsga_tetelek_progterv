@@ -1,0 +1,28 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize]
+  \tikzset{participant/.style={draw, rounded corners, minimum width=23mm, minimum height=7mm, align=center, fill=lightaccent}, activation/.style={draw, fill=black!10, minimum width=2.2mm}}
+
+  \node[participant] (user) at (0,0) {Felhasználó};
+  \node[participant] (ui) at (3,0) {Felület};
+  \node[participant] (service) at (6,0) {Rendelés\ szolgáltatás};
+  \node[participant] (repo) at (9,0) {Adattár};
+
+  \foreach \x in {user,ui,service,repo} {\draw[dashed] (\x.south) -- ++(0,-5.2);}
+
+  \draw[arrow] (0,-0.8) -- node[above]{rendelésLeadása()} (3,-0.8);
+  \draw[arrow] (3,-1.5) -- node[above]{kosárEllenőrzése()} (6,-1.5);
+  \draw[arrow] (6,-2.2) -- node[above]{mentés(rendelés)} (9,-2.2);
+  \draw[arrow, dashed] (9,-2.9) -- node[above]{azonosító} (6,-2.9);
+  \draw[arrow] (6,-3.6) -- node[above]{fizetésIndítása()} (3,-3.6);
+  \draw[arrow, dashed] (3,-4.3) -- node[above]{visszaigazolás} (0,-4.3);
+
+  \draw[activation] (3,-0.75) rectangle (3.13,-4.35);
+  \draw[activation] (6,-1.45) rectangle (6.13,-3.65);
+  \draw[activation] (9,-2.15) rectangle (9.13,-2.95);
+\end{tikzpicture}%
+}
+\caption{Szekvenciadiagram példa egy rendelés leadásának leegyszerűsített menetére}
+\label{fig:zv27_szekvencia_pelda}
+\end{figure}
