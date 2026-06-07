@@ -1,0 +1,31 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.92\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=8mm]
+  \tikzset{evostep/.style={draw, rounded corners, align=center, minimum width=36mm, minimum height=10mm},
+           version/.style={draw, circle, align=center, minimum size=13mm, fill=lightaccent}}
+
+  \node[evostep, fill=warnbg] (known) {Ismert követelmények\\és kezdeti elképzelés};
+  \node[evostep, fill=lightaccent, right=15mm of known] (initial) {Kezdeti\\implementáció};
+  \node[evostep, fill=black!5, right=15mm of initial] (feedback) {Felhasználói\\véleményezés};
+  \node[evostep, fill=lightaccent, right=15mm of feedback] (refine) {Finomítás, javítás,\\új funkciók};
+  \node[evostep, fill=warnbg, right=15mm of refine] (target) {Megfelelő\\rendszer};
+
+  \draw[arrow] (known) -- (initial);
+  \draw[arrow] (initial) -- (feedback);
+  \draw[arrow] (feedback) -- (refine);
+  \draw[arrow] (refine) -- (target);
+  \draw[arrow, dashed] ([yshift=-2mm]refine.south) .. controls +(0,-18mm) and +(0,-18mm) .. node[below, align=center]{új verzió, újabb visszajelzés} ([yshift=-2mm]initial.south);
+
+  \node[version, below=13mm of initial] (v1) {v1};
+  \node[version, below=13mm of feedback] (v2) {v2};
+  \node[version, below=13mm of refine] (v3) {v3};
+  \draw[arrow] (v1) -- (v2);
+  \draw[arrow] (v2) -- (v3);
+
+  \node[draw, rounded corners, fill=black!5, below=10mm of v2, align=center, minimum width=108mm] {Az evolúciós modellben a specifikáció, a fejlesztés és a validáció részben összemosódik: a rendszer a verziók során közelít a valódi igényekhez.};
+\end{tikzpicture}%
+}
+\caption{Az evolúciós fejlesztés alapgondolata}
+\label{fig:zv25_evolucios_modell}
+\end{figure}

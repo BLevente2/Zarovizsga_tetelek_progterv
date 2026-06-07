@@ -1,0 +1,11 @@
+\begin{tabularx}{\textwidth}{L{34mm}X X}
+\toprule
+\textbf{Vezérlési stílus} & \textbf{Alapgondolat} & \textbf{Jellemző változatok / alkalmazás} \\
+\midrule
+Központosított vezérlés & Egy kitüntetett vezérlő alrendszer felel a többi alrendszer indításáért, leállításáért és koordinálásáért. & Hívás-visszatérés modell szekvenciális rendszerekben; kezelőmodell szekvenciális vagy konkurens folyamatok koordinálására. \\
+Hívás-visszatérés modell & A vezérlés a felsőbb szintű rutintól alprogramhívásokkal jut az alsóbb szintekre, majd visszatér a hívás helyére. & Könnyen elemezhető, de merev; normálistól eltérő működésnél és erősen eseményfüggő rendszereknél kényelmetlen lehet. \\
+Kezelőmodell & Egy rendszerkezelő komponens állapotváltozók és események alapján ciklikusan indítja, leállítja és koordinálja a folyamatokat. & Konkurens rendszereknél is használható; gyakran eseményciklus jellegű vezérlőként jelenik meg. \\
+Eseményalapú vezérlés & A vezérlés nincs egyetlen komponensbe zárva; az alrendszerek eseményekre reagálnak. & Eseményszóró modell, grafikus felületek, szerkesztők, lazábban csatolt rendszerek. \\
+Megszakítás-vezérelt modell & Külső megszakításokat egy megszakításkezelő észlel, majd a megfelelő komponenshez irányít. & Valós idejű és beágyazott rendszerekben jellemző, ahol gyors külső eseményekre kell reagálni. \\
+\bottomrule
+\end{tabularx}

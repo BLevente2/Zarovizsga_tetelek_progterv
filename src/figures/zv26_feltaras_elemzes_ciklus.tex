@@ -1,0 +1,28 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.92\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=10mm]
+  \tikzset{act/.style={draw, rounded corners, align=center, minimum width=30mm, minimum height=9mm, fill=lightaccent},
+           check/.style={draw, diamond, aspect=2.2, align=center, inner sep=1pt, fill=warnbg}}
+
+  \node[act] (domain) {Szakterület\\megismerése};
+  \node[act, right=of domain] (collect) {Követelmények\\összegyűjtése};
+  \node[act, right=of collect] (classify) {Osztályozás\\és rendezés};
+  \node[check, below=of classify] (conflict) {Van\\konfliktus?};
+  \node[act, left=of conflict] (resolve) {Ellentmondások\\feloldása};
+  \node[act, left=of resolve] (prio) {Prioritások\\megadása};
+  \node[act, below=of resolve] (verify) {Követelmény-\\ellenőrzés};
+
+  \draw[arrow] (domain) -- (collect);
+  \draw[arrow] (collect) -- (classify);
+  \draw[arrow] (classify) -- (conflict);
+  \draw[arrow] (conflict) -- node[above]{igen} (resolve);
+  \draw[arrow] (resolve) -- (prio);
+  \draw[arrow] (prio) |- (verify);
+  \draw[arrow] (conflict.east) -- ++(12mm,0) |- node[pos=0.25,right]{nem} (verify.east);
+  \draw[arrow, dashed] (verify.west) .. controls +(-28mm,0) and +(0,-18mm) .. node[left, align=center]{új kérdés\\vagy hiány} (collect.south);
+\end{tikzpicture}%
+}
+\caption{A követelmények feltárásának és elemzésének iteratív jellege}
+\label{fig:zv26_feltaras_elemzes_ciklus}
+\end{figure}

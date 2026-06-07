@@ -1,0 +1,25 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.97\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=8mm]
+  \tikzset{reqstep/.style={draw, rounded corners, align=center, minimum width=34mm, minimum height=10mm},
+           artifact/.style={draw, rounded corners, align=center, fill=black!5, minimum width=35mm, minimum height=8mm}}
+
+  \node[reqstep, fill=warnbg] (feas) {Megvalósíthatósági\\tanulmány};
+  \node[reqstep, fill=lightaccent, right=of feas] (elic) {Feltárás és\\elemzés};
+  \node[reqstep, fill=lightaccent, right=of elic] (spec) {Követelmény-\\specifikáció};
+  \node[reqstep, fill=warnbg, right=of spec] (val) {Követelmény-\\validáció};
+
+  \draw[arrow] (feas) -- (elic);
+  \draw[arrow] (elic) -- (spec);
+  \draw[arrow] (spec) -- (val);
+  \draw[arrow, dashed] ([yshift=-2mm]val.south) .. controls +(0,-14mm) and +(0,-14mm) .. node[below, align=center]{hibák, hiányok, konfliktusok\\visszacsatolása} ([yshift=-2mm]elic.south);
+
+  \node[artifact, below=12mm of spec] (doc) {Követelménydokumentum};
+  \draw[arrow] (spec) -- (doc);
+  \draw[arrow] (val) -- (doc);
+\end{tikzpicture}%
+}
+\caption{A követelménytervezés magas szintű folyamata}
+\label{fig:zv26_kovetelmenytervezes_folyamat}
+\end{figure}

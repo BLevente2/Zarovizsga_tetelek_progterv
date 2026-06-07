@@ -1,0 +1,37 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize]
+  \tikzset{ctrl/.style={draw, rounded corners, align=center, minimum width=30mm, minimum height=9mm, fill=warnbg},
+           comp/.style={draw, rounded corners, align=center, minimum width=24mm, minimum height=8mm, fill=lightaccent},
+           event/.style={draw, rounded corners, align=center, minimum width=28mm, minimum height=8mm, fill=black!5}}
+
+  \node[align=center] at (0,2.0) {Központosított vezérlés};
+  \node[ctrl] (central) at (0,1.0) {Rendszer-\\vezérlő};
+  \node[comp] (a) at (-2.3,-0.4) {Alrendszer A};
+  \node[comp] (b) at (0,-0.4) {Alrendszer B};
+  \node[comp] (c) at (2.3,-0.4) {Alrendszer C};
+
+  \draw[arrow] (central) -- (a);
+  \draw[arrow] (central) -- (b);
+  \draw[arrow] (central) -- (c);
+
+  \node[align=center] at (7.5,2.0) {Eseményalapú vezérlés};
+  \node[event] (ext) at (5.0,1.0) {Külső\\esemény};
+  \node[event] (bus) at (7.5,1.0) {Esemény- vagy\\üzenetkezelő};
+  \node[comp] (d) at (10.4,1.8) {Alrendszer D};
+  \node[comp] (e) at (10.4,1.0) {Alrendszer E};
+  \node[comp] (f) at (10.4,0.2) {Alrendszer F};
+
+  \draw[arrow] (ext) -- (bus);
+  \draw[arrow] (bus) -- (d);
+  \draw[arrow] (bus) -- (e);
+  \draw[arrow] (bus) -- (f);
+  \draw[arrow, dashed] (d) -- (bus);
+  \draw[arrow, dashed] (e) -- (bus);
+  \draw[arrow, dashed] (f) -- (bus);
+\end{tikzpicture}%
+}
+\caption{Központosított és eseményalapú vezérlési stílus szemlélete}
+\label{fig:zv26_vezerlesi_stilusok}
+\end{figure}

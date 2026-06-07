@@ -32,6 +32,8 @@ Jelenleg a projekt az alábbi kidolgozott tételeket tartalmazza:
 - `zv_tetel_22.tex` - 22. tétel: számítógép-hálózati alapfogalmak, méret és topológia szerinti osztályozás, kapcsolástechnika és ISO--OSI modell
 - `zv_tetel_23.tex` - 23. tétel: MAC alréteg, csatornamegosztás, IEEE 802.3 Ethernet, CSMA/CD, MAC-címek, duplex működés és IEEE 802.11 WLAN, CSMA/CA, DCF, PCF
 - `zv_tetel_24.tex` - 24. tétel: TCP/IP protokollszövet, Internet/DoD modell, ARP, RARP, IP, ICMP, TCP, UDP, IPv4 címzés, subnet, CIDR, VLSM, NAT és IPv6 címtípusok
+- `zv_tetel_25.tex` - 25. tétel: szoftvertechnológia, szoftverfolyamat, specifikáció, tervezés, implementáció, validáció, evolúció és evolúciós modell
+- `zv_tetel_26.tex` - 26. tétel: szoftverkövetelmény, követelmények osztályozása, követelményproblémák, követelményfeltárás és elemzés, vezérlési stílusok
 
 Minden tétel külön PDF-be fordul, így az egyes tételek önálló dokumentumként is használhatók.
 
@@ -76,6 +78,8 @@ A tételek fedlapján szereplő hivatalos tételkiírások is ebből a fájlból
     ├── zv_tetel_22.tex
     ├── zv_tetel_23.tex
     ├── zv_tetel_24.tex
+    ├── zv_tetel_25.tex
+    ├── zv_tetel_26.tex
     ├── figures/
     │   ├── zv_abrak.tex
     │   └── ... külön TikZ-ábrák ...

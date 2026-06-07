@@ -1,0 +1,27 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=7mm]
+  \tikzset{phase/.style={draw, rounded corners, align=center, minimum width=29mm, minimum height=11mm},
+           note/.style={draw, rounded corners, align=center, fill=black!5, minimum width=36mm, minimum height=8mm}}
+
+  \node[phase, fill=warnbg] (spec) {Szoftver-\\specifikáció};
+  \node[phase, fill=lightaccent, right=of spec] (design) {Tervezés};
+  \node[phase, fill=lightaccent, right=of design] (impl) {Implementáció};
+  \node[phase, fill=warnbg, right=of impl] (val) {Validáció};
+  \node[phase, fill=black!5, right=of val] (evo) {Evolúció};
+
+  \draw[arrow] (spec) -- (design);
+  \draw[arrow] (design) -- (impl);
+  \draw[arrow] (impl) -- (val);
+  \draw[arrow] (val) -- (evo);
+
+  \draw[arrow, dashed] ([yshift=-2mm]val.south) .. controls +(0,-13mm) and +(0,-13mm) .. ([yshift=-2mm]spec.south);
+  \draw[arrow, dashed] ([yshift=2mm]evo.north) .. controls +(0,15mm) and +(0,15mm) .. node[above, align=center]{új verziók és változtatások} ([yshift=2mm]design.north);
+
+  \node[note, below=13mm of impl] {A gyakorlatban a fázisok nem mindig tisztán egymás után következnek; a modellek azt adják meg, hogyan szervezzük őket.};
+\end{tikzpicture}%
+}
+\caption{A szoftverfolyamat közös fázisai és a visszacsatolások szerepe}
+\label{fig:zv25_szoftverfolyamat_fazisok}
+\end{figure}

@@ -1,0 +1,15 @@
+IF emergency_stop = TRUE THEN
+    Stop all moving components
+    Set system_state to SAFE
+ELSE
+    Read selected_operation
+    Validate selected_operation
+    Execute selected_operation
+ENDIF
+
+DO while system_state = RUNNING
+    Read sensor_values
+    IF sensor_values outside allowed_range THEN
+        Raise warning_event
+    ENDIF
+ENDDO
