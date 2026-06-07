@@ -87,9 +87,9 @@ A use case diagramon többféle kapcsolat jelenhet meg.
 
 Az \textbf{asszociáció} az aktor és a használati eset közötti egyszerű kapcsolat. Azt jelzi, hogy az aktor részt vesz az adott funkció végrehajtásában, kezdeményezi azt, vagy kommunikál a rendszerrel a végrehajtás során.
 
-Az \textbf{include} kapcsolat kötelező újrafelhasználást jelent. Egy használati eset végrehajtása során mindig lefut egy másik használati eset is. Tipikus példa, hogy a rendelés leadása mindig tartalmazza a bejelentkezés ellenőrzését vagy a fizetés feldolgozását. A nyíl a tartalmazó használati esettől a tartalmazott használati eset felé mutat, és \texttt{<<include>>} jelöléssel szokták minősíteni.
+Az \textbf{include} kapcsolat kötelező újrafelhasználást jelent. Egy használati eset végrehajtása során mindig lefut egy másik használati eset is. Tipikus példa, hogy a rendelés leadása mindig tartalmazza a bejelentkezés ellenőrzését vagy a fizetés feldolgozását. A nyíl a tartalmazó használati esettől a tartalmazott használati eset felé mutat, és \texttt{\textless\textless{}include\textgreater\textgreater{}} jelöléssel szokták minősíteni.
 
-Az \textbf{extend} kapcsolat opcionális vagy feltételes bővítést jelent. Az alap használati eset önmagában is értelmes, de bizonyos feltétel mellett egy másik használati eset kiterjeszti. Például a rendelés leadását kiterjesztheti a kupon beváltása. A nyíl a kiterjesztő használati esettől az alap használati eset felé mutat, és \texttt{<<extend>>} jelölést kap.
+Az \textbf{extend} kapcsolat opcionális vagy feltételes bővítést jelent. Az alap használati eset önmagában is értelmes, de bizonyos feltétel mellett egy másik használati eset kiterjeszti. Például a rendelés leadását kiterjesztheti a kupon beváltása. A nyíl a kiterjesztő használati esettől az alap használati eset felé mutat, és \texttt{\textless\textless{}extend\textgreater\textgreater{}} jelölést kap.
 
 Az \textbf{általánosítás} szereplők vagy használati esetek között jelenhet meg. Aktoroknál azt jelenti, hogy egy speciálisabb aktor örökli az általánosabb aktor kapcsolatait, és további funkciói is lehetnek. Használati eseteknél a speciálisabb eset az általánosabb változata.
 

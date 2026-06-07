@@ -30,8 +30,8 @@
   \draw (customer.east) -- (order.west);
   \draw (admin.east) -- (manage.west);
 
-  \draw[arrow, dashed] (order) -- node[above, sloped]{\texttt{<<include>>}} (login);
-  \draw[arrow, dashed] (coupon) -- node[below, sloped]{\texttt{<<extend>>}} (order);
+  \draw[arrow, dashed] (order.south west) to[bend left=10] node[above, sloped, fill=white, inner sep=1pt, pos=0.55]{\texttt{\textless\textless{}include\textgreater\textgreater{}}} (login.north east);
+  \draw[arrow, dashed] (coupon.north) to[bend right=8] node[right, sloped, fill=white, inner sep=1pt, pos=0.55]{\texttt{\textless\textless{}extend\textgreater\textgreater{}}} (order.south);
 \end{tikzpicture}%
 }
 \caption{Egyszerű use case diagram példa include és extend kapcsolattal}
