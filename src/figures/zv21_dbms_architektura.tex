@@ -1,0 +1,32 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.92\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=6mm]
+  \node[zvflowprocess, fill=warnbg, minimum width=44mm] (client) {Kliens / alkalmazás\\SQL parancs, kérés};
+  \node[zvflowprocess, fill=lightaccent, below=of client, minimum width=44mm] (network) {Hálózati és kapcsolatkezelő modul};
+  \node[zvflowprocess, fill=black!5, below=of network, minimum width=44mm] (parser) {Szintaktikai és szemantikai ellenőrzés};
+  \node[zvflowprocess, fill=lightaccent, below=of parser, minimum width=44mm] (auth) {Jogosultság- és integritásellenőrzés};
+  \node[zvflowprocess, fill=black!5, below=of auth, minimum width=44mm] (optimizer) {Lekérdezésértelmezés és optimalizálás};
+  \node[zvflowprocess, fill=lightaccent, below=of optimizer, minimum width=44mm] (transaction) {Tranzakció- és konkurenciakezelés};
+  \node[zvflowprocess, fill=black!5, below=of transaction, minimum width=44mm] (executor) {Végrehajtó modul};
+  \node[zvflowprocess, fill=lightaccent, below=of executor, minimum width=44mm] (io) {Tároláskezelő és I/O modul};
+  \node[zvflowprocess, fill=warnbg, below=of io, minimum width=44mm] (storage) {Adatfájlok, indexek, napló, katalógus};
+
+  \draw[arrow] (client) -- (network);
+  \draw[arrow] (network) -- (parser);
+  \draw[arrow] (parser) -- (auth);
+  \draw[arrow] (auth) -- (optimizer);
+  \draw[arrow] (optimizer) -- (transaction);
+  \draw[arrow] (transaction) -- (executor);
+  \draw[arrow] (executor) -- (io);
+  \draw[arrow] (io) -- (storage);
+
+  \node[zvflowprocess, fill=black!3, right=19mm of optimizer, minimum width=35mm] (catalog) {Metaadatok\\séma, statisztikák, jogok};
+  \draw[arrow] (catalog.west) -- (parser.east);
+  \draw[arrow] (catalog.west) -- (auth.east);
+  \draw[arrow] (catalog.west) -- (optimizer.east);
+\end{tikzpicture}%
+}
+\caption{Egy adatkezelő parancs tipikus útja a DBMS rétegein keresztül}
+\label{fig:zv21_dbms_architektura}
+\end{figure}

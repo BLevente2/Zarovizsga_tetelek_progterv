@@ -1,0 +1,13 @@
+\begin{tabularx}{\textwidth}{L{28mm}L{32mm}X}
+\toprule
+\textbf{Módszer} & \textbf{Elérési gondolat} & \textbf{Jellemző használat, előny/hátrány} \\
+\midrule
+Heap fájl & A rekordok a beérkezés sorrendjében vagy szabad helyre kerülnek. & Gyors beszúrás, de kulcs szerinti kereséshez gyakran teljes bejárás kell. \\
+Szekvenciális fájl & A rekordok egy kulcs szerint rendezve helyezkednek el. & Jó tartományos feldolgozásra és rendezett beolvasásra; beszúrás és törlés költséges lehet. \\
+Index-szekvenciális fájl & Rendezett adatfájl mellett index segíti a kulcs szerinti elérést. & Egyesíti a szekvenciális feldolgozást és a gyorsabb közvetlen keresést. \\
+Indexelt fájl & Egy vagy több mezőhöz külön index tartozik. & Többféle keresési szempont gyorsítható, de a módosításoknál az indexeket is karban kell tartani. \\
+Hash szervezés & A kulcsból hash-függvény adja a rekesz vagy blokk helyét. & Pontkeresésre gyors lehet, tartománykeresésre kevésbé alkalmas; túlcsordulást kezelni kell. \\
+Klaszterezett tárolás & Kapcsolódó rekordok fizikailag közel kerülnek egymáshoz. & Join vagy együtt olvasott adatok gyorsulhatnak, de a beszúrás és átszervezés bonyolultabb. \\
+Particionált tárolás & A tábla vagy fájl részekre bontva, akár külön háttértáron/szerveren van. & Nagy adatmennyiségnél skálázhatóságot és jobb kezelhetőséget adhat. \\
+\bottomrule
+\end{tabularx}

@@ -1,0 +1,23 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=9mm]
+  \node[zvflowprocess, fill=black!5, minimum width=36mm] (from) {\code{FROM}\ és \code{JOIN}\\források és kapcsolás};
+  \node[zvflowprocess, fill=lightaccent, right=of from, minimum width=31mm] (where) {\code{WHERE}\\rekordok szűrése};
+  \node[zvflowprocess, fill=black!5, right=of where, minimum width=33mm] (group) {\code{GROUP BY}\\csoportképzés};
+  \node[zvflowprocess, fill=lightaccent, right=of group, minimum width=31mm] (having) {\code{HAVING}\\csoportok szűrése};
+  \node[zvflowprocess, fill=warnbg, below=of group, minimum width=35mm] (select) {\code{SELECT}\\projekció, számítás};
+  \node[zvflowprocess, fill=black!5, left=of select, minimum width=31mm] (distinct) {\code{DISTINCT}\\ismétlődések elhagyása};
+  \node[zvflowprocess, fill=lightaccent, left=of distinct, minimum width=31mm] (order) {\code{ORDER BY}\\megjelenítési sorrend};
+
+  \draw[arrow] (from) -- (where);
+  \draw[arrow] (where) -- (group);
+  \draw[arrow] (group) -- (having);
+  \draw[arrow] (having) |- (select);
+  \draw[arrow] (select) -- (distinct);
+  \draw[arrow] (distinct) -- (order);
+\end{tikzpicture}%
+}
+\caption{A \code{SELECT} lekérdezés tipikus logikai feldolgozási sorrendje}
+\label{fig:zv20_select_logikai_sorrend}
+\end{figure}

@@ -1,0 +1,11 @@
+\begin{tabularx}{\textwidth}{L{18mm}L{37mm}X}
+\toprule
+\textbf{NF} & \textbf{Fő feltétel} & \textbf{Milyen hibát szüntet meg?} \\
+\midrule
+1NF & Minden mező elemi, nem listát vagy ismétlődő csoportot tartalmaz; van azonosítható rekord. & Többértékű mezők, beágyazott listák, nem relációs táblaszerkezet. \\
+2NF & 1NF teljesül, és nem kulcs attribútum nem függhet csak az összetett kulcs egy részétől. & Részleges függőségek összetett kulcs esetén. \\
+3NF & 2NF teljesül, és nem kulcs attribútum nem függhet más nem kulcs attribútumtól. & Tranzitív függőségek, például kulcs \(\to\) nem kulcs \(\to\) nem kulcs. \\
+BCNF & Minden nemtriviális funkcionális függőség bal oldala szuperkulcs/jelölt kulcs. & A 3NF-nél erősebb követelmény; kezeli a több jelölt kulcsból adódó anomáliákat. \\
+4NF & BCNF jellegű forma többértékű függőségekre: független többértékű tényeket külön kell választani. & Egymástól független többértékű kapcsolatok ismétlődései. \\
+\bottomrule
+\end{tabularx}

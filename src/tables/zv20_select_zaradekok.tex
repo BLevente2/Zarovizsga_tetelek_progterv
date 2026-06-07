@@ -1,0 +1,13 @@
+\begin{tabularx}{\textwidth}{L{25mm}L{32mm}X}
+\toprule
+\textbf{Záradék} & \textbf{Relációs algebrai szerep} & \textbf{Feladat} \\
+\midrule
+\code{FROM} & Operandusrelációk kijelölése & Megadja, mely táblákból, nézetekből vagy részlekérdezésekből indul a lekérdezés. \\
+\code{JOIN ... ON} & Join, Descartes-szorzat szűréssel & Összekapcsolja a forrásokat, gyakran elsődleges kulcs--idegen kulcs kapcsolat alapján. \\
+\code{WHERE} & Szelekció & Rekordszintű feltétellel szűri az eredményt a csoportosítás előtt. \\
+\code{GROUP BY} & Csoportképzés & A rekordokat csoportokra bontja, hogy csoportonként lehessen aggregálni. \\
+\code{HAVING} & Csoportokra vonatkozó szelekció & Aggregált értékek alapján szűri a csoportokat. \\
+\code{SELECT} & Projekció és kiterjesztés & Meghatározza, mely mezők és számított kifejezések kerüljenek az eredménybe. \\
+\code{ORDER BY} & Rendezés, nem tisztán algebrai művelet & Megadja az eredmény megjelenítési sorrendjét; a relációs algebra halmazszemlélete miatt ez külön SQL-funkció. \\
+\bottomrule
+\end{tabularx}

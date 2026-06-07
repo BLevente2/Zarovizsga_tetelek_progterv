@@ -1,0 +1,11 @@
+\begin{tabularx}{\textwidth}{L{31mm}L{35mm}X}
+\toprule
+\textbf{Típus} & \textbf{Elhelyezés} & \textbf{Jellemző használat} \\
+\midrule
+Skalár alselect & \code{SELECT} listában vagy feltételben & Egyetlen értéket ad vissza, például átlagárat vagy darabszámot. \\
+Táblaszerű alselect & \code{FROM} záradékban & Ideiglenes, névvel ellátott forrásként használható, amelyre külső lekérdezés épül. \\
+Nem korrelált alselect & Külső sorra nem hivatkozik & Egyszer önállóan kiértékelhető; például \code{IN (SELECT ...)}. \\
+Korrelált alselect & Belső lekérdezés hivatkozik a külső sorra & A belső lekérdezés a külső rekord aktuális értékétől függ; gyakori \code{EXISTS} mellett. \\
+Halmaztesztes alselect & \code{IN}, \code{EXISTS}, \code{ANY}, \code{ALL} & A külső rekordot részlekérdezés eredményhalmazához hasonlítja. \\
+\bottomrule
+\end{tabularx}

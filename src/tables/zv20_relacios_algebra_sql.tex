@@ -1,0 +1,17 @@
+\begin{tabularx}{\textwidth}{L{25mm}L{43mm}X}
+\toprule
+\textbf{Relációs algebra} & \textbf{SQL-megfelelő} & \textbf{Megjegyzés} \\
+\midrule
+Szelekció $\sigma_{felt}(R)$ & \code{WHERE felt} & Rekordokat szűr; a séma alapvetően nem változik. \\
+Projekció $\pi_{A,B}(R)$ & \code{SELECT A, B} & Attribútumokat választ ki; SQL-ben \code{DISTINCT} kell, ha halmazszerű ismétlődésmentes eredményt akarunk. \\
+Kiterjesztés & \code{SELECT kifejezés AS név} & Számított mezőt hoz létre, például árkedvezményt vagy kategóriát. \\
+Descartes-szorzat $R \times S$ & \code{CROSS JOIN} & Minden rekordpárt előállít; ritkán kell közvetlenül, mert gyorsan nagy eredményt ad. \\
+Szelekciós join $R \bowtie_{felt} S$ & \code{INNER JOIN ... ON felt} & A kapcsolódó rekordpárokat tartja meg. \\
+Külső join & \code{OUTER JOIN} & A nem illeszkedő rekordokat is megtartja az egyik vagy mindkét oldalról. \\
+Aggregáció és csoportképzés & \code{GROUP BY}, \code{COUNT}, \code{SUM}, \code{AVG} & Csoportonként összesítő értékeket számít. \\
+Unió & \code{UNION} vagy \code{UNION ALL} & \code{UNION} ismétlődésmentesít, \code{UNION ALL} megtartja az ismétlődéseket. \\
+Metszet & \code{INTERSECT} vagy joinos megoldás & Kompatibilis sémájú lekérdezések közös rekordjait adja. \\
+Különbség & \code{EXCEPT} / \code{MINUS} vagy \code{NOT EXISTS} & DBMS-függő névhasználat lehet; Oracle-ben gyakori a \code{MINUS}. \\
+Osztás & \code{NOT EXISTS}-es kettős tagadás & Olyan elemeket keres, amelyek minden keresett értékkel kapcsolatban állnak. \\
+\bottomrule
+\end{tabularx}

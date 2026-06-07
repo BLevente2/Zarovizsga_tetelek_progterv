@@ -1,0 +1,12 @@
+\begin{tabularx}{\textwidth}{L{33mm}L{37mm}X}
+\toprule
+\textbf{Megkötés} & \textbf{Példa} & \textbf{Jelentés} \\
+\midrule
+Elsődleges kulcs & \code{PRIMARY KEY} & Egyedileg azonosítja a rekordokat; nem lehet \code{NULL}. \\
+Idegen kulcs & \code{FOREIGN KEY ... REFERENCES} & Másik tábla kulcsára hivatkozik, ezzel hivatkozási integritást biztosít. \\
+Nem üres érték & \code{NOT NULL} & A mezőnek minden rekordban értéket kell kapnia. \\
+Egyediség & \code{UNIQUE} & A mező vagy mezőcsoport értékei nem ismétlődhetnek. \\
+Értékellenőrzés & \code{CHECK (ar > 0)} & Logikai feltétellel korlátozza a megengedett mező- vagy rekordértékeket. \\
+Alapértelmezés & \code{DEFAULT 0} & Ha beszúráskor nem adunk értéket, a rendszer az alapértelmezett értéket használja. \\
+\bottomrule
+\end{tabularx}

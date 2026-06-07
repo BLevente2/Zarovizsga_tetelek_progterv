@@ -1,0 +1,16 @@
+B_FA_KERESES(csucs, kulcs)
+    i <- 1
+    WHILE i <= csucs.kulcsokSzama AND kulcs > csucs.kulcs[i]
+        i <- i + 1
+    END WHILE
+
+    IF i <= csucs.kulcsokSzama AND kulcs = csucs.kulcs[i]
+        RETURN csucs.mutato[i]
+    END IF
+
+    IF csucs.level
+        RETURN NINCS_TALALAT
+    END IF
+
+    RETURN B_FA_KERESES(csucs.gyermek[i], kulcs)
+END

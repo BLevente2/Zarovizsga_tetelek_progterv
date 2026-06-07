@@ -1,0 +1,599 @@
+\documentclass[12pt,a4paper]{article}
+
+\newcommand{\TETELNUMBER}{20}
+\newcommand{\TETELTITLE}{SQL nyelv, lekérdezések és relációs algebra SQL-ben}
+\newcommand{\TETELSHORTTITLE}{SQL és lekérdezések}
+
+\newcommand{\ZVTetelsorDataOnly}{}
+\input{src/zv_tetelsor.tex}
+\newcommand{\TETELKIIRAS}{\ZVTetelKiiras{\TETELNUMBER}}
+
+\input{src/preamble.tex}
+
+\begin{document}
+\zvfrontmatter
+
+\section{A tétel lényege és vizsgaszintű vázlata}
+
+\begin{summarybox}
+A 20. tétel az SQL nyelvet mint relációs adatbázis-kezelő nyelvet tárgyalja. Az SQL egyszerre tartalmaz szerkezetkezelő, adatkezelő, lekérdező és jogosultságkezelő utasításokat. A DDL az adatbázis-objektumok létrehozásával, módosításával és törlésével foglalkozik; a DML a rekordok beszúrását, módosítását és törlését adja; a DCL a jogosultságok kezelésére szolgál; a \code{SELECT} pedig az adatok lekérdezésének központi utasítása. A tételben különösen fontos a relációs algebra és az SQL kapcsolata: a szelekció, projekció, join, aggregáció és halmazműveletek mind megfogalmazhatók SQL-ben.
+\end{summarybox}
+
+Vizsgán célszerű a következő sorrendet követni:
+
+\begin{enumerate}
+  \item SQL szerepe: magas szintű, deklaratív, relációs adatbázis-kezelő nyelv;
+  \item SQL parancscsoportok: DDL, DML, DQL/\code{SELECT}, DCL, kiegészítésként TCL;
+  \item DDL: \code{CREATE TABLE}, adattípusok, integritási feltételek, \code{ALTER TABLE}, \code{DROP TABLE};
+  \item DML: \code{INSERT}, \code{UPDATE}, \code{DELETE};
+  \item DCL: jogosultság, privilégium, szerepkör, \code{GRANT}, \code{REVOKE};
+  \item \code{SELECT}: \code{FROM}, \code{JOIN}, \code{WHERE}, \code{GROUP BY}, \code{HAVING}, \code{SELECT}, \code{ORDER BY};
+  \item beágyazott \code{SELECT}: alselect a \code{WHERE}, \code{FROM} és \code{SELECT} részekben, korrelált és nem korrelált alselect;
+  \item relációs algebra SQL-ben: szelekció, projekció, kiterjesztés, joinok, aggregáció, halmazműveletek, osztás;
+  \item gyakori vizsgahibák és rövid, összefüggő válaszminta.
+\end{enumerate}
+
+A legfontosabb vizsgamondat: az SQL deklaratív adatbázis-nyelv, amelyben a DDL a sémát, a DML az adatokat, a DCL a jogosultságokat kezeli, a \code{SELECT} pedig relációs algebrai műveletekre építve állít elő eredményrelációt a megadott táblákból.
+
+\begin{center}
+\input{src/tables/zv20_sql_parancskategoriak.tex}
+\end{center}
+
+\section{Az SQL szerepe és szemlélete}
+
+\subsection{Mi az SQL?}
+
+Az \textbf{SQL} a Structured Query Language rövidítése. Relációs adatbázis-kezelő rendszerekben használatos magas szintű nyelv, amelynek segítségével adatbázis-objektumokat hozhatunk létre, adatokat módosíthatunk, adatokat kérdezhetünk le és jogosultságokat kezelhetünk.
+
+Az SQL szemlélete alapvetően \textbf{deklaratív}. A felhasználó többnyire azt írja le, hogy milyen eredményt szeretne látni, nem azt, hogy az adatbázis-kezelő pontosan milyen algoritmussal járja be a táblákat. Például egy \code{SELECT} utasításban megadjuk a forrástáblákat, a kapcsolási és szűrési feltételeket, valamint az eredmény mezőit. A fizikai végrehajtási tervet az adatbázis-kezelő optimalizálója választja ki.
+
+Ez fontos különbség az algoritmikus programozási nyelvekhez képest. Egy C, Java vagy C\# programban gyakran ciklusokkal és lépésenkénti feldolgozással írjuk le a teendőt. SQL-ben inkább halmazokban gondolkodunk: táblákból új eredménytáblát állítunk elő.
+
+\subsection{SQL szabvány és dialektusok}
+
+Az SQL szabványosított nyelv, de a gyakorlatban az egyes adatbázis-kezelők saját kiterjesztéseket és eltérő részleteket használnak. Oracle, PostgreSQL, Microsoft SQL Server, MySQL/MariaDB és SQLite alatt az alapvető \code{SELECT}, \code{INSERT}, \code{UPDATE}, \code{DELETE}, \code{CREATE TABLE} gondolkodás hasonló, de eltérhetnek például az adattípusok nevei, az automatikus azonosítók kezelése, a dátumfüggvények, a jogosultságkezelés és egyes halmazműveletek nevei.
+
+Vizsgán ezért érdemes az SQL-t szabványos, általános szinten bemutatni, és jelezni, ha egy részlet DBMS-függő. Például a különbségműveletet több rendszer \code{EXCEPT} néven, Oracle környezetben gyakran \code{MINUS} néven támogatja.
+
+\subsection{SQL és a relációs modell kapcsolata}
+
+A relációs modellben az adatok relációkban, vagyis táblákhoz hasonló szerkezetekben jelennek meg. Az SQL erre a modellre épít, de gyakorlati adatbázis-nyelvként több ponton eltér az elméleti relációs algebrától.
+
+Fontos különbségek:
+
+\begin{itemize}
+  \item a relációs algebra elméletileg halmazokkal dolgozik, SQL-ben viszont ismétlődő sorok is megjelenhetnek, hacsak nem használunk \code{DISTINCT} kulcsszót;
+  \item a relációs modellben a soroknak nincs sorrendjük, SQL-ben az eredmény megjelenítési sorrendjét \code{ORDER BY} záradékkal kérhetjük;
+  \item SQL-ben létezik \code{NULL}, vagyis hiányzó/ismeretlen érték, amely háromértékű logikai viselkedést okozhat;
+  \item SQL-ben számos gyakorlati kiterjesztés van, például nézetek, indexek, tárolt eljárások és DBMS-specifikus függvények.
+\end{itemize}
+
+A relációs algebra mégis nagyon fontos, mert megadja a lekérdezések logikai alapját. A \code{WHERE} a szelekcióhoz, a \code{SELECT} mezőlista a projekcióhoz, a \code{JOIN} a relációk összekapcsolásához, a \code{GROUP BY} pedig a csoportképzéshez kapcsolható.
+
+\section{SQL parancscsoportok}
+
+\subsection{DDL: adatdefiníciós nyelv}
+
+A \textbf{DDL}, vagyis Data Definition Language az adatbázis szerkezetét kezeli. Ide tartoznak azok az utasítások, amelyek adatbázis-objektumokat hoznak létre, módosítanak vagy törölnek.
+
+Tipikus DDL utasítások:
+
+\begin{itemize}
+  \item \code{CREATE}: objektum létrehozása, például \code{CREATE TABLE}, \code{CREATE VIEW}, \code{CREATE INDEX};
+  \item \code{ALTER}: meglévő objektum szerkezetének módosítása, például új oszlop vagy új megkötés felvétele;
+  \item \code{DROP}: objektum megszüntetése.
+\end{itemize}
+
+DDL-nél a fő gondolat az, hogy nem konkrét rekordokat kezelünk, hanem a sémát. Egy tábla létrehozásakor megadjuk a tábla nevét, mezőit, azok típusát és a rájuk vonatkozó integritási feltételeket.
+
+\subsection{DML: adatkezelő nyelv}
+
+A \textbf{DML}, vagyis Data Manipulation Language a táblák tartalmát kezeli. A DML utasítások már konkrét rekordokra hatnak.
+
+Tipikus DML utasítások:
+
+\begin{itemize}
+  \item \code{INSERT}: új rekord vagy rekordok beszúrása;
+  \item \code{UPDATE}: meglévő rekordok mezőértékeinek módosítása;
+  \item \code{DELETE}: rekordok törlése.
+\end{itemize}
+
+A DML utasításoknál különösen fontos a \code{WHERE} feltétel. Ha egy \code{UPDATE} vagy \code{DELETE} utasításból kimarad a szűrés, akkor a művelet akár a tábla összes rekordjára is vonatkozhat.
+
+\subsection{DQL: lekérdezés}
+
+Sok felosztásban a \code{SELECT} önálló csoportként, \textbf{DQL} néven szerepel. A \code{SELECT} nem módosítja közvetlenül a tárolt adatokat, hanem eredményrelációt állít elő. Ezzel lehet megvalósítani a relációs algebra lekérdező műveleteit.
+
+A \code{SELECT} egyszerű alakja:
+
+\begin{center}
+\code{SELECT mezők FROM tábla WHERE feltétel;}
+\end{center}
+
+Összetettebb lekérdezésben joinok, csoportosítás, aggregáció, alselectek, halmazműveletek és rendezés is szerepelhetnek.
+
+\subsection{DCL: jogosultságkezelés}
+
+A \textbf{DCL}, vagyis Data Control Language az adatbázis-védelmi és jogosultsági műveleteket fedi le. A fő fogalmak:
+
+\begin{itemize}
+  \item \textbf{felhasználó}: adatbázisba belépő szubjektum;
+  \item \textbf{objektum}: például tábla, nézet, eljárás vagy séma;
+  \item \textbf{privilégium}: valamilyen művelet joga, például \code{SELECT}, \code{INSERT}, \code{UPDATE};
+  \item \textbf{szerepkör}: jogosultságok halmaza, amelyet több felhasználóhoz is hozzá lehet rendelni.
+\end{itemize}
+
+A DCL legfontosabb utasításai:
+
+\begin{itemize}
+  \item \code{GRANT}: jogosultság adása;
+  \item \code{REVOKE}: jogosultság visszavonása.
+\end{itemize}
+
+\section{DDL: táblák és adatbázis-objektumok kezelése}
+
+\subsection{Adatbázis-objektumok}
+
+SQL-ben objektumnak tekinthető például a tábla, nézet, index, séma, tárolt eljárás, függvény, trigger, sequence, felhasználó vagy szerepkör. A 20. tétel szempontjából a legfontosabb objektum a \textbf{tábla}, mert a relációs adatmodell gyakorlati megvalósításában az adatokat táblákban tároljuk.
+
+Egy tábla definíciója tartalmazza:
+
+\begin{itemize}
+  \item a tábla nevét;
+  \item az oszlopok nevét;
+  \item az oszlopok adattípusát;
+  \item mezőszintű és táblaszintű integritási feltételeket;
+  \item esetenként DBMS-függő tárolási vagy indexelési paramétereket.
+\end{itemize}
+
+\subsection{CREATE TABLE}
+
+A \code{CREATE TABLE} utasítás új táblát hoz létre. Általános alakja:
+
+\begin{center}
+\code{CREATE TABLE táblanév (oszlopnév típus megkötések, ...);}
+\end{center}
+
+A mezők típusai DBMS-függők lehetnek, de tipikus kategóriák:
+
+\begin{itemize}
+  \item egész és valós számok: például \code{INTEGER}, \code{NUMERIC}, \code{DECIMAL}, \code{FLOAT};
+  \item karakteres adatok: például \code{CHAR}, \code{VARCHAR};
+  \item dátum és idő: például \code{DATE}, \code{TIME}, \code{TIMESTAMP};
+  \item nagy objektumok: például \code{BLOB}, \code{CLOB}.
+\end{itemize}
+
+A táblalétrehozásnál már érdemes megadni a kulcsokat és a legfontosabb integritási feltételeket, mert ezek védik az adatbázis helyességét.
+
+\begin{center}
+\input{src/tables/zv20_ddl_integritasi.tex}
+\end{center}
+
+\zvcode[caption={Egyszerű táblaséma DDL utasításokkal}]{src/code/zv20_schema.sql}
+
+A példában a \code{Gyarto} tábla azonosítója elsődleges kulcs. A \code{Termek} tábla \code{gyartoId} mezője idegen kulcs, amely a \code{Gyarto} táblára hivatkozik. Ez azt jelenti, hogy nem lehet olyan terméket beszúrni, amely nem létező gyártóra mutat.
+
+\subsection{Mezőszintű és táblaszintű megkötések}
+
+A megkötések két gyakori formában jelenhetnek meg:
+
+\begin{itemize}
+  \item \textbf{mezőszintű megkötés}: közvetlenül az oszlop definíciója mellett szerepel, például \code{ar INTEGER CHECK (ar > 0)};
+  \item \textbf{táblaszintű megkötés}: külön sorban, több oszlopra is vonatkozhat, például összetett elsődleges kulcs vagy összetett idegen kulcs esetén.
+\end{itemize}
+
+Összetett kulcsnál a táblaszintű forma természetesebb:
+
+\begin{center}
+\code{PRIMARY KEY (hallgatoId, targyId)}
+\end{center}
+
+Idegen kulcsnál fontos, hogy a hivatkozott tábla és a hivatkozott kulcs létezzen. Törlésnél és módosításnál a hivatkozási integritás miatt az adatbázis-kezelő tiltást, kaszkád műveletet, \code{NULL}-ra állítást vagy alapértelmezett értékre állítást alkalmazhat, attól függően, hogyan definiáltuk a kapcsolatot.
+
+\subsection{ALTER TABLE és DROP TABLE}
+
+Az \code{ALTER TABLE} meglévő tábla szerkezetét módosítja. Tipikus használata:
+
+\begin{itemize}
+  \item új oszlop hozzáadása;
+  \item oszlop típusának vagy megkötésének módosítása;
+  \item új kulcs vagy \code{CHECK} feltétel felvétele;
+  \item oszlop vagy megkötés törlése, ha ezt az adatbázis-kezelő és az aktuális adatok megengedik.
+\end{itemize}
+
+A \code{DROP TABLE} megszünteti a táblát. Ezzel a tábla szerkezete és tartalma is eltűnik. Ha más tábla idegen kulccsal hivatkozik rá, a törlés gyakran nem hajtható végre addig, amíg a hivatkozásokat nem kezeljük.
+
+\begin{warningbox}
+A DDL utasításoknál mindig figyelni kell a függőségekre. Egy hivatkozott táblát, kulcsot vagy oszlopot nem lehet következmény nélkül törölni, ha más objektumok épülnek rá.
+\end{warningbox}
+
+\section{DML: rekordok felvitele, módosítása és törlése}
+
+\subsection{INSERT}
+
+Az \code{INSERT} új rekordot visz fel egy táblába. Két gyakori alakja:
+
+\begin{itemize}
+  \item \code{INSERT INTO tábla VALUES (...)}: ilyenkor az értéklista sorrendjének és darabszámának illeszkednie kell a tábla oszlopsorrendjéhez;
+  \item \code{INSERT INTO tábla (mezőlista) VALUES (...)}: biztonságosabb és áttekinthetőbb, mert megmondja, mely oszlopok kapnak értéket.
+\end{itemize}
+
+Ha egy mező nem kap értéket, akkor az adatbázis-kezelő vagy az alapértelmezett értéket használja, vagy \code{NULL}-t állít be, ha ez megengedett. Ha a mező \code{NOT NULL} és nincs alapértelmezett értéke, a beszúrás hibát ad.
+
+\subsection{UPDATE}
+
+Az \code{UPDATE} meglévő rekordok mezőértékeit módosítja. A \code{SET} rész adja meg az új értékeket, a \code{WHERE} rész pedig azt, hogy mely rekordokra vonatkozik a módosítás.
+
+Általános alak:
+
+\begin{center}
+\code{UPDATE tábla SET mező = érték WHERE feltétel;}
+\end{center}
+
+Az \code{UPDATE} is integritási ellenőrzések alá esik. Nem állíthatunk be olyan idegen kulcsértéket, amely nem létező rekordra hivatkozik, és nem sérthetjük meg a \code{CHECK}, \code{UNIQUE} vagy \code{NOT NULL} feltételeket sem.
+
+\subsection{DELETE}
+
+A \code{DELETE} rekordokat töröl egy táblából. Általános alak:
+
+\begin{center}
+\code{DELETE FROM tábla WHERE feltétel;}
+\end{center}
+
+Ha a \code{WHERE} hiányzik, a művelet a tábla minden rekordját törölheti. Ez vizsgán is gyakori hibapont: a \code{DELETE FROM Termek;} nem egy terméket töröl, hanem minden terméket, ha az adatbázis-kezelő és az integritási feltételek ezt engedik.
+
+\zvcode[caption={DML és DCL alaputasítások példái}]{src/code/zv20_dml_dcl.sql}
+
+\section{DCL: jogosultságok és szerepkörök}
+
+\subsection{Jogosultságkezelés célja}
+
+Egy adatbázist több felhasználó vagy alkalmazás is használhat. Nem mindenkinek szabad ugyanazt látnia vagy módosítania. A jogosultságkezelés feladata, hogy szabályozza, ki milyen objektumon milyen műveletet végezhet.
+
+Például:
+
+\begin{itemize}
+  \item egy ügyintéző olvashat és beszúrhat rendeléseket;
+  \item egy adminisztrátor módosíthat sémát és jogosultságot adhat;
+  \item egy publikus felhasználó csak nézeten keresztül láthat szűrt adatokat;
+  \item egy alkalmazás csak a működéséhez szükséges minimális jogokat kapja meg.
+\end{itemize}
+
+A minimális jogosultság elve szerint minden felhasználónak és alkalmazásnak csak azokat a jogokat érdemes megadni, amelyek tényleg szükségesek a feladatához.
+
+\subsection{GRANT és REVOKE}
+
+A \code{GRANT} jogosultságot ad:
+
+\begin{center}
+\code{GRANT SELECT ON Termek TO ugyintezo;}
+\end{center}
+
+A \code{REVOKE} jogosultságot von vissza:
+
+\begin{center}
+\code{REVOKE SELECT ON Termek FROM ugyintezo;}
+\end{center}
+
+Szerepkör használatával nem egyesével kell minden felhasználónak minden jogot kiosztani. Létrehozható például egy \code{lekerdezo} szerepkör, amely megkapja a szükséges \code{SELECT} jogokat, majd ezt a szerepkört lehet a felhasználókhoz rendelni. A szerepkörök karbantarthatóbbá teszik a jogosultságkezelést.
+
+\section{A SELECT utasítás}
+
+\subsection{A SELECT alapgondolata}
+
+A \code{SELECT} az SQL lekérdező utasítása. Egy vagy több forrásból eredményrelációt állít elő. Egyszerű esetben egy táblából kiválaszt néhány oszlopot és néhány sort:
+
+\begin{center}
+\code{SELECT nev, ar FROM Termek WHERE ar > 1000;}
+\end{center}
+
+Ez relációs algebrai szemmel projekció és szelekció együtt: a \code{WHERE} kiválasztja a megfelelő rekordokat, a \code{SELECT nev, ar} pedig csak a szükséges attribútumokat tartja meg.
+
+\input{src/figures/zv20_select_logikai_sorrend.tex}
+
+A logikai sorrend nem mindig azonos a fizikai végrehajtási sorrenddel. Az optimalizáló átrendezheti a műveleteket, például korábban elvégezhet szűréseket vagy indexet használhat. A logikai sorrend mégis segít megérteni, hogy miért nem használhatunk minden záradékban minden aliasnevet vagy aggregált kifejezést.
+
+\begin{center}
+\input{src/tables/zv20_select_zaradekok.tex}
+\end{center}
+
+\subsection{Projekció és kiterjesztés}
+
+A \code{SELECT} mezőlistája adja meg, hogy milyen oszlopok kerüljenek az eredménybe. Ha minden oszlop kell, használható a \code{*}, de vizsgán és valós fejlesztésben jobb név szerint felsorolni a szükséges mezőket.
+
+Példák:
+
+\begin{itemize}
+  \item \code{SELECT nev, ar FROM Termek}: csak a név és ár oszlop jelenik meg;
+  \item \code{SELECT nev, ar * 1.27 AS bruttoAr FROM Termek}: számított oszlopot hoz létre;
+  \item \code{SELECT DISTINCT kategoria FROM Termek}: ismétlődésmentesen listázza a kategóriákat.
+\end{itemize}
+
+A \code{DISTINCT} azért fontos, mert SQL-ben az eredmény alapértelmezés szerint nem feltétlenül halmaz, hanem többszörösen előforduló sorokat is tartalmazhat.
+
+\subsection{Szelekció WHERE feltétellel}
+
+A \code{WHERE} rekordszintű feltételt ad. Csak azok a rekordok jutnak tovább, amelyekre a feltétel igaz.
+
+Gyakori feltételtípusok:
+
+\begin{itemize}
+  \item összehasonlítás: \code{ar > 1000}, \code{nev = 'Tej'};
+  \item logikai kapcsolás: \code{AND}, \code{OR}, \code{NOT};
+  \item mintaillesztés: \code{LIKE 'A\%'};
+  \item intervallum: \code{BETWEEN 100 AND 500};
+  \item halmaztagság: \code{IN (...)};
+  \item \code{NULL} vizsgálat: \code{IS NULL}, \code{IS NOT NULL}.
+\end{itemize}
+
+A \code{NULL} értékkel külön kell bánni. A \code{telephely = NULL} nem helyes SQL-feltétel; helyette \code{telephely IS NULL} szükséges.
+
+\subsection{JOIN műveletek}
+
+A \code{JOIN} több táblát kapcsol össze. A relációs adatmodellben a kapcsolatok gyakran idegen kulccsal jelennek meg, a lekérdezésben pedig joinnal kapcsoljuk vissza az összetartozó rekordokat.
+
+Gyakori joinok:
+
+\begin{itemize}
+  \item \textbf{inner join}: csak az illeszkedő rekordpárok jelennek meg;
+  \item \textbf{left outer join}: a bal oldali tábla minden rekordja megmarad, a pár nélküli jobb oldali értékek \code{NULL}-ok lesznek;
+  \item \textbf{right outer join}: a jobb oldali tábla minden rekordja megmarad;
+  \item \textbf{full outer join}: mindkét oldal pár nélküli rekordjai is megmaradnak;
+  \item \textbf{cross join}: Descartes-szorzatot képez.
+\end{itemize}
+
+A joinfeltételt célszerű \code{ON} záradékban megadni:
+
+\begin{center}
+\code{FROM Termek t INNER JOIN Gyarto g ON t.gyartoId = g.gyartoId}
+\end{center}
+
+Az aliasok, például \code{t} és \code{g}, rövidebbé és egyértelműbbé teszik a lekérdezést.
+
+\subsection{Aggregáció, GROUP BY és HAVING}
+
+Az aggregáció több rekordból számít egy összesített értéket. Tipikus aggregáló függvények:
+
+\begin{itemize}
+  \item \code{COUNT(*)}: rekordok száma;
+  \item \code{SUM(mező)}: összeg;
+  \item \code{AVG(mező)}: átlag;
+  \item \code{MIN(mező)}, \code{MAX(mező)}: minimum és maximum.
+\end{itemize}
+
+Ha az egész táblára kérünk összesítést, nem kell \code{GROUP BY}. Ha csoportonként szeretnénk összesítést, meg kell adni a csoportképző mezőket.
+
+Példa: gyártónként termékszám és átlagár:
+
+\begin{center}
+\code{GROUP BY g.gyartoId, g.nev}
+\end{center}
+
+A \code{WHERE} a rekordokat szűri csoportosítás előtt. A \code{HAVING} a már létrejött csoportokat szűri, ezért aggregált kifejezésekre is hivatkozhat, például \code{HAVING COUNT(*) >= 2}.
+
+\zvcode[caption={SELECT példák szűréssel, joinnal, aggregációval és alselecttel}]{src/code/zv20_select_peldak.sql}
+
+\subsection{ORDER BY}
+
+A relációs algebra halmazszemléletű, ezért az eredmény sorrendje nem része a reláció jelentésének. SQL-ben a megjelenített eredmény sorrendjét \code{ORDER BY} adja meg.
+
+Példák:
+
+\begin{itemize}
+  \item \code{ORDER BY nev}: név szerint növekvő sorrend;
+  \item \code{ORDER BY ar DESC}: ár szerint csökkenő sorrend;
+  \item \code{ORDER BY kategoria, ar DESC}: kategórián belül ár szerint csökkenő sorrend.
+\end{itemize}
+
+\section{Beágyazott SELECT használata}
+
+\subsection{Az alselect fogalma}
+
+A beágyazott \code{SELECT}, más néven alselect vagy részlekérdezés olyan lekérdezés, amely egy másik SQL utasításon belül szerepel. Részlekérdezést használhatunk feltételben, forrásként, számított mezőként vagy DML utasítás részeként is.
+
+\begin{center}
+\input{src/tables/zv20_alselect_tipusok.tex}
+\end{center}
+
+Az alselect erős eszköz, mert egy lekérdezés eredményét közvetlenül felhasználhatjuk egy másik lekérdezésben. Ugyanakkor figyelni kell arra, hogy a részlekérdezés hány sort és hány oszlopot ad vissza. Egy skalár összehasonlítás egyetlen értéket vár, az \code{IN} viszont több értéket tartalmazó halmazt is elfogad.
+
+\subsection{Alselect a WHERE feltételben}
+
+A leggyakoribb forma, amikor a részlekérdezés a \code{WHERE} feltételben szerepel.
+
+Példa: az átlagárnál drágább termékek:
+
+\begin{center}
+\code{WHERE ar > (SELECT AVG(ar) FROM Termek)}
+\end{center}
+
+Példa: azok a termékek, amelyek egy adott telephelyű gyártóhoz tartoznak:
+
+\begin{center}
+\code{WHERE gyartoId IN (SELECT gyartoId FROM Gyarto WHERE telephely = 'Miskolc')}
+\end{center}
+
+A \code{NOT IN} használatánál óvatosnak kell lenni, ha a részlekérdezés \code{NULL} értéket adhat vissza. Ilyenkor sokszor biztonságosabb a \code{NOT EXISTS} megoldás.
+
+\subsection{Korrelált alselect és EXISTS}
+
+Korrelált alselect esetén a belső lekérdezés hivatkozik a külső lekérdezés aktuális sorára. Emiatt a belső lekérdezés logikailag minden külső rekordhoz kapcsolódva értelmezhető.
+
+Példa: azok a gyártók, amelyeknek nincs termékük:
+
+\begin{center}
+\code{WHERE NOT EXISTS (SELECT 1 FROM Termek t WHERE t.gyartoId = g.gyartoId)}
+\end{center}
+
+Az \code{EXISTS} nem a belső lekérdezés konkrét oszlopértékét használja, hanem azt vizsgálja, hogy létezik-e legalább egy illeszkedő rekord.
+
+\subsection{Alselect a FROM és SELECT részekben}
+
+A \code{FROM} részben szereplő alselect táblaszerű eredményt ad, amelyet aliasnévvel láthatunk el. Ez hasznos, ha először összesíteni szeretnénk, majd az összesített eredményre további feltételt vagy join műveletet alkalmazunk.
+
+A \code{SELECT} listában szereplő alselect tipikusan skalár értéket ad. Például minden termék mellé kiírhatjuk az összes termék átlagárát. Ilyenkor figyelni kell arra, hogy a belső lekérdezés tényleg egyetlen értéket adjon vissza.
+
+\section{Relációs algebra SQL-ben}
+
+\subsection{Áttekintés}
+
+A relációs algebra absztrakt, logikai műveleteket ad relációkon. SQL-ben ezek gyakorlati parancsformában jelennek meg. A megfeleltetés nem mindig teljesen egy az egyben történik, mert SQL-ben van \code{NULL}, ismétlődés, rendezés, alias, függvények és DBMS-függő kiterjesztések is.
+
+\begin{center}
+\input{src/tables/zv20_relacios_algebra_sql.tex}
+\end{center}
+
+\subsection{Szelekció és projekció SQL-ben}
+
+A szelekció rekordokat választ ki. SQL-ben ezt a \code{WHERE} végzi:
+
+\begin{center}
+\code{SELECT * FROM Termek WHERE ar > 1000;}
+\end{center}
+
+A projekció attribútumokat választ ki. SQL-ben ez a \code{SELECT} mezőlistája:
+
+\begin{center}
+\code{SELECT nev, ar FROM Termek;}
+\end{center}
+
+A két művelet természetesen kombinálható:
+
+\begin{center}
+\code{SELECT nev, ar FROM Termek WHERE ar > 1000;}
+\end{center}
+
+Relációs algebrai alakban ez:
+
+\[
+  \pi_{nev,ar}(\sigma_{ar>1000}(Termek)).
+\]
+
+\subsection{Join SQL-ben}
+
+A join több reláció rekordjait kapcsolja össze. SQL-ben ezt explicit \code{JOIN} szintaxissal érdemes írni:
+
+\begin{center}
+\code{SELECT t.nev, g.nev FROM Termek t INNER JOIN Gyarto g ON t.gyartoId = g.gyartoId;}
+\end{center}
+
+Relációs algebrai szemmel ez egy szelekciós join. A feltétel általában kulcs--idegen kulcs egyezés. Ha a gyártó nélküli vagy termék nélküli rekordokat is látni szeretnénk, külső joint kell választani.
+
+\subsection{Aggregáció és csoportképzés SQL-ben}
+
+Az aggregáció relációs algebrai jelölése gyakran \(\gamma\). SQL-ben az aggregáló függvények és a \code{GROUP BY} valósítják meg.
+
+Példa:
+
+\begin{center}
+\code{SELECT gyartoId, COUNT(*) FROM Termek GROUP BY gyartoId;}
+\end{center}
+
+Ha a csoportokra feltételt is adunk, \code{HAVING} szükséges:
+
+\begin{center}
+\code{HAVING COUNT(*) > 3}
+\end{center}
+
+Fontos szabály: ha \code{GROUP BY} szerepel, akkor a \code{SELECT} listában lévő nem aggregált mezőknek általában szerepelniük kell a \code{GROUP BY} részben is.
+
+\subsection{Halmazműveletek SQL-ben}
+
+Az SQL támogatja a lekérdezések eredményhalmazainak kombinálását. A forráslekérdezéseknek kompatibilis oszlopszámmal és összeegyeztethető típusokkal kell rendelkezniük.
+
+\begin{itemize}
+  \item \code{UNION}: két eredmény uniója ismétlődésmentesítéssel;
+  \item \code{UNION ALL}: unió ismétlődések megtartásával;
+  \item \code{INTERSECT}: közös sorok;
+  \item \code{EXCEPT} vagy \code{MINUS}: az első eredményből elhagyja a másodikban is szereplő sorokat.
+\end{itemize}
+
+A \code{UNION ALL} gyakran gyorsabb lehet, mert nem kell ismétlődéseket eltávolítani. Ha viszont relációs algebrai értelemben halmazt szeretnénk, akkor ismétlődésmentes eredmény kell.
+
+\subsection{Osztás művelet SQL-ben}
+
+A relációs algebra osztás művelete olyan kérdésekre használható, ahol „minden” típusú feltétel szerepel. Például: mely gyártók gyártanak minden keresett kategóriából terméket?
+
+SQL-ben nincs minden rendszerben közvetlen \code{DIVIDE} utasítás, ezért gyakran \code{NOT EXISTS}-es kettős tagadással írjuk fel. A gondolat:
+
+\begin{itemize}
+  \item válasszuk ki azt a gyártót;
+  \item amelyhez nem létezik olyan keresett kategória;
+  \item amelyhez nem létezik megfelelő termék.
+\end{itemize}
+
+Ez elsőre furcsa, de logikailag azt jelenti: minden keresett kategóriához van illeszkedő terméke.
+
+\zvcode[caption={Relációs algebrai műveletek SQL-megfelelői példákkal}]{src/code/zv20_relacios_algebra_sql.sql}
+
+\section{Összefüggő példa}
+
+\subsection{Példaséma}
+
+Legyen két táblánk:
+
+\[
+  Gyarto(gyartoId, nev, telephely)
+\]
+
+\[
+  Termek(termekId, nev, ar, kategoria, gyartoId, keszlet)
+\]
+
+A \code{Termek.gyartoId} idegen kulcs a \code{Gyarto.gyartoId} mezőre. Ez a séma alkalmas arra, hogy bemutassuk a DDL, DML és \code{SELECT} alapjait.
+
+\subsection{Műveletek a példasémán}
+
+DDL szinten a \code{CREATE TABLE} létrehozza a két táblát, elsődleges kulccsal, idegen kulccsal és értékellenőrzéssel. DML szinten az \code{INSERT} gyártót és terméket szúr be, az \code{UPDATE} módosítja az árakat, a \code{DELETE} törli a felesleges rekordokat. DCL szinten a \code{GRANT} olvasási vagy módosítási jogot adhat a megfelelő felhasználónak.
+
+Lekérdezési szinten:
+
+\begin{itemize}
+  \item a drágább termékek kiválasztása \code{WHERE} feltétellel szelekció;
+  \item a terméknév és ár kiírása projekció;
+  \item a termékek és gyártók összekapcsolása join;
+  \item a gyártónkénti termékszám \code{GROUP BY} és \code{COUNT};
+  \item az átlagárnál drágább termékek keresése beágyazott \code{SELECT};
+  \item a termékkel nem rendelkező gyártók keresése \code{NOT EXISTS} vagy külső join segítségével oldható meg.
+\end{itemize}
+
+\subsection{Relációs algebrai és SQL gondolkodás összevetése}
+
+Relációs algebrai alak:
+
+\[
+  \pi_{g.nev,t.nev,t.ar}(\sigma_{t.ar>1000}(Gyarto \bowtie_{g.gyartoId=t.gyartoId} Termek)).
+\]
+
+SQL-ben ugyanez:
+
+\begin{center}
+\code{SELECT g.nev, t.nev, t.ar FROM Gyarto g INNER JOIN Termek t ON t.gyartoId = g.gyartoId WHERE t.ar > 1000;}
+\end{center}
+
+A két forma ugyanazt a logikai műveletsort írja le: összekapcsolás, szűrés, majd a szükséges mezők kiválasztása. Az SQL olvashatóbb gyakorlati parancsnyelvként, a relációs algebra pedig tömörebb formális leírásként hasznos.
+
+\section{Gyakori vizsgahibák és összefoglalás}
+
+\subsection{Gyakori félreértések}
+
+\begin{itemize}
+  \item \textbf{DDL és DML összekeverése.} A \code{CREATE TABLE} sémát hoz létre, az \code{INSERT} rekordot szúr be.
+  \item \textbf{A \code{SELECT} nem DML-módosítás.} Lekérdez, eredményrelációt állít elő; sok felosztásban DQL-ként szerepel.
+  \item \textbf{Hiányzó \code{WHERE} \code{UPDATE} vagy \code{DELETE} esetén.} Ilyenkor a művelet minden rekordra vonatkozhat.
+  \item \textbf{\code{WHERE} és \code{HAVING} összekeverése.} A \code{WHERE} rekordokat szűr csoportosítás előtt, a \code{HAVING} csoportokat szűr aggregálás után.
+  \item \textbf{\code{NULL} hibás vizsgálata.} \code{= NULL} helyett \code{IS NULL} kell.
+  \item \textbf{Joinfeltétel elhagyása.} Ez gyakorlatilag Descartes-szorzatot vagy túl nagy eredményt okozhat.
+  \item \textbf{A \code{SELECT} listában nem csoportosított mező szerepel aggregáció mellett.} Csoportos lekérdezésnél a nem aggregált mezőknek illeszkedniük kell a csoportképzéshez.
+  \item \textbf{SQL és relációs algebra teljes azonosítása.} Az SQL gyakorlati nyelv, ezért \code{NULL}, ismétlődés, rendezés és dialektusbeli eltérések is vannak benne.
+  \item \textbf{\code{NOT IN} használata \code{NULL}-t tartalmazó részlekérdezéssel.} Ilyenkor a \code{NOT EXISTS} sokszor biztonságosabb.
+  \item \textbf{DCL elhanyagolása.} A \code{GRANT} és \code{REVOKE} nem adatmódosító, hanem jogosultságkezelő utasítás.
+\end{itemize}
+
+\subsection{Rövid vizsgaválasz-minta}
+
+\begin{summarybox}
+Az SQL relációs adatbázis-kezelő nyelv. Fő parancscsoportjai a DDL, DML, DQL és DCL. A DDL az adatbázis szerkezetét kezeli: \code{CREATE} utasítással objektumokat, például táblákat hozunk létre, \code{ALTER} utasítással módosítjuk a szerkezetüket, \code{DROP} utasítással töröljük őket. A \code{CREATE TABLE} megadja a mezőket, adattípusokat és integritási feltételeket, például elsődleges kulcsot, idegen kulcsot, \code{NOT NULL}, \code{UNIQUE}, \code{CHECK} és \code{DEFAULT} feltételeket. A DML a rekordokat kezeli: \code{INSERT} beszúr, \code{UPDATE} módosít, \code{DELETE} töröl. A DCL jogosultságkezelésre szolgál, fő utasításai a \code{GRANT} és \code{REVOKE}. A \code{SELECT} a lekérdezés központi utasítása: a \code{FROM} megadja a forrásokat, a \code{JOIN} összekapcsolja a táblákat, a \code{WHERE} rekordokat szűr, a \code{GROUP BY} csoportosít, a \code{HAVING} csoportokat szűr, a \code{SELECT} mezőlistája projekciót és számított mezőket ad, az \code{ORDER BY} pedig rendezi a megjelenített eredményt. Beágyazott \code{SELECT} szerepelhet feltételben, forrásként vagy skalár kifejezésként; lehet korrelált vagy nem korrelált. A relációs algebra műveletei SQL-ben is megvalósíthatók: a szelekció \code{WHERE}, a projekció \code{SELECT}, a join \code{JOIN}, az aggregáció \code{GROUP BY} és aggregáló függvény, a halmazműveletek pedig \code{UNION}, \code{INTERSECT} és \code{EXCEPT}/\code{MINUS} formában jelennek meg.
+\end{summarybox}
+
+\end{document}

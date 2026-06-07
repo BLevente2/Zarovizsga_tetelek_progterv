@@ -1,0 +1,12 @@
+\begin{tabularx}{\textwidth}{L{35mm}X}
+\toprule
+\textbf{Elvárás vagy tétel} & \textbf{Lényege} \\
+\midrule
+Veszteségmentes felbontás & A felbontott relációk természetes joinjából visszaállítható az eredeti reláció, vagyis nem keletkezik hamis rekord és nem vész el információ. \\
+Függőségmegőrzés & Az eredeti funkcionális függőségek ellenőrizhetők a felbontott sémákon is anélkül, hogy mindig össze kellene joinolni őket. \\
+Heath-tétel & Ha \(R(A,B,C)\) relációban \(A \to B\) teljesül, akkor az \(R_1(A,B)\) és \(R_2(A,C)\) felbontás veszteségmentes. \\
+Rissanen-tétel & Egy felbontás akkor tekinthető függetlennek, ha a függőségrendszer előállítható a részsémák függőségeiből, és a közös attribútum megfelelő kulcsszerepet tölt be valamelyik részsémában. \\
+Normalizálási lépés & A redundanciát okozó függőség bal oldalát és a tőle függő mezőket külön relációba tesszük, majd PK--FK kapcsolattal kötjük össze a részeket. \\
+Kompromisszum & A normalizálás csökkenti az anomáliákat, de több joinhoz vezethet; teljesítmény miatt néha szabályozott denormalizálás indokolt. \\
+\bottomrule
+\end{tabularx}

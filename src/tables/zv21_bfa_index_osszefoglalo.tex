@@ -1,0 +1,14 @@
+\begin{tabularx}{\textwidth}{L{32mm}X}
+\toprule
+\textbf{Tulajdonság} & \textbf{Jelentés} \\
+\midrule
+Indexbejegyzés & Kulcsértékből és rekordra vagy adatblokkra mutató pointerből áll. \\
+Rendezettség & A kulcsok rendezettek, ezért a keresés nem teljes táblabejárással történik. \\
+B-fa csomópont & Több kulcsot és több gyermekpointert tartalmaz; egy csomópont gyakran lemezblokknak felel meg. \\
+Kiegyensúlyozottság & A levelek azonos mélységben vannak, ezért a keresés útja rövid és kiszámítható. \\
+Beszúrás & A megfelelő levélbe történik; telített csomópont esetén hasítás, középső kulcs felvitele és pointerigazítás szükséges. \\
+Törlés & Hiányos csomópont esetén kölcsönzés vagy összevonás történhet, hogy a fa kiegyensúlyozott maradjon. \\
+Költség & Tipikusan \(O(\log n)\) blokkelérés; a gyakorlatban a fa nagy elágazási foka miatt kevés szint elegendő. \\
+Ár & A lekérdezések gyorsulhatnak, de az \code{INSERT}, \code{UPDATE}, \code{DELETE} műveleteknél az indexeket is frissíteni kell. \\
+\bottomrule
+\end{tabularx}

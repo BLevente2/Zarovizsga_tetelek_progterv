@@ -27,6 +27,8 @@ Jelenleg a projekt az alábbi kidolgozott tételeket tartalmazza:
 - `zv_tetel_17.tex` - 17. tétel: memóriamenedzsment, címleképzés, lapozós virtuális memória, laphiba-kezelés és lapcsere stratégiák
 - `zv_tetel_18.tex` - 18. tétel: fájlrendszerek megvalósítása, jegyzékszerkezetek, blokkallokáció, szabad blokk menedzsment és fájlattribútumok
 - `zv_tetel_19.tex` - 19. tétel: relációs adatmodell, relációs struktúra, integritási feltételek, ER modell, ER--relációs konverzió és relációs algebra
+- `zv_tetel_20.tex` - 20. tétel: SQL nyelv, DDL, DML, DCL, SELECT, beágyazott SELECT és relációs algebrai műveletek SQL-ben
+- `zv_tetel_21.tex` - 21. tétel: adatkezelés, fájlszervezés, DBMS-architektúra, B-fa index, normalizálás és dekompozíció
 
 Minden tétel külön PDF-be fordul, így az egyes tételek önálló dokumentumként is használhatók.
 
@@ -66,6 +68,8 @@ A tételek fedlapján szereplő hivatalos tételkiírások is ebből a fájlból
     ├── zv_tetel_17.tex
     ├── zv_tetel_18.tex
     ├── zv_tetel_19.tex
+    ├── zv_tetel_20.tex
+    ├── zv_tetel_21.tex
     ├── figures/
     │   ├── zv_abrak.tex
     │   └── ... külön TikZ-ábrák ...

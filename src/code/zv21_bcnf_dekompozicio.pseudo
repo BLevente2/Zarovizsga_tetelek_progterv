@@ -1,0 +1,15 @@
+BCNF_DEKOMPOZICIO(R, F)
+    eredmeny <- { R }
+
+    WHILE van olyan S az eredmenyben, amely nem BCNF
+        valassz egy nemtrivialis X -> Y fuggest S-ben,
+        ahol X nem szuperkulcs S-ben
+
+        S1 <- X unio Y
+        S2 <- S - (Y - X)
+
+        csereld S-t S1 es S2 relaciokra az eredmenyben
+    END WHILE
+
+    RETURN eredmeny
+END

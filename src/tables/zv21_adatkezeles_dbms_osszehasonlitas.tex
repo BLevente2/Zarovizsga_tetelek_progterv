@@ -1,0 +1,12 @@
+\begin{tabularx}{\textwidth}{L{31mm}L{38mm}X}
+\toprule
+\textbf{Szempont} & \textbf{Fájlalapú adatkezelés} & \textbf{Adatbázis-kezelés DBMS-sel} \\
+\midrule
+Adatok szerkezete & Az alkalmazás kódja ismeri a fájl formátumát, rekordhosszát és kapcsolatait. & A szerkezet metaadatként, sémában és katalógusban jelenik meg. \\
+Kapcsolatok kezelése & Kézzel, programlogikával, sokszor ismétléssel vagy külön fájlokkal. & Kulcsokkal, idegen kulcsokkal, integritási feltételekkel és lekérdezésekkel. \\
+Keresés & Szekvenciális feldolgozás vagy kézzel épített index. & Optimalizált végrehajtás, indexek, B-fa vagy hash alapú elérés. \\
+Konkurencia & Az alkalmazásnak kell kezelnie a párhuzamos hozzáférést. & Tranzakciókezelés, zárolás, izolációs szintek, naplózás. \\
+Védelem & Főleg operációs rendszer szintű fájljogosultság. & Felhasználók, szerepkörök, objektumszintű jogosultságok. \\
+Rugalmasság & Sémaváltozáskor sok programrész módosulhat. & A logikai séma és a fizikai tárolás részben elválasztható. \\
+\bottomrule
+\end{tabularx}
