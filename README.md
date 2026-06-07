@@ -25,6 +25,8 @@ Jelenleg a projekt az alábbi kidolgozott tételeket tartalmazza:
 - `zv_tetel_15.tex` - 15. tétel: öröklődés, polimorfizmus, túlterhelés, felüldefiniálás, statikus és dinamikus típus, absztrakt osztályok és interfészek
 - `zv_tetel_16.tex` - 16. tétel: operációs rendszerbeli folyamatok, folyamatkontextus, szálak, futási módok és állapotmodellek
 - `zv_tetel_17.tex` - 17. tétel: memóriamenedzsment, címleképzés, lapozós virtuális memória, laphiba-kezelés és lapcsere stratégiák
+- `zv_tetel_18.tex` - 18. tétel: fájlrendszerek megvalósítása, jegyzékszerkezetek, blokkallokáció, szabad blokk menedzsment és fájlattribútumok
+- `zv_tetel_19.tex` - 19. tétel: relációs adatmodell, relációs struktúra, integritási feltételek, ER modell, ER--relációs konverzió és relációs algebra
 
 Minden tétel külön PDF-be fordul, így az egyes tételek önálló dokumentumként is használhatók.
 
@@ -62,6 +64,8 @@ A tételek fedlapján szereplő hivatalos tételkiírások is ebből a fájlból
     ├── zv_tetel_15.tex
     ├── zv_tetel_16.tex
     ├── zv_tetel_17.tex
+    ├── zv_tetel_18.tex
+    ├── zv_tetel_19.tex
     ├── figures/
     │   ├── zv_abrak.tex
     │   └── ... külön TikZ-ábrák ...

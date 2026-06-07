@@ -1,0 +1,23 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.92\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=8mm and 13mm]
+  \node[zvflowprocess, fill=warnbg, minimum width=35mm] (proj) {$\pi_{nev,targyNev}$};
+  \node[zvflowprocess, fill=lightaccent, below=of proj, minimum width=36mm] (sel) {$\sigma_{kredit>3}$};
+  \node[zvflowprocess, fill=black!5, below=of sel, minimum width=46mm] (join2) {$\bowtie_{F.targyId=T.targyId}$};
+  \node[zvflowprocess, fill=black!5, below left=of join2, minimum width=48mm] (join1) {$\bowtie_{H.id=F.hallgatoId}$};
+  \node[zvflowprocess, fill=black!5, below right=of join2, minimum width=24mm] (t) {$Targy\ (T)$};
+  \node[zvflowprocess, fill=black!5, below left=of join1, minimum width=28mm] (h) {$Hallgato\ (H)$};
+  \node[zvflowprocess, fill=black!5, below right=of join1, minimum width=28mm] (f) {$Felvetel\ (F)$};
+
+  \draw[arrow] (sel) -- (proj);
+  \draw[arrow] (join2) -- (sel);
+  \draw[arrow] (join1) -- (join2);
+  \draw[arrow] (t) -- (join2);
+  \draw[arrow] (h) -- (join1);
+  \draw[arrow] (f) -- (join1);
+\end{tikzpicture}%
+}
+\caption{Relációs algebrai kifejezés fa alakban}
+\label{fig:zv19_relacios_algebra_fa}
+\end{figure}

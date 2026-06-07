@@ -1,0 +1,14 @@
+\begin{tabularx}{\textwidth}{L{27mm}X X}
+\toprule
+\textbf{ER elem} & \textbf{Jelentés} & \textbf{Jelölés és példa} \\
+\midrule
+Egyed & Önálló léttel bíró objektumtípus, amelyről adatokat akarunk tárolni. & Téglalap; például \code{Hallgato}, \code{Targy}, \code{Rendeles}. \\
+Gyenge egyed & Önálló kulccsal nem azonosítható egyed, amely egy másik egyedtől függ. & Kettős téglalap vagy jelölt kapcsolat; azonosításában a tulajdonos kulcsa is részt vesz. \\
+Kapcsolat & Egyedpéldányok közötti asszociáció. & Rombusz; például hallgató \emph{felvesz} tárgyat. \\
+Tulajdonság & Egyedhez vagy kapcsolathoz tartozó adat. & Ellipszis; például név, dátum, kredit. \\
+Kulcstulajdonság & Az egyedpéldányt azonosító tulajdonság. & Aláhúzott attribútum; például \code{hallgatoId}. \\
+Összetett tulajdonság & Több elemi részből álló tulajdonság. & Például cím = irányítószám, város, utca. \\
+Többértékű tulajdonság & Egy egyedpéldányhoz több értéket is felvehet. & Kettős ellipszis; például több telefonszám. \\
+Származtatott tulajdonság & Más adatokból számítható érték. & Szaggatott ellipszis; például életkor a születési dátumból. \\
+\bottomrule
+\end{tabularx}

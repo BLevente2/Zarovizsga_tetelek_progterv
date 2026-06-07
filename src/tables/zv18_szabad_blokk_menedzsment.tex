@@ -1,0 +1,10 @@
+\begin{tabularx}{\textwidth}{L{28mm}X X}
+\toprule
+\textbf{Módszer} & \textbf{Mit tárol?} & \textbf{Jellemzés} \\
+\midrule
+Bittérkép & Minden blokkhoz egy bitet: szabad vagy foglalt. & Egyszerű és tömör; könnyű összefüggő szabad szakaszokat keresni, de nagy lemeznél a teljes térkép vizsgálata költséges lehet. \\
+Szabadlista & A szabad blokkok láncolt listát alkotnak. & Könnyű új szabad blokkot hozzáadni, de nehezebb gyorsan nagy összefüggő területet találni. \\
+Csoportosítás & Egy szabad blokk több másik szabad blokk címét tartalmazza, valamint a következő csoportblokk címét. & A szabad blokkok saját maguk hordozzák a nyilvántartás egy részét; sok szabad blokk gyorsabban elérhető, mint egyszerű listával. \\
+Számlálás & Egy bejegyzés egy kezdőblokkot és az onnan folytonosan szabad blokkok számát tartalmazza. & Különösen akkor hatékony, ha a szabad helyek gyakran hosszabb összefüggő szakaszokat alkotnak. \\
+\bottomrule
+\end{tabularx}

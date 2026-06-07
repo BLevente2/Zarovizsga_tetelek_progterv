@@ -1,0 +1,16 @@
+\begin{tabularx}{\textwidth}{L{28mm}L{31mm}X}
+\toprule
+\textbf{Művelet} & \textbf{Jelölés} & \textbf{Lényege} \\
+\midrule
+Szelekció & $\sigma_{felt}(R)$ & Rekordokat szűr feltétel alapján; a séma nem változik. \\
+Projekció & $\pi_{lista}(R)$ & Attribútumokat választ ki; a séma szűkül, az ismétlődő rekordok halmazszemléletben kiesnek. \\
+Descartes-szorzat & $R \times S$ & Minden $R$-beli rekordot minden $S$-beli rekorddal párosít. \\
+Szelekciós join & $R \bowtie_{felt} S$ & Két reláció rekordjait feltétel alapján illeszti, gyakran PK--FK kapcsolaton. \\
+Természetes join & $R \bowtie S$ & Azonos nevű attribútumok értékegyezősége alapján illeszt. \\
+Külső join & bal, jobb vagy teljes outer join & A párral nem rendelkező rekordokat is megtartja az egyik vagy mindkét oldalról. \\
+Aggregáció & $\gamma_{agg}(R)$ & Összesítő értéket számít, például darabszámot, minimumot, maximumot vagy átlagot. \\
+Csoportképzés & $\gamma_{csoport;agg}(R)$ & Csoportonként számít aggregált értékeket. \\
+Unió, metszet, különbség & $R \cup S$, $R \cap S$, $R \setminus S$ & Kompatibilis sémájú relációk halmazműveletei. \\
+Osztás & $R \div S$ & Olyan rekordokat keres, amelyek minden $S$-beli értékkel kapcsolatban állnak. \\
+\bottomrule
+\end{tabularx}

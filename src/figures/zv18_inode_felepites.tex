@@ -1,0 +1,25 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.88\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=8mm and 9mm]
+  \node[zvflowprocess, fill=lightaccent, minimum width=24mm] (dir) {jegyzékbejegyzés};
+  \node[zvflowprocess, fill=warnbg, right=of dir, minimum width=25mm] (inode) {i-node};
+  \node[zvflowprocess, fill=black!5, right=of inode, minimum width=24mm] (data1) {adatblokk};
+  \node[zvflowprocess, fill=black!5, below=of data1, minimum width=24mm] (data2) {adatblokk};
+  \node[zvflowprocess, fill=black!5, below=of inode, minimum width=25mm] (ind) {indirekt blokk};
+  \node[zvflowprocess, fill=black!5, right=of ind, minimum width=24mm] (data3) {adatblokkok};
+
+  \draw[arrow] (dir) -- node[above] {név + i-node szám} (inode);
+  \draw[arrow] (inode) -- node[above] {direkt} (data1);
+  \draw[arrow] (inode) -- (data2);
+  \draw[arrow] (inode) -- node[left] {indirekt} (ind);
+  \draw[arrow] (ind) -- (data3);
+
+  \node[align=left, below=14mm of dir, text width=94mm] {
+    Az i-node a fájl metaadatait és a blokkhivatkozásokat tartalmazza. A jegyzékben tipikusan nem a teljes attribútumhalmaz, hanem a fájlnév és a belső azonosító szerepel.
+  };
+\end{tikzpicture}%
+}
+\caption{UNIX-szerű jegyzékbejegyzés, i-node és adatblokkok kapcsolata}
+\label{fig:zv18_inode_felepites}
+\end{figure}

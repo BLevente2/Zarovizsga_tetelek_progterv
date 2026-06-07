@@ -1,0 +1,12 @@
+\begin{tabularx}{\textwidth}{L{31mm}X X}
+\toprule
+\textbf{Integritási elem} & \textbf{Jelentés} & \textbf{Tipikus szerep} \\
+\midrule
+Elsődleges kulcs (PK) & Egy rekordot egyértelműen azonosító attribútum vagy attribútumcsoport. & Egyedi és nem lehet üres; az egyedintegritás alapja. \\
+Kulcsjelölt & Olyan minimális attribútumhalmaz, amely alkalmas lenne elsődleges kulcsnak. & Egy relációban több kulcsjelölt is lehet, közülük választjuk ki a PK-t. \\
+Idegen kulcs (FK) & Olyan attribútum vagy attribútumcsoport, amely egy másik reláció elsődleges kulcsára hivatkozik. & Kapcsolatok tárolása, hivatkozási integritás biztosítása. \\
+Egyedi feltétel (UN) & Egy attribútum vagy attribútumcsoport értéke nem ismétlődhet. & Alternatív azonosítók, például e-mail cím vagy adószám. \\
+Nem üres feltétel (NN) & Az adott mezőnek mindig tartalmaznia kell értéket. & Kötelező adatok és kötelező kapcsolatok jelölése. \\
+Értékellenőrzés (CHECK) & Logikai feltétel, amelynek a mezőértékekre vagy rekordokra teljesülnie kell. & Domain- és üzleti szabályok, például \code{ar > 0}. \\
+\bottomrule
+\end{tabularx}

@@ -1,0 +1,24 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.88\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=7mm]
+  \node[zvflowprocess, fill=lightaccent, minimum width=70mm] (app) {felhasználói programok};
+  \node[zvflowprocess, fill=lightaccent!70, below=of app, minimum width=70mm] (api) {rendszerhívások: open, read, write, close};
+  \node[zvflowprocess, fill=warnbg, below=of api, minimum width=70mm] (fs) {fájlrendszer: névtér, attribútumok, blokkallokáció};
+  \node[zvflowprocess, fill=black!6, below=of fs, minimum width=70mm] (cache) {puffer cache / blokk cache};
+  \node[zvflowprocess, fill=black!10, below=of cache, minimum width=70mm] (driver) {eszközmeghajtó és I/O ütemezés};
+  \node[zvflowprocess, fill=black!14, below=of driver, minimum width=70mm] (disk) {háttértár: HDD, SSD, pendrive, partíció};
+
+  \draw[arrow] (app) -- (api);
+  \draw[arrow] (api) -- (fs);
+  \draw[arrow] (fs) -- (cache);
+  \draw[arrow] (cache) -- (driver);
+  \draw[arrow] (driver) -- (disk);
+
+  \node[align=center, right=12mm of fs, text width=45mm] {A felhasználó fájlnevekkel és útvonalakkal dolgozik, a fájlrendszer pedig blokkokra és metaadatokra fordítja ezt.};
+  \draw[arrow] ([xshift=-1mm]fs.east) -- ++(10mm,0);
+\end{tikzpicture}%
+}
+\caption{A fájlrendszer helye az operációs rendszer tárolási rétegei között}
+\label{fig:zv18_fajlrendszer_retegek}
+\end{figure}

@@ -1,0 +1,542 @@
+\documentclass[12pt,a4paper]{article}
+
+\newcommand{\TETELNUMBER}{19}
+\newcommand{\TETELTITLE}{Relációs adatmodell, ER modell és relációs algebra}
+\newcommand{\TETELSHORTTITLE}{Relációs adatmodell}
+
+\newcommand{\ZVTetelsorDataOnly}{}
+\input{src/zv_tetelsor.tex}
+\newcommand{\TETELKIIRAS}{\ZVTetelKiiras{\TETELNUMBER}}
+
+\input{src/preamble.tex}
+
+\begin{document}
+\zvfrontmatter
+
+\section{A tétel lényege és vizsgaszintű vázlata}
+
+\begin{summarybox}
+A 19. tétel az adatbázisok relációs szemléletéről szól. A relációs adatmodell három fő részből áll: szerkezeti részből, integritási részből és műveleti részből. A szerkezeti rész relációkat, attribútumokat, rekordokat és sémákat ír le; az integritási rész kulcsokat, idegen kulcsokat és egyéb megkötéseket ad; a műveleti rész pedig relációs algebrával fogalmazza meg, hogyan lehet a relációkból új relációkat előállítani. A tétel másik nagy témája az ER modell, amely fogalmi, grafikus tervezési eszköz, és amelyből szabályos lépésekkel relációs séma készíthető.
+\end{summarybox}
+
+Vizsgán célszerű a következő sorrendet követni:
+
+\begin{enumerate}
+  \item adatmodell fogalma: szerkezet, integritás, műveletek;
+  \item relációs adatmodell alapfogalmai: domain, attribútum, rekord, reláció, relációséma, adatbázisséma;
+  \item reláció és táblázat különbsége: halmazszemlélet, sorrend és ismétlődés hiánya;
+  \item relációs struktúra és kapcsolatok tárolása idegen kulcsokkal;
+  \item integritási feltételek: PK, FK, UN, NN, CHECK;
+  \item ER modell szerepe, elemei, jelentése és jelölése;
+  \item ER modell konverziója relációs modellre;
+  \item relációs algebra fogalma, zártsága és fő műveletei;
+  \item tipikus lekérdezési gondolkodás: szelekció, projekció, join, aggregáció, halmazműveletek;
+  \item gyakori vizsgahibák és rövid összefoglaló válasz.
+\end{enumerate}
+
+A legfontosabb vizsgamondat: a relációs modellben az adatokat relációk, vagyis azonos szerkezetű rekordok halmazai tárolják; a kapcsolatok idegen kulcsokon keresztül jelennek meg, az adatok helyességét integritási feltételek védik, a lekérdezések elméleti alapját pedig a relációs algebra adja.
+
+\input{src/figures/zv19_adatbazis_tervezes_folyamat.tex}
+
+\section{Adatmodell és relációs szemlélet}
+
+\subsection{Adatmodell fogalma}
+
+Az \textbf{adatmodell} formális keretrendszer egy adatrendszer leírására. Meghatározza, milyen építőelemekből állhat az adatbázis, milyen megkötések érvényesek az adatokra, és milyen műveleteket lehet végrehajtani rajtuk. Egy adatmodell nem egy konkrét adatbázis, hanem az a fogalmi és formális szabályrendszer, amely alapján a konkrét adatbázis felépül.
+
+Az adatmodell három fő része:
+
+\begin{itemize}
+  \item \textbf{szerkezeti rész}: milyen objektumokból áll az adatbázis, például relációkból, attribútumokból és rekordokból;
+  \item \textbf{integritási rész}: milyen szabályok korlátozzák a megengedett adatállapotokat;
+  \item \textbf{műveleti rész}: milyen műveletekkel lehet adatokat lekérdezni és módosítani.
+\end{itemize}
+
+A relációs adatmodell azért terjedt el, mert egyszerű, matematikailag tiszta, a felhasználó számára táblázatszerűen értelmezhető, ugyanakkor jól optimalizálható. A relációs modellben az adatok logikai szinten táblákhoz hasonló relációkban jelennek meg, de a modell nem kötődik ahhoz, hogy a rekordok fizikailag hogyan helyezkednek el a háttértáron.
+
+\subsection{Relációs adatbázis és táblázatkezelő különbsége}
+
+A relációs adatbázis első ránézésre hasonlít egy táblázatkezelőhöz, mert sorokat és oszlopokat látunk. A lényegi különbség az, hogy az adatbázisban a szerkezet, a megkötések, a kapcsolatok, a jogosultságok és a műveletek szigorúan szabályozottak.
+
+Egy táblázatkezelőben a felhasználó rugalmasan szerkeszthet cellákat, de a kapcsolatok és megkötések gyakran csak emberi fegyelemmel tarthatók fenn. Relációs adatbázisban a séma megadja, milyen mezők vannak, milyen típusú értékeket vehetnek fel, mely mezők kötelezőek, mi az elsődleges kulcs, és mely idegen kulcsoknak kell létező rekordokra mutatniuk.
+
+Fontos különbség a halmazszemlélet is. A reláció elméletileg rekordok halmaza, ezért nincs benne sorrend és ismétlődés. A fizikai vagy megjelenítési táblázatban persze láthatunk sorrendet, de ez nem része a reláció jelentésének. Ha rendezett eredményt akarunk, azt külön művelettel vagy SQL-ben \code{ORDER BY} záradékkal kell kérni.
+
+\section{A relációs adatmodell szerkezeti része}
+
+\subsection{Alapfogalmak}
+
+A relációs modell alapja a \textbf{reláció}. Egy reláció azonos szerkezetű rekordok halmaza. A rekordok attribútumokból állnak, az attribútumok pedig domainekhez tartozó atomi értékeket vesznek fel.
+
+\begin{center}
+\input{src/tables/zv19_relacios_fogalmak.tex}
+\end{center}
+
+A \textbf{domain} egy értékkészlet. Például a \code{Kredit} attribútum domainje lehet a pozitív egész számok egy szűkített tartománya, a \code{SzuletesiDatum} domainje dátum, a \code{Nev} domainje karakterlánc. A relációs modellben az attribútumértékek alapvetően atomiak: egy mezőben nem illik listát, ismétlődő csoportot vagy beágyazott táblát tárolni.
+
+A \textbf{relációséma} a reláció szerkezetét adja meg. Például:
+
+\[
+  Hallgato(hallgatoId, nev, szakId)
+\]
+
+Ez azt jelenti, hogy a \code{Hallgato} reláció rekordjai három attribútumból állnak. A séma teljesebb leírása tartalmazza az adattípusokat, kulcsokat és integritási feltételeket is, például azt, hogy \code{hallgatoId} elsődleges kulcs, \code{szakId} pedig idegen kulcs.
+
+A \textbf{relációpéldány} a reláció aktuális tartalma. A séma általában ritkábban változik, a példány viszont minden beszúrás, törlés vagy módosítás után változhat.
+
+\subsection{A reláció formális értelmezése}
+
+Matematikailag a reláció domainek Descartes-szorzatának részhalmaza. Ha egy reláció attribútumai rendre \(A_1, A_2, \ldots, A_n\), és ezek domainjei \(D_1, D_2, \ldots, D_n\), akkor egy rekord egy rendezett \(n\)-es:
+
+\[
+  (a_1, a_2, \ldots, a_n) \in D_1 \times D_2 \times \ldots \times D_n.
+\]
+
+A reláció ezeknek a rekordoknak egy halmaza. Ezért mondjuk azt, hogy a tábla nem lista: a rekordok sorrendje nem lényeges, és elméleti értelemben ugyanaz a rekord nem szerepelhet kétszer. A gyakorlati adatbázis-kezelők fizikai okokból sok részletet máshogy valósíthatnak meg, de a logikai relációs modellben a halmazszemlélet a kiindulópont.
+
+\subsection{Kapcsolatok tárolása relációs modellben}
+
+A relációs modellben a kapcsolatokat többnyire \textbf{idegen kulcsokkal} tároljuk. Az egyik reláció rekordja tartalmazza a másik reláció valamely rekordjának elsődleges kulcsértékét. Így egy rekord nem fizikai mutatóval, hanem értékalapú hivatkozással kapcsolódik egy másik rekordhoz.
+
+Például:
+
+\[
+  Szak(szakId, nev)
+\]
+
+\[
+  Hallgato(hallgatoId, nev, szakId)
+\]
+
+Itt a \code{Hallgato.szakId} idegen kulcs, amely a \code{Szak.szakId} elsődleges kulcsra hivatkozik. Ez egy 1:N jellegű kapcsolatot fejez ki: egy szakhoz több hallgató tartozhat, de egy hallgató rekordja egy konkrét szakra mutat.
+
+Az idegen kulcs asszociatív alapú kapcsolatot ad. Előnye, hogy logikailag rugalmas és független a fizikai tárolástól. Hátránya, hogy kapcsolt adatok lekérdezésekor illesztésre, azaz join műveletre van szükség, amelyet az adatbázis-kezelőnek hatékonyan kell végrehajtania.
+
+\section{Integritási feltételek}
+
+\subsection{Az integritás szerepe}
+
+Az \textbf{integritási feltételek} azt írják le, hogy milyen adatállapotok tekinthetők helyesnek. Nem elég az adatokat táblákba tenni; azt is biztosítani kell, hogy a kulcsok egyediek legyenek, a kötelező mezők ne maradjanak üresen, az idegen kulcsok létező rekordokra mutassanak, és az értékek megfeleljenek az üzleti szabályoknak.
+
+Az integritás több szinten értelmezhető:
+
+\begin{itemize}
+  \item \textbf{mezőszintű}: például egy mező nem lehet üres, vagy csak pozitív szám lehet;
+  \item \textbf{rekordszintű}: egy rekord több mezője együtt teljesít feltételt;
+  \item \textbf{relációszintű}: egy kulcsérték nem ismétlődhet a reláción belül;
+  \item \textbf{adatbázisszintű}: egy idegen kulcsnak másik reláció létező rekordjára kell mutatnia.
+\end{itemize}
+
+\begin{center}
+\input{src/tables/zv19_integritasi_feltetelek.tex}
+\end{center}
+
+\subsection{Elsődleges kulcs és egyedintegritás}
+
+Az \textbf{elsődleges kulcs} olyan attribútum vagy attribútumcsoport, amely egyértelműen azonosítja a reláció rekordjait. Az elsődleges kulcs két alapfeltétele:
+
+\begin{itemize}
+  \item \textbf{egyediség}: két különböző rekordnak nem lehet ugyanaz a kulcsértéke;
+  \item \textbf{nem üresség}: a kulcs nem lehet \code{NULL} vagy hiányzó érték.
+\end{itemize}
+
+Ha egy relációban több lehetséges azonosító is van, ezeket \textbf{kulcsjelölteknek} nevezzük. Például egy hallgatónál az adatbázis belső azonosítója lehet \code{hallgatoId}, de a Neptun-kód is lehet egyedi. A tervezés során ezek közül választjuk ki az elsődleges kulcsot, a többi pedig egyedi megkötésként megmaradhat.
+
+Összetett kulcs esetén több mező együtt azonosít. Ez gyakori kapcsolótábláknál. Például a \code{Felvetel(hallgatoId, targyId, datum)} relációban a \code{hallgatoId} és \code{targyId} együtt lehet elsődleges kulcs, ha egy hallgató ugyanazt a tárgyat csak egyszer veheti fel.
+
+\subsection{Idegen kulcs és hivatkozási integritás}
+
+Az \textbf{idegen kulcs} egy másik reláció elsődleges kulcsára hivatkozó mező vagy mezőcsoport. A hivatkozási integritás lényege, hogy az idegen kulcs értéke vagy üres lehet, ha a kapcsolat opcionális, vagy létező elsődleges kulcsértékre kell mutatnia.
+
+Például, ha a \code{Hallgato.szakId} idegen kulcs a \code{Szak.szakId} mezőre, akkor nem szúrhatunk be olyan hallgatót, akinek a \code{szakId} értéke nem létezik a \code{Szak} táblában. Törlésnél is kezelni kell a helyzetet: mi történjen, ha törölni akarunk egy szakot, amelyre hallgatók hivatkoznak?
+
+Tipikus hivatkozási műveletek:
+
+\begin{itemize}
+  \item \textbf{tiltás}: a hivatkozott rekord nem törölhető, amíg más rekord hivatkozik rá;
+  \item \textbf{kaszkád törlés}: a hivatkozott rekord törlésekor a hivatkozó rekordok is törlődnek;
+  \item \textbf{NULL-ra állítás}: a hivatkozó idegen kulcs üressé válik, ha ez megengedett;
+  \item \textbf{alapértelmezett érték}: a rendszer előre megadott értékre állítja az idegen kulcsot.
+\end{itemize}
+
+Vizsgán fontos kiemelni, hogy az idegen kulcs adatbázisszintű megkötés, mert két reláció közötti összefüggést véd.
+
+\subsection{Egyedi, nem üres és CHECK feltételek}
+
+Az \textbf{egyedi} feltétel azt biztosítja, hogy egy attribútum vagy attribútumcsoport értéke ne ismétlődjön. Ez hasznos alternatív azonosítóknál, például e-mail címnél, adószámnál vagy Neptun-kódnál.
+
+A \textbf{nem üres} feltétel azt jelenti, hogy egy mezőnek mindig kell értéket tartalmaznia. Ez nem ugyanaz, mint az egyediség: egy mező lehet kötelező, de nem egyedi, például a név.
+
+A \textbf{CHECK} vagy értékellenőrzési feltétel általános logikai szabályt ad. Például egy termék ára legyen pozitív, egy kreditérték legyen 1 és 30 között, vagy egy kezdődátum ne legyen későbbi, mint a záródátum. Ezek a szabályok az üzleti domainhez kapcsolódnak, és segítenek abban, hogy hibás adat ne kerüljön az adatbázisba.
+
+\section{ER modell szerepe, elemei és jelölése}
+
+\subsection{Az ER modell szerepe az adatbázis-tervezésben}
+
+Az \textbf{ER modell} az Entity--Relationship, magyarul egyed--kapcsolat modell rövidítése. Ez egy szemantikai adatmodell, vagyis a valós világ vagy üzleti terület lényeges fogalmait és azok kapcsolatát írja le. Az ER modell általában grafikus, áttekinthető és DBMS-független.
+
+Adatbázis-tervezésnél nem érdemes rögtön táblákkal kezdeni. Először meg kell érteni, milyen objektumokról akarunk adatot tárolni, ezek hogyan kapcsolódnak egymáshoz, milyen tulajdonságaik vannak, és mely adatok azonosítják őket. Az ER modell ezt a fogalmi tervezési szintet támogatja.
+
+Az ER modell előnyei:
+
+\begin{itemize}
+  \item lényegkiemelő és áttekinthető;
+  \item nem kötődik konkrét adatbázis-kezelőhöz;
+  \item segíti a megrendelői és fejlesztői kommunikációt;
+  \item jól konvertálható relációs modellre;
+  \item feltárja az egyedeket, kapcsolatokat, számosságokat és tulajdonságokat.
+\end{itemize}
+
+\subsection{Egyed, kapcsolat és tulajdonság}
+
+Az ER modell három alapvető eleme az egyed, a kapcsolat és a tulajdonság.
+
+\begin{center}
+\input{src/tables/zv19_er_elemek.tex}
+\end{center}
+
+Az \textbf{egyed} olyan objektumtípus, amely önálló léttel bír, és amelyről adatot akarunk tárolni. Például egy oktatási rendszerben ilyen lehet a hallgató, oktató, tárgy, kurzus vagy terem. Az egyedhez tulajdonságok tartoznak, például név, azonosító vagy kreditérték.
+
+A \textbf{kapcsolat} egyedpéldányok közötti asszociáció. Például hallgató felvesz tárgyat, oktató tanít kurzust, rendelés tartalmaz terméket. Kapcsolatnak is lehet tulajdonsága: például a tárgyfelvétel dátuma nem a hallgató önálló tulajdonsága és nem is a tárgy önálló tulajdonsága, hanem a hallgató és a tárgy kapcsolatára jellemző.
+
+A \textbf{tulajdonság} az az információelem, amelyet tárolni szeretnénk. Lehet atomi, összetett, többértékű, kulcsjellegű vagy származtatott. Relációs modellre konvertálásnál különösen fontos, hogy egy mező lehetőleg atomi legyen; ezért az összetett és többértékű tulajdonságokat külön kell kezelni.
+
+\input{src/figures/zv19_er_jelolesek.tex}
+
+\subsection{Kapcsolatok számossága és kötelezősége}
+
+A kapcsolat \textbf{számossága} azt fejezi ki, hogy az egyik egyedtípus egy példánya hány példánnyal kapcsolódhat a másik oldalon.
+
+Gyakori számosságok:
+
+\begin{itemize}
+  \item \textbf{1:1}: egy A példányhoz legfeljebb egy B példány tartozik, és fordítva is;
+  \item \textbf{1:N}: egy A példányhoz több B példány tartozhat, de egy B példány csak egy A példányhoz;
+  \item \textbf{N:M}: egy A példányhoz több B példány, és egy B példányhoz is több A példány tartozhat.
+\end{itemize}
+
+A kapcsolat lehet \textbf{kötelező} vagy \textbf{opcionális}. Kötelező kapcsolatnál az adott oldalon minden példánynak részt kell vennie a kapcsolatban. Relációs modellben ez gyakran \code{NOT NULL} feltételként jelenik meg az idegen kulcson. Opcionális kapcsolatnál az idegen kulcs lehet \code{NULL}, ha nincs kapcsolódó rekord.
+
+\subsection{Gyenge egyed és speciális tulajdonságok}
+
+A \textbf{gyenge egyed} olyan egyed, amely önmagában nem rendelkezik teljes azonosítóval. Azonosításához szükség van egy másik, tulajdonos vagy meghatározó egyed kulcsára. Például egy rendelési tétel gyakran csak a rendelés azonosítójával és a tételsorszámmal együtt azonosítható.
+
+Az \textbf{összetett tulajdonság} több részből áll. Például a cím felbontható országra, irányítószámra, városra, utcára és házszámra. Relációs modellben általában az elemi részeket tároljuk külön mezőként.
+
+A \textbf{többértékű tulajdonság} egy egyedhez több értéket enged. Például egy szerzőnek több e-mail címe lehet. Relációs modellben ezt nem egyetlen mezőben tároljuk felsorolásként, hanem külön relációba szervezzük.
+
+A \textbf{származtatott tulajdonság} más adatokból kiszámítható. Például az életkor kiszámítható a születési dátumból. Ilyen adatot sokszor nem tárolunk külön, mert redundanciát okozna; ha mégis tároljuk, gondoskodni kell a frissítéséről.
+
+\section{ER modell konverziója relációs modellre}
+
+\subsection{A konverzió célja}
+
+Az ER modell fogalmi terv. A relációs adatbázis-kezelő viszont relációs sémákkal, kulcsokkal és idegen kulcsokkal dolgozik. Ezért az ER modellt át kell alakítani relációs modellre. A konverzió célja, hogy az ER modellben szereplő egyedek, kapcsolatok és tulajdonságok veszteségmentesen, redundanciát kerülve jelenjenek meg relációkban.
+
+A konverzió nem pusztán mechanikus rajzátalakítás. Tervezői döntések is lehetnek benne, például 1:1 kapcsolatnál melyik oldalra kerüljön az idegen kulcs, vagy egy származtatott tulajdonságot tárolunk-e külön. Ennek ellenére vannak jól használható alapszabályok.
+
+\begin{center}
+\input{src/tables/zv19_er_relacios_konverzio.tex}
+\end{center}
+
+\subsection{Egyedek és tulajdonságok leképezése}
+
+A normál egyedből általában külön reláció lesz. Az egyed neve lesz a reláció neve, az egyed tulajdonságai pedig mezőkké válnak. A kulcstulajdonságból elsődleges kulcs lesz.
+
+Példa:
+
+\[
+  Hallgato(hallgatoId, nev, szuletesiDatum)
+\]
+
+Itt a \code{Hallgato} egyed relációvá vált, a \code{hallgatoId} lehet az elsődleges kulcs, a \code{nev} és \code{szuletesiDatum} pedig egyszerű attribútumok.
+
+Összetett tulajdonságnál az elemi részeket kell mezővé alakítani. Ha például a \code{cim} összetett tulajdonság, akkor relációs sémában megjelenhet \code{iranyitoszam}, \code{varos}, \code{utca}, \code{hazszam} mezőként.
+
+Többértékű tulajdonságnál külön relációt hozunk létre. Például ha egy hallgatónak több telefonszáma lehet:
+
+\[
+  Hallgato(hallgatoId, nev)
+\]
+
+\[
+  HallgatoTelefon(hallgatoId, telefonszam)
+\]
+
+A \code{HallgatoTelefon.hallgatoId} idegen kulcs a \code{Hallgato} relációra. Az új tábla elsődleges kulcsa lehet például \code{(hallgatoId, telefonszam)}.
+
+\subsection{Kapcsolatok leképezése}
+
+Az \textbf{1:N kapcsolat} tipikus leképezése az, hogy az N oldali reláció idegen kulcsot kap az 1 oldali reláció elsődleges kulcsára. Ha például egy gyártó több terméket gyárt, de minden termék egy gyártóhoz tartozik, akkor a \code{Termek} táblába kerül a \code{gyartoId} idegen kulcs.
+
+\input{src/figures/zv19_er_konverzio_pelda.tex}
+
+Az \textbf{1:1 kapcsolat} többféleképpen kezelhető. Az egyik oldal táblája kap idegen kulcsot a másik oldalra. A döntésnél figyelembe vehető, hogy melyik oldal kötelező, melyik opcionális, melyik oldal függő jellegű, és hol okoz kevesebb üres értéket. Ha biztosítani kell, hogy egy rekordhoz legfeljebb egy másik rekord kapcsolódjon, az idegen kulcsra egyedi feltétel is szükséges.
+
+Az \textbf{N:M kapcsolat} nem tárolható egyetlen idegen kulccsal veszteségmentesen. Ilyenkor külön kapcsolótábla kell. Például hallgató és tárgy kapcsolata:
+
+\[
+  Hallgato(hallgatoId, nev)
+\]
+
+\[
+  Targy(targyId, targyNev, kredit)
+\]
+
+\[
+  Felvetel(hallgatoId, targyId, datum)
+\]
+
+A \code{Felvetel} kapcsolótábla két idegen kulcsot tartalmaz, és a kapcsolat saját tulajdonságai, például a felvétel dátuma is ide kerülnek.
+
+\subsection{Gyenge egyed és többes kapcsolat konverziója}
+
+Gyenge egyednél a tulajdonos egyed elsődleges kulcsa bekerül a gyenge egyed relációjába idegen kulcsként, és általában az összetett elsődleges kulcs része lesz. Például:
+
+\[
+  Rendeles(rendelesId, datum)
+\]
+
+\[
+  RendelesTetel(rendelesId, tetelSorszam, termekId, mennyiseg)
+\]
+
+Itt a \code{RendelesTetel} azonosításához szükséges a \code{rendelesId}, mert a tételsorszám csak egy rendelésen belül egyedi.
+
+Többes, például hármas kapcsolatnál külön kapcsolótáblát érdemes létrehozni az összes részt vevő egyed idegen kulcsával. Fontos, hogy egy hármas kapcsolatot nem mindig lehet veszteség nélkül három darab bináris kapcsolatra bontani, mert az eredeti jelentés a három résztvevő együttesére vonatkozhat.
+
+\section{Relációs algebra}
+
+\subsection{A relációs algebra fogalma}
+
+A \textbf{relációs algebra} a relációs adatmodell műveleti részének formális alapja. Relációkon értelmezett műveletekből áll, amelyek eredménye szintén reláció. Ezt nevezzük zártsági tulajdonságnak: ha egy művelet bemenete reláció, akkor a kimenete is reláció, ezért a műveletek egymásba ágyazhatók és láncolhatók.
+
+A relációs algebra jellemzői:
+
+\begin{itemize}
+  \item halmazorientált, tehát nem rekordokat kezel egyesével programozói ciklussal;
+  \item absztrakt, logikai szintű leírást ad;
+  \item műveletei paraméterezhetők, például feltétellel vagy mezőlistával;
+  \item az SQL lekérdezési részének elméleti alapját adja;
+  \item lehetővé teszi a lekérdezések átírását és optimalizálását.
+\end{itemize}
+
+\input{src/figures/zv19_relacios_algebra_fa.tex}
+
+A relációs algebra azért fontos vizsgán, mert megmutatja, hogy a lekérdezés lényege nem az, hogyan járunk be rekordokat algoritmikusan, hanem az, hogy relációkból új relációkat állítunk elő.
+
+\begin{center}
+\input{src/tables/zv19_relacios_algebra_muveltek.tex}
+\end{center}
+
+\subsection{Szelekció és projekció}
+
+A \textbf{szelekció} rekordokat szűr feltétel alapján. Jelölése:
+
+\[
+  \sigma_{feltetel}(R)
+\]
+
+Például a 3 kreditnél nagyobb tárgyak kiválasztása:
+
+\[
+  \sigma_{kredit > 3}(Targy)
+\]
+
+A szelekció eredményének sémája megegyezik az eredeti reláció sémájával, csak kevesebb rekord szerepelhet benne.
+
+A \textbf{projekció} attribútumokat választ ki. Jelölése:
+
+\[
+  \pi_{lista}(R)
+\]
+
+Például csak a hallgatók nevének lekérése:
+
+\[
+  \pi_{nev}(Hallgato)
+\]
+
+A projekció eredményének sémája szűkebb. Halmazszemléletben, ha a kiválasztott attribútumok alapján két rekord azonos lenne, akkor az ismétlődés kiesik.
+
+A szelekció és projekció gyakran együtt szerepel:
+
+\[
+  \pi_{nev}(\sigma_{szakId = 1}(Hallgato))
+\]
+
+Ez először kiválasztja az 1-es szakhoz tartozó hallgatókat, majd közülük csak a neveket tartja meg.
+
+\subsection{Join műveletek}
+
+A \textbf{join} két reláció rekordjait kapcsolja össze. A relációs modellben azért központi művelet, mert a normalizált adatbázisban az összetartozó adatok gyakran több táblában vannak.
+
+A Descartes-szorzat minden rekordpárt előállít:
+
+\[
+  R \times S
+\]
+
+Ez önmagában ritkán hasznos, mert nagyon sok felesleges rekordpárt hoz létre. A szelekciós join már feltétellel szűri a párokat:
+
+\[
+  Hallgato \bowtie_{Hallgato.szakId = Szak.szakId} Szak
+\]
+
+Ez a hallgatókat a saját szakjukkal kapcsolja össze. A join feltétele gyakran elsődleges kulcs és idegen kulcs egyezése.
+
+A \textbf{természetes join} az azonos nevű attribútumok egyezése alapján kapcsol. Kényelmes lehet, de óvatosan kell használni, mert ha véletlenül több azonos nevű mező van, mint amit a tervező összekapcsolni akart, hibás jelentésű eredményt adhat.
+
+A \textbf{külső join} azokat a rekordokat is megtartja, amelyeknek nincs illeszkedő párjuk. Ez akkor hasznos, ha például minden szakot látni akarunk, azokat is, amelyekhez jelenleg nincs hallgató.
+
+A \textbf{szemi join} csak az egyik oldal rekordjait adja vissza azok közül, amelyeknek létezik illeszkedő párjuk. Ez létezésvizsgálatoknál hasznos.
+
+\subsection{Aggregáció és csoportképzés}
+
+Az \textbf{aggregáció} összesítő értéket képez. Példák:
+
+\begin{itemize}
+  \item \code{count}: darabszám;
+  \item \code{sum}: összeg;
+  \item \code{avg}: átlag;
+  \item \code{min}: minimum;
+  \item \code{max}: maximum.
+\end{itemize}
+
+Ha a teljes relációra számolunk, akkor egy összesítő eredményt kapunk. Például a hallgatók száma:
+
+\[
+  \gamma_{count(*)}(Hallgato)
+\]
+
+A \textbf{csoportképzés} az aggregáció csoportonkénti változata. Például szakok szerint akarjuk megszámolni a hallgatókat:
+
+\[
+  \gamma_{szakId;\ count(*)}(Hallgato)
+\]
+
+Ilyenkor minden \code{szakId} csoporthoz külön darabszám tartozik. SQL-ben ez a \code{GROUP BY} gondolatának felel meg.
+
+\subsection{Halmazműveletek és osztás}
+
+Az \textbf{unió}, \textbf{metszet} és \textbf{különbség} kompatibilis sémájú relációkon értelmezhető. Kompatibilitás alatt azt értjük, hogy a relációk attribútumai megfeleltethetők egymásnak, és a domainek összhangban vannak.
+
+\begin{itemize}
+  \item \(R \cup S\): azok a rekordok, amelyek \(R\)-ben vagy \(S\)-ben szerepelnek;
+  \item \(R \cap S\): azok a rekordok, amelyek mindkettőben szerepelnek;
+  \item \(R \setminus S\): azok a rekordok, amelyek \(R\)-ben szerepelnek, de \(S\)-ben nem.
+\end{itemize}
+
+Az \textbf{osztás} ritkábban használt, de elméletileg fontos művelet. A „minden” típusú lekérdezésekhez kapcsolódik. Például: kik azok a hallgatók, akik minden kötelező tárgyat felvettek? Ilyenkor azt keressük, hogy egy hallgatóhoz az összes szükséges tárgy kapcsolódik-e.
+
+\section{Relációs algebra és SQL kapcsolata}
+
+\subsection{Logikai és parancsnyelvi szint}
+
+A relációs algebra logikai, formális szint. Az SQL gyakorlati adatbázis-kezelő nyelv. A kettő között szoros kapcsolat van: az SQL \code{SELECT} lekérdezései relációs algebrai műveletekkel értelmezhetők.
+
+Például egy SQL lekérdezés:
+
+\begin{center}
+\begin{tabular}{l}
+\code{SELECT nev} \\
+\code{FROM Hallgato} \\
+\code{WHERE szakId = 1}
+\end{tabular}
+\end{center}
+
+Relációs algebrai szemlélettel:
+
+\[
+  \pi_{nev}(\sigma_{szakId = 1}(Hallgato))
+\]
+
+Az SQL azonban nem teljesen azonos a tiszta relációs algebrával. A gyakorlati SQL többek között kezeli az ismétlődéseket, \code{NULL} értékeket, rendezést, csoportosítást, jogosultságokat, nézeteket és sok adatbázis-kezelő specifikus kiterjesztést.
+
+\subsection{Lekérdezések felépítése}
+
+Egy relációs lekérdezést célszerű logikai lépésekben felépíteni:
+
+\begin{enumerate}
+  \item kiinduló relációk kiválasztása;
+  \item szükséges kapcsolatok összekötése joinnal;
+  \item rekordok szűrése szelekcióval;
+  \item szükséges attribútumok kiválasztása projekcióval;
+  \item aggregáció és csoportképzés, ha összesített eredmény kell;
+  \item halmazműveletek alkalmazása, ha több részlekérdezés eredményét kell kombinálni.
+\end{enumerate}
+
+A valós adatbázis-kezelő optimalizálója nem feltétlenül ebben a sorrendben hajtja végre fizikailag a műveleteket. Például a szelekciókat gyakran érdemes minél korábban elvégezni, mert csökkentik a rekordok számát. A relációs algebra azért hasznos, mert a lekérdezések ekvivalens alakokra írhatók át.
+
+\section{Példa: ER modellből relációs séma és algebrai lekérdezés}
+
+\subsection{Feladat leírása}
+
+Legyen egy egyszerű oktatási nyilvántartás. Hallgatókról, tárgyakról és tárgyfelvételekről tárolunk adatokat. Egy hallgató több tárgyat vehet fel, és egy tárgyat több hallgató is felvehet. A tárgyfelvételnek saját dátuma is van.
+
+ER szinten:
+
+\begin{itemize}
+  \item \code{Hallgato} egyed: hallgatoId, nev;
+  \item \code{Targy} egyed: targyId, targyNev, kredit;
+  \item \code{felvesz} kapcsolat Hallgato és Targy között;
+  \item a kapcsolat számossága N:M;
+  \item a kapcsolat tulajdonsága: datum.
+\end{itemize}
+
+\subsection{Relációs sémák}
+
+Az N:M kapcsolat miatt kapcsolótábla jön létre:
+
+\[
+  Hallgato(hallgatoId, nev)
+\]
+
+\[
+  Targy(targyId, targyNev, kredit)
+\]
+
+\[
+  Felvetel(hallgatoId, targyId, datum)
+\]
+
+A \code{Felvetel.hallgatoId} idegen kulcs a \code{Hallgato} relációra, a \code{Felvetel.targyId} pedig a \code{Targy} relációra. A \code{Felvetel} elsődleges kulcsa lehet \code{(hallgatoId, targyId)}, ha egy hallgató egy tárgyat csak egyszer vehet fel.
+
+\subsection{Lekérdezési példa}
+
+Kérdés: mely hallgatók vették fel a 3 kreditnél nagyobb tárgyakat, és mi ezeknek a tárgyaknak a neve?
+
+Relációs algebrai gondolkodással:
+
+\begin{align*}
+  E_1 &= Hallgato \bowtie_{Hallgato.hallgatoId = Felvetel.hallgatoId} Felvetel,\\
+  E_2 &= E_1 \bowtie_{Felvetel.targyId = Targy.targyId} Targy,\\
+  E &= \pi_{nev,targyNev}(\sigma_{kredit > 3}(E_2)).
+\end{align*}
+
+A kifejezés először összekapcsolja a hallgatókat a felvételekkel, majd a tárgyakkal. Ezután kiválasztja a 3 kreditnél nagyobb tárgyakat, végül csak a hallgató nevét és a tárgy nevét tartja meg. A három sor ugyanazt a lekérdezést írja le lépésekre bontva, hogy a joinok és a szűrés áttekinthetők legyenek.
+
+\section{Gyakori vizsgahibák és összefoglalás}
+
+\subsection{Gyakori félreértések}
+
+\begin{itemize}
+  \item \textbf{A reláció nem egyszerűen Excel-tábla.} A reláció halmaz, nincs benne sorrend és ismétlődés; a táblázatos megjelenítés csak gyakorlati forma.
+  \item \textbf{A mező nem tárolhatna listát.} Többértékű tulajdonságot külön relációba kell szervezni.
+  \item \textbf{A kapcsolat nem mindig egy mező.} 1:N kapcsolatnál elég lehet egy FK, de N:M kapcsolatnál kapcsolótábla szükséges.
+  \item \textbf{Az elsődleges kulcs és az idegen kulcs szerepe különböző.} A PK azonosít, az FK hivatkozik.
+  \item \textbf{A hivatkozási integritás adatbázisszintű szabály.} Nem csak egy mező belső tulajdonsága, mert másik relációhoz kapcsolódik.
+  \item \textbf{Az ER modell nem ugyanaz, mint a relációs séma.} Az ER fogalmi modell, a relációs séma logikai adatbázisterv.
+  \item \textbf{Az 1:N és N:M kapcsolat konverziója nem azonos.} 1:N esetén FK az N oldalon, N:M esetén külön kapcsolótábla kell.
+  \item \textbf{A relációs algebra műveletei relációt adnak vissza.} Ezért lehet őket egymásba ágyazni.
+  \item \textbf{A projekció nem rekordokat, hanem attribútumokat választ ki.} A szelekció szűri a rekordokat.
+  \item \textbf{A join nem egyszerűen egymás mellé írás.} Feltétel vagy közös attribútum alapján kapcsol rekordpárokat.
+\end{itemize}
+
+\subsection{Rövid vizsgaválasz-minta}
+
+\begin{summarybox}
+A relációs adatmodellben az adatbázis relációk halmaza. A reláció azonos szerkezetű rekordok halmaza, attribútumokkal és domainekkel. A relációséma a reláció szerkezetét és integritási feltételeit írja le, a relációpéldány pedig az aktuális rekordhalmaz. A relációs modell integritási része kulcsokat, idegen kulcsokat, egyedi, nem üres és értékellenőrző feltételeket tartalmaz. Az elsődleges kulcs egyedileg azonosít, az idegen kulcs másik reláció rekordjára hivatkozik, és a hivatkozási integritást biztosítja. Az ER modell fogalmi, grafikus adatmodell, amely egyedekből, kapcsolatokból és tulajdonságokból áll. Az ER modellt relációs modellre konvertálva az egyedekből táblák, az atomi tulajdonságokból mezők, a kulcstulajdonságokból elsődleges kulcsok lesznek. 1:N kapcsolatnál az N oldalra kerül idegen kulcs, N:M kapcsolatnál külön kapcsolótábla kell, többértékű tulajdonságnál pedig külön relációt hozunk létre. A relációs algebra a modell műveleti része: relációkon értelmezett, relációt eredményező műveleteket ad, például szelekciót, projekciót, joint, aggregációt, csoportképzést, uniót, metszetet, különbséget és osztást. Az SQL lekérdezések logikai alapja ezekkel a műveletekkel írható le.
+\end{summarybox}
+
+\end{document}

@@ -1,0 +1,15 @@
+\begin{tabularx}{\textwidth}{L{35mm}X X}
+\toprule
+\textbf{ER szerkezet} & \textbf{Relációs leképezés} & \textbf{Megjegyzés} \\
+\midrule
+Normál egyed & Külön reláció lesz belőle. & Az egyed tulajdonságai mezőkké válnak. \\
+Kulcstulajdonság & Elsődleges kulcs mező vagy mezőcsoport. & Az egyedintegritás alapja. \\
+Atomi tulajdonság & Egyszerű mező a relációban. & A mező típusa és megkötése a domainből és üzleti szabályból adódik. \\
+Összetett tulajdonság & Csak az elemi résztulajdonságok kerülnek mezőként a relációba. & Például cím helyett város, utca, házszám. \\
+Többértékű tulajdonság & Külön reláció, amely FK-val hivatkozik az eredeti egyedre. & Megakadályozza, hogy egy mezőben listát tároljunk. \\
+1:N kapcsolat & Idegen kulcs az N oldali, gyerek relációban. & Kötelező kapcsolatnál az FK általában nem lehet NULL. \\
+1:1 kapcsolat & Idegen kulcs valamelyik oldalon, gyakran az opcionális vagy függő oldalon. & Egyedi feltétel is kellhet az FK-ra. \\
+N:M kapcsolat & Külön kapcsolótábla két idegen kulccsal. & A kapcsolattulajdonságok is ebbe a táblába kerülnek. \\
+Gyenge egyed & Külön reláció; a tulajdonos FK-ja az összetett PK része lesz. & Az azonosítás a meghatározó kapcsolaton keresztül történik. \\
+\bottomrule
+\end{tabularx}

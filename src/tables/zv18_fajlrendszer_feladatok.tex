@@ -1,0 +1,13 @@
+\begin{tabularx}{\textwidth}{L{34mm}X X}
+\toprule
+\textbf{Feladat} & \textbf{Jelentése} & \textbf{Vizsgán fontos megjegyzés} \\
+\midrule
+Névtér kezelése & A fájlok és jegyzékek neveinek, útvonalainak, aktuális jegyzékének és hierarchiájának kezelése. & A felhasználó logikai névvel dolgozik, a fájlrendszer ezt belső azonosítóra és blokkokra vezeti vissza. \\
+Blokkallokáció & Annak eldöntése és nyilvántartása, hogy egy fájl teste mely lemezblokkokban található. & Lehet folytonos, láncolt, FAT-szerű vagy indexelt; erősen befolyásolja a véletlen elérés és a fragmentáció költségét. \\
+Szabad terület kezelése & A szabad blokkok követése és új fájlokhoz vagy növekvő fájlokhoz való kiosztása. & Tipikus módszer a bittérkép, a szabadlista, a csoportosítás és a számlálás. \\
+Attribútumok tárolása & A fájlhoz tartozó metaadatok, például tulajdonos, jogok, méret, időbélyegek és blokkhivatkozások rögzítése. & Az attribútum lehet jegyzékbejegyzésben, külön fájlvezérlő blokkban vagy UNIX-szerű i-node-ban. \\
+Védelem és jogosultság & Annak szabályozása, hogy ki olvashatja, írhatja, futtathatja vagy törölheti az állományt. & A jogosultságok fájl- és jegyzékszinten is értelmezhetők, többfelhasználós rendszerekben alapvetőek. \\
+Konzisztencia és helyreállítás & A fájlrendszer metaadatainak sérülés elleni védelme és hiba utáni javíthatósága. & Rendszerleállás vagy írás közbeni hiba után fontos, hogy ne vesszen el a névtér és a blokkok nyilvántartása. \\
+Teljesítmény & A fájlműveletek, keresések, olvasások és írások gyorsítása gyorsítótárral, jó blokkelhelyezéssel és indexeléssel. & A fájlrendszer nemcsak tárolási formátum, hanem teljesítménykritikus operációs rendszerbeli alrendszer. \\
+\bottomrule
+\end{tabularx}

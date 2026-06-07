@@ -1,0 +1,11 @@
+\begin{tabularx}{\textwidth}{L{28mm}X X}
+\toprule
+\textbf{Módszer} & \textbf{Működési elv} & \textbf{Előnyök és problémák} \\
+\midrule
+Folytonos allokáció & A fájl egymás utáni, összefüggő blokkokat kap; elég a kezdőblokk és a hossz. & Gyors szekvenciális és direkt elérés, de külső fragmentációt okoz, nehéz a fájl növelése. \\
+Láncolt allokáció & A fájl blokkjai láncolt listát alkotnak; minden blokk a következő blokkra mutat. & Nincs szükség összefüggő helyre, append könnyebb, de a véletlen elérés lassú és a pointer sérülése veszélyes. \\
+FAT-szerű láncolás & A láncolási információ külön File Allocation Table táblában van, nem közvetlenül az adatblokkban. & A blokklánc cache-elhető és a blokkok teljes mérete adatnak maradhat, de nagy lemeznél nagy táblát igényel. \\
+Indexelt allokáció & A fájlhoz egy indexblokk vagy indexstruktúra tartozik, amely az adatblokkok címeit tartalmazza. & Jó véletlen elérést ad és nem igényel folytonos helyet; kis fájlnál pazarló, nagy fájlnál több indexszint kellhet. \\
+Kombinált indexelés & Direkt blokkhivatkozások és egyszeres, kétszeres, háromszoros indirekt blokkok együtt szerepelnek. & Kis fájl gyorsan és kevés metaadattal kezelhető, nagy fájlokhoz pedig bővíthető címzési fa tartozhat. \\
+\bottomrule
+\end{tabularx}

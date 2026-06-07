@@ -1,0 +1,14 @@
+\begin{tabularx}{\textwidth}{L{30mm}X X}
+\toprule
+\textbf{Attribútum} & \textbf{Példa} & \textbf{Szerep} \\
+\midrule
+Azonosítás & név, belső azonosító, i-node szám, fájlazonosító & A fájl megtalálásához és a jegyzékbejegyzés belső objektumhoz kötéséhez szükséges. \\
+Típus & közönséges fájl, jegyzék, speciális eszközfájl, link & Meghatározza, milyen műveletek értelmezhetők az objektumon. \\
+Helyinformáció & kezdőblokk, FAT-lánc, indexblokk, i-node blokkhivatkozások & A fájl testét alkotó blokkok eléréséhez kell. \\
+Méret & byte-ban vagy blokkokban megadott méret & Az olvasás végét, az append helyét és a lefoglalt tárterületet segít meghatározni. \\
+Tulajdonos & UID, GID, felhasználó, csoport & Jogosultságkezelés és elszámolás alapja. \\
+Jogosultságok & olvasás, írás, végrehajtás, hozzáférési maszk, ACL & Megakadályozza a jogosulatlan hozzáférést vagy módosítást. \\
+Időbélyegek & létrehozás, utolsó módosítás, utolsó hozzáférés, metaadat-módosítás & Rendezéshez, mentéshez, szinkronizációhoz és auditáláshoz használhatók. \\
+Állapotjelzők & rejtett, rendszerfájl, archiválandó, csak olvasható & Rendszer- és felhasználói programok működését segítő kiegészítő információk. \\
+\bottomrule
+\end{tabularx}

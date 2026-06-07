@@ -1,0 +1,41 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize]
+  \node[font=\small\bfseries] at (2.5,2.3) {Folytonos allokáció};
+  \foreach \i in {0,...,7} {
+    \draw[thick, fill=black!5] (\i*0.55,1.55) rectangle (\i*0.55+0.5,2.0);
+    \node at (\i*0.55+0.25,1.77) {\i};
+  }
+  \foreach \i in {2,3,4,5} {\fill[lightaccent] (\i*0.55,1.55) rectangle (\i*0.55+0.5,2.0); \draw[thick] (\i*0.55,1.55) rectangle (\i*0.55+0.5,2.0);}
+  \node[align=center] at (2.5,1.1) {kezdőblokk = 2, hossz = 4};
+
+  \node[font=\small\bfseries] at (2.5,0.25) {Láncolt allokáció};
+  \foreach \x/\name in {0.4/B7,1.7/B2,3.0/B5,4.3/B1} {
+    \node[zvflowprocess, fill=lightaccent, minimum width=12mm, minimum height=6mm] (l\name) at (\x,-0.55) {\name};
+  }
+  \draw[arrow] (lB7) -- (lB2);
+  \draw[arrow] (lB2) -- (lB5);
+  \draw[arrow] (lB5) -- (lB1);
+
+  \node[font=\small\bfseries] at (9.2,2.3) {Indexelt allokáció};
+  \node[zvflowprocess, fill=warnbg, minimum width=19mm, minimum height=8mm] (idx) at (7.3,1.5) {indexblokk};
+  \foreach \y/\name in {2.1/B4,1.5/B8,0.9/B9,0.3/B12} {
+    \node[zvflowprocess, fill=lightaccent, minimum width=14mm, minimum height=6mm] (i\name) at (10.1,\y) {\name};
+    \draw[arrow] (idx.east) -- (i\name.west);
+  }
+  \node[align=center] at (9.2,-0.55) {Az indexblokk tartalmazza a fájl\ adatblokkjainak címeit.};
+
+  \node[font=\small\bfseries] at (15.0,2.3) {Kombinált i-node jellegű megoldás};
+  \node[zvflowprocess, fill=warnbg, minimum width=22mm, minimum height=17mm, align=center] (inode) at (13.3,1.25) {i-node\\direkt\\indirekt};
+  \node[zvflowprocess, fill=lightaccent, minimum width=18mm] (direct) at (16.0,1.8) {adatblokk};
+  \node[zvflowprocess, fill=lightaccent, minimum width=18mm] (indirect) at (16.0,0.75) {indirekt blokk};
+  \node[zvflowprocess, fill=black!5, minimum width=18mm] (data) at (18.4,0.75) {adatblokkok};
+  \draw[arrow] (inode.east) -- (direct.west);
+  \draw[arrow] (inode.east) -- (indirect.west);
+  \draw[arrow] (indirect.east) -- (data.west);
+\end{tikzpicture}%
+}
+\caption{A fájl testét alkotó blokkok rögzítésének alapmódszerei}
+\label{fig:zv18_blokkallokacio}
+\end{figure}

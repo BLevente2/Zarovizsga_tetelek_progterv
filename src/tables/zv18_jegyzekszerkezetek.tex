@@ -1,0 +1,11 @@
+\begin{tabularx}{\textwidth}{L{30mm}X X}
+\toprule
+\textbf{Szerkezet} & \textbf{Lényege} & \textbf{Előny / hátrány} \\
+\midrule
+Egyszintű jegyzék & Minden fájl ugyanabban a közös névtérben van. & Egyszerű, de névütközéshez és áttekinthetetlenséghez vezet; több felhasználónál rosszul skálázódik. \\
+Kétszintű jegyzék & Minden felhasználónak külön saját jegyzéke van, ezen belül szerepelnek a fájljai. & Csökkenti a felhasználók közötti névütközést, de a közös projektek és mélyebb csoportosítás nehézkes. \\
+Hierarchikus fa & A jegyzékek további jegyzékeket és fájlokat tartalmazhatnak, gyökérből kiinduló fa alakul ki. & Természetes csoportosítást, abszolút és relatív útvonalakat ad; a modern rendszerek tipikus megoldása. \\
+Acilkus gráf & A fa kiegészülhet megosztott fájlokkal vagy jegyzékekkel, például linkekkel, de ciklus nem jöhet létre. & Megosztást tesz lehetővé másolás nélkül, de bonyolultabb a törlés és a hivatkozások kezelése. \\
+Általános gráf & A linkek akár ciklust is létrehozhatnak. & Nagyon rugalmas, de bejárásnál, mentésnél és törlésnél végtelen körök vagy többszörös feldolgozás fordulhat elő. \\
+\bottomrule
+\end{tabularx}

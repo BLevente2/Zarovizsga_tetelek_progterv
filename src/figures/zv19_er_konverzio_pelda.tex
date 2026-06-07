@@ -1,0 +1,36 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=9mm and 16mm]
+  \node[draw, rectangle, rounded corners=1mm, fill=lightaccent, minimum width=25mm, minimum height=8mm] (gyarto) {GYÁRTÓ};
+  \node[draw, diamond, aspect=2.1, fill=warnbg, right=of gyarto, inner sep=1pt, minimum width=22mm] (gyart) {gyárt};
+  \node[draw, rectangle, rounded corners=1mm, fill=lightaccent, right=of gyart, minimum width=25mm, minimum height=8mm] (termek) {TERMÉK};
+
+  \draw (gyarto) -- node[above] {1} (gyart);
+  \draw (gyart) -- node[above] {N} (termek);
+
+  \node[zvflowprocess, fill=black!5, below=20mm of gyarto, minimum width=34mm, align=left] (gtable) {
+    \textbf{GYARTO}\\
+    \underline{gyartoId}\\
+    nev
+  };
+  \node[zvflowprocess, fill=black!5, below=20mm of termek, minimum width=38mm, align=left] (ttable) {
+    \textbf{TERMEK}\\
+    \underline{termekId}\\
+    nev\\
+    ar\\
+    gyartoId (FK)
+  };
+
+  \draw[arrow] (gyarto) -- (gtable);
+  \draw[arrow] (termek) -- (ttable);
+  \draw[arrow] (ttable.west) -- node[below] {FK \(\rightarrow\) PK} (gtable.east);
+
+  \node[align=left, below=17mm of gtable, text width=118mm] {
+    Egy 1:N kapcsolat relációs modellben általában úgy jelenik meg, hogy az N oldali tábla idegen kulcsot kap az 1 oldali tábla elsődleges kulcsára. Így minden termék pontosan egy gyártóra hivatkozhat, egy gyártóhoz pedig több termék tartozhat.
+  };
+\end{tikzpicture}%
+}
+\caption{1:N ER kapcsolat konverziója relációs sémára}
+\label{fig:zv19_er_konverzio_pelda}
+\end{figure}

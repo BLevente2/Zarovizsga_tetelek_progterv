@@ -1,0 +1,32 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.92\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=9mm and 14mm]
+  \node[draw, rectangle, rounded corners=1mm, fill=lightaccent, minimum width=25mm, minimum height=8mm] (hallgato) {HALLGATÓ};
+  \node[draw, diamond, aspect=2.1, fill=warnbg, right=of hallgato, inner sep=1pt, minimum width=23mm] (felvesz) {felvesz};
+  \node[draw, rectangle, rounded corners=1mm, fill=lightaccent, right=of felvesz, minimum width=25mm, minimum height=8mm] (targy) {TÁRGY};
+
+  \node[draw, ellipse, fill=black!5, above left=10mm and 2mm of hallgato, minimum width=18mm] (hid) {hallgatoId};
+  \node[draw, ellipse, fill=black!5, below left=10mm and 2mm of hallgato, minimum width=15mm] (hnev) {név};
+  \node[draw, ellipse, fill=black!5, above right=10mm and 2mm of targy, minimum width=17mm] (tid) {targyId};
+  \node[draw, ellipse, fill=black!5, below right=10mm and 2mm of targy, minimum width=15mm] (kredit) {kredit};
+  \node[draw, ellipse, fill=black!5, below=10mm of felvesz, minimum width=19mm] (datum) {dátum};
+
+  \draw (hallgato) -- node[above] {N} (felvesz);
+  \draw (felvesz) -- node[above] {M} (targy);
+  \draw (hid) -- (hallgato);
+  \draw (hnev) -- (hallgato);
+  \draw (tid) -- (targy);
+  \draw (kredit) -- (targy);
+  \draw (datum) -- (felvesz);
+  \draw (hid.south west) -- (hid.south east);
+  \draw (tid.south west) -- (tid.south east);
+
+  \node[align=left, below=23mm of hallgato, text width=115mm] {
+    Chen-szemléletben az egyed téglalap, a kapcsolat rombusz, a tulajdonság ellipszis. A kulcstulajdonság aláhúzással jelölhető. A kapcsolat számossága megadja, hogy egy példány hány másik példánnyal kapcsolódhat.
+  };
+\end{tikzpicture}%
+}
+\caption{ER modell alapelemei és jelölései}
+\label{fig:zv19_er_jelolesek}
+\end{figure}

@@ -1,0 +1,374 @@
+\documentclass[12pt,a4paper]{article}
+
+\newcommand{\TETELNUMBER}{18}
+\newcommand{\TETELTITLE}{Fájlrendszerek megvalósítása}
+\newcommand{\TETELSHORTTITLE}{Fájlrendszerek}
+
+\newcommand{\ZVTetelsorDataOnly}{}
+\input{src/zv_tetelsor.tex}
+\newcommand{\TETELKIIRAS}{\ZVTetelKiiras{\TETELNUMBER}}
+
+\input{src/preamble.tex}
+
+\begin{document}
+\zvfrontmatter
+
+\section{A tétel lényege és vizsgaszintű vázlata}
+
+\begin{summarybox}
+A 18. tétel a fájlrendszer belső megvalósításáról szól. A fájlrendszer az operációs rendszer azon része, amely a tartós adattárolást fájlok, jegyzékek, útvonalak, attribútumok és háttértárblokkok formájában szervezi. Vizsgán a hangsúly nem csak azon van, hogy mi a fájl, hanem azon is, hogy a fájlrendszer hogyan tartja nyilván a fájl testét alkotó blokkokat, hogyan kezeli a jegyzékstruktúrát, hogyan talál szabad lemezterületet, és hol tárolja a fájlhoz tartozó metaadatokat. A fő implementációs kérdések: blokkallokáció, szabad blokk menedzsment, attribútumtárolás és jegyzékszerkezet.
+\end{summarybox}
+
+Vizsgán célszerű a következő sorrendet követni:
+
+\begin{enumerate}
+  \item fájl, fájlrendszer, háttértár és blokk fogalma;
+  \item a fájlrendszer feladatai az operációs rendszerben;
+  \item fájltípusok: közönséges fájl, jegyzék, speciális fájl;
+  \item fájlattribútumok és metaadatok;
+  \item jegyzékszerkezetek: egyszintű, kétszintű, hierarchikus, gráfos megoldások;
+  \item a fájl testét képező blokkok rögzítése: folytonos, láncolt, FAT-szerű, indexelt és kombinált módszer;
+  \item szabad blokk nyilvántartás: bittérkép, szabadlista, csoportosítás, számlálás;
+  \item attribútumok tárolása: jegyzékbejegyzés, fájlvezérlő blokk, i-node;
+  \item FAT és UNIX-szerű i-node szemlélet rövid összehasonlítása;
+  \item előnyök, hátrányok, gyakori vizsgahibák.
+\end{enumerate}
+
+A legfontosabb vizsgamondat: a fájlrendszer a felhasználó számára fájlneveket és jegyzékeket mutat, belül azonban blokkokat, blokkcímeket, szabad hely nyilvántartást és fájlattribútumokat kezel; a megvalósítás minősége meghatározza a tárhely-kihasználást, a véletlen elérés gyorsaságát, a fájlok növelhetőségét és a rendszer hibatűrését.
+
+\begin{center}
+\input{src/tables/zv18_fajlrendszer_feladatok.tex}
+\end{center}
+
+\section{A fájlrendszer szerepe}
+
+\subsection{Fájl és fájlrendszer}
+
+A \textbf{fájl} olyan névvel ellátott adategység, amelynek tartalma a felhasználó vagy a program szempontjából összetartozik. Lehet szöveg, programkód, futtatható állomány, kép, videó, adatbázisrészlet vagy bármilyen más byte-sorozat. A fájl fontos tulajdonsága, hogy tartós tárolón van, tehát a folyamat befejezése vagy a gép újraindítása után is megmaradhat.
+
+A \textbf{fájlrendszer} az operációs rendszer technikai megoldása arra, hogy a háttértáron lévő adatokat fájlokként, jegyzékekként és attribútumokkal rendelkező objektumokként kezelje. A felhasználó általában neveket és útvonalakat lát, például \code{/home/levi/tetel.tex} vagy \code{C:\textbackslash{}Users\textbackslash{}Levi\textbackslash{}Documents}. A háttérben a fájlrendszer ezeket blokkokra, blokkcímekre, belső azonosítókra és metaadatokra fordítja.
+
+\input{src/figures/zv18_fajlrendszer_retegek.tex}
+
+A háttértár tipikusan blokkos eszköz. Ez azt jelenti, hogy a fájlrendszer nem egyes byte-okat foglal önállóan, hanem meghatározott méretű blokkokkal dolgozik. A blokk mérete rendszerfüggő, de gyakran kettő hatványa. A blokkméret kompromisszum: nagyobb blokk esetén kevesebb metaadat kell és gyorsabb lehet a nagy fájlok kezelése, de nőhet a belső fragmentáció, mert egy kis fájl is legalább egy blokkot foglal.
+
+\subsection{Fájlstruktúra és absztrakció}
+
+A fájl belső szerkezete többféleképpen értelmezhető. Egyszerű UNIX-szerű szemléletben a fájl csak byte-ok sorozata, és az operációs rendszer nem próbálja értelmezni a tartalmát. Ez rugalmas, mert ugyanaz a fájlrendszer sokféle fájltípust kezelhet.
+
+Más rendszerekben a fájl lehet rekordok sorozata is. Ilyenkor a rekordok lehetnek fix vagy változó hosszúságúak. Adatbázisoknál és régebbi fájlkezelési modellekben megjelenhet indexelt rekordos szervezés is, ahol a gyors keresést kulcsmezők és indexek segítik. A modern általános célú operációs rendszerek fájlrendszerei többnyire byte-sorozatként kezelik a fájltestet, a magasabb szintű struktúrát pedig az alkalmazásokra bízzák.
+
+\subsection{A fájlrendszer fő implementációs feladatai}
+
+Fájlrendszert általában egy logikai diszken, partíción vagy kötetben hozunk létre. A fájlrendszernek legalább három nagy feladatot kell megoldania.
+
+\begin{itemize}
+  \item \textbf{Blokkok hozzárendelése fájlokhoz}: a fájl adatblokkjait ki kell osztani, sorrendjüket és helyüket nyilván kell tartani.
+  \item \textbf{Szabad lemezterület nyilvántartása}: tudni kell, mely blokkok foglalhatók még le.
+  \item \textbf{Attribútumok és jegyzékszerkezet tárolása}: a fájl neve, mérete, jogosultságai, időbélyegei és blokkhivatkozásai valamilyen metaadat-struktúrába kerülnek.
+\end{itemize}
+
+Ezek a feladatok összefüggenek. Ha például egy fájl nő, akkor a szabad blokk nyilvántartásból új blokkot kell foglalni, a fájl blokkhivatkozásait frissíteni kell, a méret attribútumot módosítani kell, és mindezt úgy kell elvégezni, hogy hiba esetén a fájlrendszer ne kerüljön ellentmondásos állapotba.
+
+\section{Fájltípusok és attribútumok}
+
+\subsection{Közönséges fájlok}
+
+A \textbf{közönséges fájl} a felhasználói adatok tipikus tárolási egysége. Ide tartoznak a szövegfájlok, dokumentumok, forráskódok, képek, videók, programok és különféle bináris állományok. A fájlrendszer szempontjából ezek többnyire névvel, attribútumokkal és adatblokkokkal rendelkező objektumok.
+
+A fájlrendszernek nem feltétlenül kell tudnia, hogy a közönséges fájl tartalma kép vagy szöveg. Elég, ha biztonságosan eltárolja és visszaolvassa a byte-okat. A fájltípus felismerése történhet kiterjesztés, fejléc, magic number vagy alkalmazásszintű értelmezés alapján.
+
+\subsection{Jegyzékek}
+
+A \textbf{jegyzék} vagy mappa olyan speciális fájlszerű objektum, amely bejegyzéseket tartalmaz más fájlokról és jegyzékekről. Egy bejegyzés legalább egy nevet és valamilyen belső hivatkozást tartalmaz. UNIX-szerű rendszerben ez lehet i-node szám, más fájlrendszerben lehet fájlvezérlő blokkra, rekordra vagy más metaadat-objektumra mutató azonosító.
+
+A jegyzékek fontos műveletei:
+
+\begin{itemize}
+  \item bejegyzések listázása;
+  \item új fájl vagy almappa létrehozása;
+  \item fájl keresése név alapján;
+  \item átnevezés és mozgatás;
+  \item törlés;
+  \item jogosultságok és attribútumok kezelése.
+\end{itemize}
+
+A jegyzékek teszik lehetővé, hogy a felhasználó ne fizikai blokkcímekkel, hanem értelmes nevekkel és útvonalakkal dolgozzon.
+
+\subsection{Speciális fájlok}
+
+Egyes rendszerekben, különösen UNIX-szerű operációs rendszerekben az eszközök is fájlokon keresztül érhetők el. Ezeket \textbf{speciális fájloknak} nevezzük. Például egy terminál, lemezpartíció vagy nyomtató is megjelenhet fájlszerű objektumként.
+
+Két fontos csoport:
+
+\begin{itemize}
+  \item \textbf{karakteres eszközfájl}: byte-onkénti vagy karakterfolyam-szerű I/O-t ad, például terminál;
+  \item \textbf{blokkos eszközfájl}: blokkonkénti I/O-t ad, például lemez vagy partíció.
+\end{itemize}
+
+Ez az elv leegyszerűsíti az I/O modellt: sok művelet ugyanazzal az \code{open}, \code{read}, \code{write}, \code{close} szemlélettel kezelhető, mint a közönséges fájloknál.
+
+\subsection{Fájlattribútumok}
+
+A fájlhoz a nevén és tartalmán kívül sok kiegészítő adat is tartozik. Ezeket nevezzük \textbf{attribútumoknak} vagy \textbf{metaadatoknak}. Tipikus attribútum a méret, a tulajdonos, a csoport, a hozzáférési jogosultságok, a létrehozási idő, az utolsó módosítás ideje és a fájl blokkjainak helye.
+
+\begin{center}
+\input{src/tables/zv18_file_attributumok.tex}
+\end{center}
+
+Az attribútumok tárolási helye fájlrendszerfüggő. Egyszerű rendszerekben a jegyzékbejegyzés sok attribútumot közvetlenül tartalmazhat. UNIX-szerű megoldásban a jegyzék inkább csak nevet és i-node számot tartalmaz, a részletes attribútumok pedig az i-node-ban vannak.
+
+\section{Jegyzékszerkezetek}
+
+\subsection{A jegyzék feladata}
+
+A jegyzék a fájlrendszer névterének alapegysége. Feladata, hogy az ember által használható neveket belső fájlrendszerbeli objektumokra képezze le. Ha egy program megnyitja a \code{/home/levi/tetel.tex} fájlt, akkor a fájlrendszer a gyökérből indulva megkeresi a \code{home} bejegyzést, azon belül a \code{levi} jegyzéket, azon belül pedig a \code{tetel.tex} fájlhoz tartozó belső azonosítót.
+
+A jegyzékszerkezetnek több célt kell teljesítenie:
+
+\begin{itemize}
+  \item egyértelmű fájlazonosítást adjon;
+  \item kezelje a névütközéseket;
+  \item tegye lehetővé a fájlok csoportosítását;
+  \item támogassa a többfelhasználós működést;
+  \item legyen hatékony keresésnél és módosításnál;
+  \item illeszkedjen a jogosultsági modellhez.
+\end{itemize}
+
+\subsection{Egyszintű, kétszintű és hierarchikus szerkezet}
+
+\input{src/figures/zv18_jegyzekszerkezet.tex}
+
+\textbf{Egyszintű jegyzékszerkezetnél} minden fájl egy közös jegyzékben van. Ez nagyon egyszerű, de gyorsan kezelhetetlenné válik. Névütközés keletkezik, ha két felhasználó vagy két program ugyanazt a fájlnevet szeretné használni. A csoportosítás is nehéz, mert nincs almappa.
+
+\textbf{Kétszintű szerkezetnél} minden felhasználó saját jegyzéket kap. Így két felhasználónál létezhet azonos nevű fájl, mert a teljes útvonal már különbözik. Ez javítja a többfelhasználós használhatóságot, de még mindig korlátozott, mert a felhasználó saját fájljain belül nem tud tetszőleges mélységű mappastruktúrát létrehozni.
+
+\textbf{Hierarchikus szerkezetnél} a jegyzékek további jegyzékeket is tartalmazhatnak. A fájlrendszer gyökérből kiinduló fát alkot. Ez a modern rendszerek tipikus megoldása. A fájl elérhető abszolút útvonallal, amely a gyökértől indul, vagy relatív útvonallal, amely az aktuális munkajegyzékhez képest értendő.
+
+\begin{center}
+\input{src/tables/zv18_jegyzekszerkezetek.tex}
+\end{center}
+
+\subsection{Linkek és megosztás}
+
+A hierarchikus fában ugyanazt az állományt néha több néven vagy több helyről is el szeretnénk érni. Erre szolgálnak a linkek.
+
+\textbf{Hard link} esetén több jegyzékbejegyzés mutat ugyanarra a belső fájlobjektumra, például ugyanarra az i-node-ra. A fájl addig létezik, amíg legalább egy ilyen hivatkozás megmarad. Emiatt az i-node gyakran tárolja a linkek számát is.
+
+\textbf{Szimbolikus link} esetén egy külön fájl egy másik útvonal nevét tartalmazza. Ez rugalmasabb, mert másik fájlrendszerre vagy még nem létező célra is mutathat, viszont a cél törlése után a szimbolikus link lógó hivatkozássá válhat.
+
+Linkek használatakor a fájlrendszer szerkezete már nem feltétlenül tiszta fa. Ez megosztást tesz lehetővé másolás nélkül, de bonyolítja a törlést, a mentést és a bejárást. Ciklusok esetén külön figyelni kell arra, hogy egy keresés vagy biztonsági mentés ne fusson végtelen körbe.
+
+\section{A fájl testét képező blokkok rögzítése}
+
+\subsection{A blokkallokáció problémája}
+
+A fájl tartalma a háttértáron blokkokban helyezkedik el. A fájlrendszernek meg kell tudnia mondani, hogy egy adott fájlhoz mely blokkok tartoznak, és milyen sorrendben kell azokat olvasni. Ez a \textbf{blokkallokáció} vagy \textbf{blokkok hozzárendelése}.
+
+A jó blokkallokációs módszernek több követelményt kell összehangolnia:
+
+\begin{itemize}
+  \item gyors legyen a szekvenciális olvasás;
+  \item lehetőleg gyors legyen a véletlen elérés is;
+  \item könnyű legyen a fájl növelése;
+  \item kevés metaadatot igényeljen;
+  \item ne okozzon túl sok fragmentációt;
+  \item hiba esetén ne sérüljön könnyen az egész fájl.
+\end{itemize}
+
+\input{src/figures/zv18_blokkallokacio.tex}
+
+\subsection{Folytonos allokáció}
+
+\textbf{Folytonos allokáció} esetén a fájl egymást követő blokkokat kap a lemezen. A fájl helyének nyilvántartásához elég a kezdőblokk címe és a fájl hossza blokkokban vagy byte-ban.
+
+Előnye, hogy egyszerű és gyors. Szekvenciális olvasásnál a blokkok egymás után következnek, véletlen elérésnél pedig a \(k\)-adik blokk címe közvetlenül kiszámítható a kezdőblokkból. Emiatt régebbi vagy speciális rendszerekben jól használható volt, különösen akkor, ha a fájlméret előre ismert.
+
+Hátránya a külső fragmentáció és a fájlnövelés nehézsége. Ha a fájl után már másik fájl blokkjai vannak, akkor append esetén nem biztos, hogy van szabad hely a folytatáshoz. Ilyenkor a fájlt át kell mozgatni nagyobb összefüggő területre, vagy előre túl nagy helyet kell lefoglalni. A modern általános célú rendszerek ezért ritkán építenek kizárólag folytonos allokációra.
+
+\subsection{Láncolt allokáció}
+
+\textbf{Láncolt allokáció} esetén a fájl blokkjai nem szükségszerűen egymás után helyezkednek el. Minden adatblokk tartalmaz egy mutatót a fájl következő blokkjára. A fájl metaadatai között elég az első blokk címe, esetleg az utolsó blokk címe is az append gyorsításához.
+
+A módszer előnye, hogy nincs szükség összefüggő szabad területre. Egy fájl könnyen növelhető, mert csak új szabad blokkot kell találni, majd a lánc végére kapcsolni. Külső fragmentáció szempontjából kedvezőbb, mint a folytonos allokáció.
+
+A hátránya, hogy a véletlen elérés lassú. A fájl \(n\)-edik blokkjához a lánc elejétől kell végigmenni. További probléma, hogy a blokkban tárolt pointer helyet vesz el az adatoktól, és ha egy pointer megsérül, a fájl további része elveszhet vagy nehezen állítható helyre.
+
+\subsection{FAT-szerű allokáció}
+
+A \textbf{FAT}, vagyis File Allocation Table szemlélet a láncolt allokáció továbbfejlesztése. A következő blokkra mutató hivatkozások nem az adatblokkokban vannak, hanem egy külön táblában. A tábla minden blokkhoz tartalmaz egy bejegyzést: például a következő blokk számát, a fájl végét jelző értéket vagy azt, hogy a blokk szabad.
+
+Ennek előnye, hogy az adatblokkok teljes területe adatnak használható, és a FAT tábla a memóriában cache-elhető. Így a lánc bejárása sokszor gyorsabb, mintha minden pointerért külön lemezblokkot kellene olvasni.
+
+Hátránya, hogy nagy háttértárnál a FAT tábla nagyra nőhet, mert minden blokkhoz tartozik bejegyzés. A módszer emellett továbbra is blokkláncban gondolkodik, tehát nagyon nagy fájloknál és sok töredezett fájlnál a metaadat-kezelés jelentős lehet.
+
+\subsection{Indexelt allokáció}
+
+\textbf{Indexelt allokáció} esetén a fájlhoz egy indexblokk tartozik, amely a fájl adatblokkjainak címeit tartalmazza. A fájl \(k\)-adik blokkjának eléréséhez az indexblokk \(k\)-adik bejegyzését kell megnézni.
+
+A módszer előnye, hogy támogatja a véletlen elérést, miközben a fájl adatblokkjainak nem kell folytonosan elhelyezkedniük. A fájl növelése is rugalmasabb, mert új adatblokk címe felvehető az indexbe.
+
+A hátrány a metaadat többlet. Kis fájlnál egy teljes indexblokk pazarló lehet. Nagy fájlnál egyetlen indexblokk nem elég, ezért több indexblokkot kell láncolni, több szintű indexelést kell alkalmazni, vagy kombinált módszerre van szükség.
+
+\subsection{Többszintű és kombinált indexelés}
+
+A nagy fájlok kezelésére több technika alakult ki. \textbf{Kapcsolt indexblokkoknál} az indexblokkok láncolt listát alkotnak. \textbf{Többszintű indexelésnél} egy felsőbb szintű indexblokk alsóbb szintű indexblokkokra mutat, azok pedig végül adatblokkokra. Így a címezhető fájlméret jelentősen megnő.
+
+A \textbf{kombinált módszer} lényege, hogy egy speciális fájlvezérlő struktúra egyszerre tartalmaz közvetlen és közvetett hivatkozásokat. UNIX-szerű rendszerekben ezt az i-node szemlélteti jól. Az i-node tartalmazhat több direkt adatblokkmutatót, majd egyszeres, kétszeres és háromszoros indirekt mutatókat. Kis fájloknál elég a direkt hivatkozás, nagy fájloknál pedig az indirekt struktúrák biztosítják a bővíthetőséget.
+
+\begin{center}
+\input{src/tables/zv18_blokkallokacio.tex}
+\end{center}
+
+\section{Szabad blokk menedzsment}
+
+\subsection{Miért kell külön nyilvántartani a szabad helyet?}
+
+A fájlrendszernek nemcsak azt kell tudnia, hogy egy fájl blokkjai hol vannak, hanem azt is, hogy mely blokkok használhatók új foglalásra. Fájl létrehozásakor, növelésekor vagy másolásakor szabad blokkokra van szükség. Fájl törlésekor vagy rövidítésekor blokkok szabadulnak fel, ezeket vissza kell vezetni a szabad terület nyilvántartásba.
+
+A szabad hely kezelése teljesítménykritikus. Ha sokáig tart szabad blokkot találni, akkor a fájlírás lassú lesz. Ha rosszul választunk blokkokat, a fájl szétszóródhat a lemezen, ami különösen HDD-nél növeli a fejmozgatást és a késleltetést. SSD-nél a fizikai fejmozgatás nincs jelen, de a jó allokáció és a metaadat-kezelés ott is számít.
+
+\subsection{Bittérkép}
+
+\textbf{Bittérképes} nyilvántartásnál minden blokkhoz egy bit tartozik. A bit értéke jelzi, hogy a blokk szabad vagy foglalt. A teljes bittérkép egy fix helyen vagy ismert metaadat-struktúrában található.
+
+A módszer tömör, mert blokkonként csak egy bitet igényel. Könnyű vele összefüggő szabad szakaszokat keresni, különösen akkor, ha a bittérkép részei memóriában vannak. Hátránya, hogy nagyon nagy lemezeknél a bittérkép is nagy lehet, és a teljes vektor átnézése költséges.
+
+\subsection{Szabadlista}
+
+\textbf{Szabadlistánál} a szabad blokkok láncolt listát alkotnak. Egy szabad blokk tartalmazhatja a következő szabad blokk címét. Új blokk foglalásakor a lista elejéről levehetünk egy blokkot, felszabadításkor pedig visszafűzhetjük a listába.
+
+A módszer egyszerű, és kevés külön metaadatot igényel, mert a szabad blokkok saját területét használja nyilvántartásra. Hátránya, hogy nehezebb gyorsan több egymás melletti szabad blokkot találni, és a lista bejárása sok lemezművelettel járhat, ha nincs megfelelő cache.
+
+\subsection{Csoportosítás és számlálás}
+
+\textbf{Csoportosításnál} a szabadlista továbbfejlesztéseként egy szabad blokk több másik szabad blokk címét is tartalmazza, valamint hivatkozhat a következő ilyen csoportblokkra. Így egyetlen metaadat-blokk beolvasásával több szabad blokk címe is rendelkezésre áll.
+
+\textbf{Számlálásnál} a nyilvántartás nem minden egyes szabad blokkot sorol fel külön, hanem összefüggő szabad tartományokat ír le. Egy bejegyzés például tartalmazza az első szabad blokk címét és azt, hogy onnan kezdve hány blokk szabad. Ez akkor hatékony, ha a szabad helyek gyakran hosszabb folytonos szakaszokban jelennek meg.
+
+\begin{center}
+\input{src/tables/zv18_szabad_blokk_menedzsment.tex}
+\end{center}
+
+\section{Attribútumok és metaadatok tárolása}
+
+\subsection{Jegyzékbejegyzés alapú tárolás}
+
+Egyszerű fájlrendszerekben a jegyzékbejegyzés nemcsak a fájl nevét, hanem számos attribútumát is tartalmazhatja. Például egy bejegyzésben szerepelhet a kiterjesztés, méret, kezdőblokk, időbélyeg és attribútummaszk. Ez egyszerű és kevés külön struktúrát igényel.
+
+A hátránya, hogy a jegyzékbejegyzés mérete korlátozott. Ha később több attribútumra, hosszabb fájlnevekre, jogosultsági listákra vagy bonyolultabb blokkhivatkozásokra van szükség, a fix méretű jegyzékbejegyzés akadály lehet. Ezen kívül a fájl átnevezése vagy mozgatása szorosan kapcsolódik a metaadatok helyéhez.
+
+\subsection{Fájlvezérlő blokk és i-node}
+
+Fejlettebb megoldás, amikor a jegyzékbejegyzés csak a fájl nevét és egy belső azonosítót tartalmaz. A részletes attribútumok külön fájlvezérlő blokkban vagy UNIX-szerű rendszerben \textbf{i-node-ban} vannak.
+
+Az \textbf{i-node} egy információs csomópont. Leír egy fájlt, de jellemzően nem tartalmazza magát a fájlnevet. Tartalmazhatja a fájl típusát, jogosultságait, tulajdonosát, csoportját, méretét, linkjeinek számát, időbélyegeit és a fájl adatblokkjaira mutató hivatkozásokat.
+
+\input{src/figures/zv18_inode_felepites.tex}
+
+Ennek a megoldásnak fontos következménye, hogy ugyanarra az i-node-ra több név is mutathat. Ez a hard link alapja. A fájl törlésekor nem feltétlenül az adatblokkok szabadulnak fel azonnal: először a jegyzékbejegyzés törlődik és a linkek száma csökken. Ha a linkek száma nullára esik, és nincs nyitva a fájl, akkor az i-node és az adatblokkok felszabadíthatók.
+
+\subsection{A fájl elérése UNIX-szerű rendszerben}
+
+UNIX-szerű rendszerben a teljes fájlrendszer egy gyökérből induló hierarchiába szerveződik. A fájl elérése útvonal-feloldással történik. A rendszer a gyökér i-node-jából vagy az aktuális jegyzék i-node-jából indul, majd minden útvonal-komponenst egy jegyzékben keres meg.
+
+Például a \code{/home/levi/tetel.tex} feloldása leegyszerűsítve:
+
+\begin{enumerate}
+  \item a rendszer a gyökérjegyzék i-node-jából indul;
+  \item megkeresi benne a \code{home} nevű bejegyzést;
+  \item a bejegyzés alapján megkapja a \code{home} jegyzék i-node-ját;
+  \item abban megkeresi a \code{levi} bejegyzést;
+  \item végül a \code{tetel.tex} bejegyzés alapján eléri a fájl i-node-ját;
+  \item az i-node blokkhivatkozásai alapján olvashatók a fájl adatblokkjai.
+\end{enumerate}
+
+A folyamatok nyitott fájljaihoz a kernel fájlleírókat és nyitott fájl táblákat tart fenn. Ez azért fontos, mert a program nem minden olvasásnál oldja fel újra az útvonalat; megnyitás után egy fájlleíróval hivatkozik a nyitott állományra.
+
+\section{FAT és UNIX-szerű i-node megközelítés}
+
+\subsection{FAT szemlélet}
+
+A FAT fájlrendszer központi eleme a File Allocation Table. A tábla minden adatblokkhoz vagy klaszterhez egy bejegyzést tartalmaz. Egy fájl jegyzékbejegyzése megadja a fájl első klaszterét, a FAT pedig megmondja, hogy innen melyik a következő klaszter, majd melyik következik utána, egészen a fájl végét jelző bejegyzésig.
+
+A FAT előnye az egyszerűség. A blokklánc egy központi táblából követhető, a tábla pedig cache-elhető. Emiatt sokáig kényelmes és hordozható megoldás volt cserélhető adathordozókon is.
+
+Hátránya, hogy a tábla mérete a lemez méretével együtt nő. Minden klaszterhez kell bejegyzés, akkor is, ha a klaszter éppen szabad. A fájlok szétszóródhatnak, a lánc megsérülése pedig adatvesztést okozhat. A jogosultsági és modern metaadat-kezelési lehetőségek is korlátozottabbak, mint fejlettebb fájlrendszereknél.
+
+\subsection{UNIX-szerű i-node szemlélet}
+
+UNIX-szerű fájlrendszereknél a fájl metaadatai az i-node-ban vannak. Az i-node-ok listája a fájlrendszer ismert részén található, és a kernel gyakran memóriában is tartja a használt i-node-okat. A jegyzékbejegyzés a fájlnevet i-node számmal kapcsolja össze.
+
+Az i-node fontos előnye, hogy a név és a fájl objektuma elválik. Ez megkönnyíti a hard linkek kezelését, és tisztábbá teszi az attribútumok tárolását. A direkt és indirekt blokkhivatkozások kombinációja jó kompromisszumot ad: kis fájl gyorsan elérhető, nagy fájl pedig több szintű indexeléssel növelhető.
+
+Hátrányként megemlíthető, hogy az i-node-ok száma és elhelyezése tervezési kérdés. Ha a fájlrendszer túl kevés i-node-ot hoz létre, sok kis fájlnál elfogyhatnak az i-node-ok akkor is, ha adatblokk még lenne. Emellett az útvonal-feloldás több jegyzék és i-node olvasását igényelheti, ezért cache nélkül lassú lenne.
+
+\section{Teljesítmény, fragmentáció és konzisztencia}
+
+\subsection{Fragmentáció}
+
+Fájlrendszereknél többféle fragmentáció fordulhat elő. \textbf{Külső fragmentáció} akkor jelentkezik, ha a szabad terület sok kisebb részre esik szét, ezért nehéz nagy összefüggő területet találni. Ez különösen folytonos allokációnál probléma.
+
+\textbf{Belső fragmentáció} akkor keletkezik, amikor egy fájl utolsó blokkja nincs teljesen kihasználva. Ha például a blokkméret 4 KiB, és egy fájl 1 byte-os, akkor is egy teljes blokk vagy klaszter foglalódhat. Nagy blokkméret javíthatja a nagy fájlok teljesítményét, de sok kis fájlnál pazarló lehet.
+
+\textbf{Fájlszintű szétszóródás} esetén egy fájl adatblokkjai sok különböző helyen vannak. Ez HDD-nél sok fejmozgást okozhat, SSD-nél pedig főleg a metaadat-kezelést és az I/O mintázatot terheli.
+
+\subsection{Gyorsítótárak}
+
+A fájlrendszerek gyakran használnak puffer cache-t vagy page cache-t. Ennek lényege, hogy a gyakran használt adatblokkok és metaadatok memóriában maradnak. Így egy újabb olvasás nem feltétlenül igényel háttértár-hozzáférést.
+
+Metaadat-cache különösen fontos jegyzékeknél, i-node-oknál, FAT táblánál és szabad blokk nyilvántartásnál. Ha minden útvonal-feloldáshoz és minden blokkhivatkozáshoz háttértárat kellene olvasni, a fájlműveletek sokkal lassabbak lennének.
+
+Írásnál a cache használata óvatosabb kérdés. Ha a rendszer késleltetve írja ki az adatokat, gyorsabb lehet a működés, de áramkimaradás vagy rendszerösszeomlás esetén adatvesztés vagy inkonzisztens metaadat keletkezhet. Ezért fejlettebb fájlrendszerek naplózást, tranzakciós szemléletet vagy más konzisztenciavédelmet alkalmazhatnak.
+
+\subsection{Konzisztencia}
+
+A fájlrendszer metaadatai összefüggő állapotot alkotnak. Ha egy blokk egy fájlhoz tartozik, akkor nem szerepelhet egyszerre szabadként. Ha egy jegyzékbejegyzés i-node-ra mutat, akkor annak az i-node-nak léteznie kell. Ha egy fájl törlődik, a blokkjait vissza kell adni a szabad területhez, de csak akkor, amikor már nincs rájuk szükség.
+
+Hiba akkor okoz gondot, ha egy összetett művelet közben áll le a rendszer. Például fájl létrehozásakor létrejöhet a jegyzékbejegyzés, foglalódhat i-node és adatblokk, frissülhet a szabadlista. Ha ezek közül csak néhány íródik ki, a fájlrendszer ellentmondásos lehet. A konzisztencia-ellenőrző programok és a naplózó fájlrendszerek célja ennek kezelése.
+
+\section{Előnyök, hátrányok és gyakorlati szempontok}
+
+\subsection{Mitől jó egy fájlrendszer?}
+
+Egy jó fájlrendszer egyszerre ad kényelmes felhasználói modellt és hatékony belső megvalósítást. A felhasználó azt várja, hogy fájlokat nevezhessen el, mappákba rendezhesse őket, jogosultságokat állíthasson, és megbízhatóan visszakapja az adatokat. A belső megvalósításnak ehhez blokkokat kell kiosztania, szabad helyet kell kezelnie, metaadatokat kell védenie, és gyorsan kell kiszolgálnia az I/O-t.
+
+Fontos gyakorlati szempontok:
+
+\begin{itemize}
+  \item mennyi metaadatot igényel a fájlrendszer;
+  \item milyen gyors a kis és nagy fájlok kezelése;
+  \item támogatja-e a jogosultságokat és tulajdonosokat;
+  \item mennyire jól viseli a hirtelen leállást;
+  \item mekkora maximális fájlméretet és kötetméretet támogat;
+  \item mennyire hordozható más operációs rendszerek között.
+\end{itemize}
+
+\subsection{Tipikus kompromisszumok}
+
+Nincs minden helyzetben tökéletes fájlrendszer. A kis fájlokhoz kevés metaadat és kis blokkméret lenne kedvező, nagy fájlokhoz nagyobb blokkméret és gyors szekvenciális elérés. A folytonos allokáció gyors direkt elérést ad, de rosszul kezeli a növekedést. A láncolt allokáció rugalmas, de gyenge véletlen elérésnél. Az indexelt és i-node jellegű módszerek erősebbek, de bonyolultabb metaadat-kezelést igényelnek.
+
+A fájlrendszer ezért mindig kompromisszum a tárhely-kihasználás, a sebesség, a rugalmasság, a hibatűrés és a megvalósítási bonyolultság között.
+
+\section{Gyakori vizsgahibák és összefoglalás}
+
+\subsection{Gyakori félreértések}
+
+\begin{itemize}
+  \item \textbf{A fájl neve nem azonos a fájl belső azonosítójával.} A név jegyzékbejegyzésben szerepel, a belső objektum lehet i-node vagy más fájlvezérlő struktúra.
+  \item \textbf{A jegyzék is lehet fájlszerű objektum.} Nem csak adatok listája, hanem attribútumokkal és jogosultságokkal rendelkező fájlrendszerbeli objektum.
+  \item \textbf{A fájl testének blokkjai nem feltétlenül vannak egymás mellett.} Ez a választott allokációs módszertől függ.
+  \item \textbf{A szabad blokk nyilvántartás külön feladat.} Nem elég a fájlok blokkjait ismerni; azt is tudni kell, mely blokkok foglalhatók.
+  \item \textbf{A FAT nem maga a fájl tartalma.} A FAT a blokkláncokat tartalmazó metaadat-tábla.
+  \item \textbf{Az i-node általában nem a fájlnevet tárolja.} A név a jegyzékben van, az i-node a fájl attribútumait és blokkhivatkozásait tartalmazza.
+  \item \textbf{A hard link nem másolat.} Több név mutat ugyanarra a fájlobjektumra, ezért a módosítás ugyanazt a tartalmat érinti.
+  \item \textbf{A törlés nem csak adateltávolítás.} Frissíteni kell a jegyzéket, az attribútumokat, a linkek számát és a szabad blokk nyilvántartást is.
+\end{itemize}
+
+\subsection{Rövid vizsgaválasz-minta}
+
+\begin{summarybox}
+A fájlrendszer az operációs rendszer tartós adattárolási alrendszere. A felhasználónak fájlokat, mappákat és útvonalakat mutat, belül azonban háttértárblokkokat, jegyzékbejegyzéseket, attribútumokat és szabad terület nyilvántartást kezel. A fájl lehet közönséges fájl, jegyzék vagy speciális eszközfájl. A jegyzékszerkezet lehet egyszintű, kétszintű vagy hierarchikus; modern rendszerekben a hierarchikus fa a legfontosabb, linkekkel kiegészítve akár gráfszerű szerkezet is kialakulhat. A fájl testét alkotó blokkok rögzíthetők folytonosan, láncolt listával, FAT-szerű táblával, indexblokkal vagy i-node jellegű kombinált indexeléssel. A szabad blokkok nyilvántartására használható bittérkép, szabadlista, csoportosítás vagy számlálás. A fájl attribútumai közé tartozik a név vagy belső azonosító, típus, méret, tulajdonos, jogosultságok, időbélyegek és a blokkhivatkozások. UNIX-szerű rendszerben a jegyzékbejegyzés névből és i-node számból áll, az i-node pedig a metaadatokat és az adatblokkokra mutató direkt, illetve indirekt hivatkozásokat tartalmazza. A fájlrendszer megvalósításának fő kompromisszuma a sebesség, tárhely-kihasználás, rugalmasság és konzisztencia között van.
+\end{summarybox}
+
+\end{document}

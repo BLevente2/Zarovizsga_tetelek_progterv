@@ -1,0 +1,23 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=8mm and 9mm]
+  \node[zvflowprocess, fill=lightaccent, minimum width=28mm] (req) {követelmények\\fogalomszótár};
+  \node[zvflowprocess, fill=lightaccent, right=of req, minimum width=28mm] (er) {szemantikai\\ER modell};
+  \node[zvflowprocess, fill=warnbg, right=of er, minimum width=31mm] (rel) {logikai\\relációs modell};
+  \node[zvflowprocess, fill=black!5, right=of rel, minimum width=30mm] (sql) {fizikai séma\\SQL DDL};
+  \node[zvflowprocess, fill=black!5, below=of rel, minimum width=31mm] (ops) {relációs algebra\\SQL lekérdezések};
+
+  \draw[arrow] (req) -- (er);
+  \draw[arrow] (er) -- node[above] {konverzió} (rel);
+  \draw[arrow] (rel) -- node[above] {megvalósítás} (sql);
+  \draw[arrow] (rel) -- node[right] {műveleti rész} (ops);
+
+  \node[align=left, below=16mm of req, text width=126mm] {
+    A 19. tétel fő gondolatmenete: az adatbázis-tervezésben először fogalmi, DBMS-független ER modellt készítünk, ezt relációs sémára alakítjuk, majd a relációkon integritási feltételeket és műveleteket értelmezünk.
+  };
+\end{tikzpicture}%
+}
+\caption{Az ER modelltől a relációs adatmodellig és a műveletekig}
+\label{fig:zv19_adatbazis_tervezes_folyamat}
+\end{figure}

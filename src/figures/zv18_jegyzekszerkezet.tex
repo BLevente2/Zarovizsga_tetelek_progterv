@@ -1,0 +1,43 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.94\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize]
+  \node[font=\small\bfseries] at (0,2.7) {Egyszintű};
+  \node[zvflowprocess, fill=lightaccent, minimum width=28mm] (one) at (0,1.9) {/};
+  \node[zvflowprocess, fill=black!5, minimum width=15mm, minimum height=6mm] (f1) at (-1.8,0.9) {a.txt};
+  \node[zvflowprocess, fill=black!5, minimum width=15mm, minimum height=6mm] (f2) at (-0.6,0.9) {b.doc};
+  \node[zvflowprocess, fill=black!5, minimum width=15mm, minimum height=6mm] (f3) at (0.6,0.9) {c.png};
+  \node[zvflowprocess, fill=black!5, minimum width=15mm, minimum height=6mm] (f4) at (1.8,0.9) {d.exe};
+  \draw[arrow] (one) -- (f1);
+  \draw[arrow] (one) -- (f2);
+  \draw[arrow] (one) -- (f3);
+  \draw[arrow] (one) -- (f4);
+
+  \node[font=\small\bfseries] at (5.2,2.7) {Kétszintű};
+  \node[zvflowprocess, fill=lightaccent, minimum width=24mm] (root2) at (5.2,1.9) {/};
+  \node[zvflowprocess, fill=warnbg, minimum width=18mm] (u1) at (4.2,0.9) {user1};
+  \node[zvflowprocess, fill=warnbg, minimum width=18mm] (u2) at (6.2,0.9) {user2};
+  \node[zvflowprocess, fill=black!5, minimum width=14mm, minimum height=6mm] (u1f) at (3.7,0.05) {a.txt};
+  \node[zvflowprocess, fill=black!5, minimum width=14mm, minimum height=6mm] (u2f) at (6.7,0.05) {a.txt};
+  \draw[arrow] (root2) -- (u1);
+  \draw[arrow] (root2) -- (u2);
+  \draw[arrow] (u1) -- (u1f);
+  \draw[arrow] (u2) -- (u2f);
+
+  \node[font=\small\bfseries] at (10.7,2.7) {Hierarchikus};
+  \node[zvflowprocess, fill=lightaccent, minimum width=22mm] (root3) at (10.7,1.9) {/};
+  \node[zvflowprocess, fill=warnbg, minimum width=18mm] (home) at (9.5,0.95) {home};
+  \node[zvflowprocess, fill=warnbg, minimum width=18mm] (etc) at (11.9,0.95) {etc};
+  \node[zvflowprocess, fill=warnbg, minimum width=18mm] (levi) at (8.8,0.05) {levi};
+  \node[zvflowprocess, fill=black!5, minimum width=20mm, minimum height=6mm] (conf) at (11.9,0.05) {config};
+  \node[zvflowprocess, fill=black!5, minimum width=17mm, minimum height=6mm] (doc) at (8.8,-0.85) {tétel.tex};
+  \draw[arrow] (root3) -- (home);
+  \draw[arrow] (root3) -- (etc);
+  \draw[arrow] (home) -- (levi);
+  \draw[arrow] (etc) -- (conf);
+  \draw[arrow] (levi) -- (doc);
+\end{tikzpicture}%
+}
+\caption{Jegyzékszerkezetek: egyszintű, kétszintű és hierarchikus szervezés}
+\label{fig:zv18_jegyzekszerkezet}
+\end{figure}
