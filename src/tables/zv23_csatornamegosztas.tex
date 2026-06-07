@@ -1,0 +1,11 @@
+
+\begin{tabularx}{\textwidth}{L{30mm}L{30mm}X}
+\toprule
+\textbf{Módszer} & \textbf{Példa} & \textbf{Jellemzés} \\
+\midrule
+Statikus & FDM, TDM & A csatorna kapacitását előre kiosztják. Egyenletes, tartós forgalomnál jó, löketszerű forgalomnál pazarló lehet. \\
+Dinamikus centralizált & polling, PCF & Egy kijelölt állomás vagy koordinátor dönt a hozzáférésről. Jobban szabályozható, de központi elemhez kötött. \\
+Dinamikus elosztott versengő & ALOHA, CSMA, CSMA/CD, CSMA/CA & Az állomások versengenek a csatornáért. Kis terhelésnél gyors, nagy terhelésnél ütközések és visszatartások miatt romolhat. \\
+Dinamikus determinisztikus & vezérjel, foglalás & Szabályozott, ütközésmentes hozzáférést ad. Korlátozható a várakozás, de a vezérlési többlet nagyobb. \\
+\bottomrule
+\end{tabularx}

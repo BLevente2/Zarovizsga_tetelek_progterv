@@ -1,0 +1,23 @@
+
+\begin{figure}[htbp]
+\centering
+\resizebox{0.9\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize]
+  \draw[thick] (0,0) -- (11,0) node[right]{idő};
+  \draw[thick] (0,-1.6) -- (11,-1.6) node[right]{idő};
+  \node[left] at (0,0) {A állomás};
+  \node[left] at (0,-1.6) {B állomás};
+
+  \draw[fill=lightaccent, draw=accent] (0.5,0.15) rectangle (5.6,0.55) node[midway]{A adni kezd};
+  \draw[fill=warnbg, draw=orange!80!black] (3.2,-1.45) rectangle (6.2,-1.05) node[midway]{B adni kezd};
+
+  \draw[dashed] (0.5,0.15) -- (2.1,-1.05) node[midway, above, sloped] {$\tau$};
+  \draw[dashed] (3.2,-1.05) -- (4.8,0.15) node[midway, below, sloped] {$\tau$};
+  \draw[decorate, decoration={brace, amplitude=4pt}] (0.5,0.8) -- (4.8,0.8) node[midway, above=4pt]{legfeljebb $2\tau$ alatt derül ki az ütközés};
+
+  \node[draw, rounded corners, fill=black!5, align=center] at (8.1,-0.55) {Minimális keretidő\\legalább $2\tau$\\klasszikus Ethernetben 512 bit};
+\end{tikzpicture}%
+}
+\caption{Ütközésérzékelés és minimális keretidő CSMA/CD esetén}
+\label{fig:zv23_csma_cd_idozites}
+\end{figure}

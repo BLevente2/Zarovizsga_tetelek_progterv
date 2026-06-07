@@ -1,0 +1,30 @@
+
+\begin{figure}[htbp]
+\centering
+\resizebox{0.94\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=7mm]
+  \tikzset{procstep/.style={draw, rounded corners, fill=lightaccent, align=center, minimum width=31mm, minimum height=8mm},
+           decision/.style={draw, diamond, aspect=2.2, fill=warnbg, align=center, inner sep=1pt, minimum width=28mm}}
+  \node[procstep] (ready) {Keret kész};
+  \node[decision, right=10mm of ready] (busy) {Csatorna\\foglalt?};
+  \node[procstep, above=8mm of busy] (wait) {Várakozás\\felszabadulásig};
+  \node[procstep, right=12mm of busy] (send) {Adás indítása\\IFG után};
+  \node[decision, right=12mm of send] (coll) {Ütközés?};
+  \node[procstep, below=8mm of coll] (jam) {Jam jel\\kísérletszám nő};
+  \node[procstep, left=13mm of jam] (backoff) {Véletlen\\backoff};
+  \node[procstep, right=12mm of coll] (ok) {Keret végigment\\sikeres küldés};
+
+  \draw[arrow] (ready) -- (busy);
+  \draw[arrow] (busy) -- node[right]{igen} (wait);
+  \draw[arrow] (wait.west) -| (ready.north);
+  \draw[arrow] (busy) -- node[above]{nem} (send);
+  \draw[arrow] (send) -- (coll);
+  \draw[arrow] (coll) -- node[above]{nem} (ok);
+  \draw[arrow] (coll) -- node[right]{igen} (jam);
+  \draw[arrow] (jam) -- (backoff);
+  \draw[arrow] (backoff.west) -| (ready.south);
+\end{tikzpicture}%
+}
+\caption{CSMA/CD keretküldés leegyszerűsített folyamata}
+\label{fig:zv23_csma_cd_folyamat}
+\end{figure}

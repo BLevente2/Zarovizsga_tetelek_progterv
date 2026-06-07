@@ -1,0 +1,12 @@
+
+\begin{tabularx}{\textwidth}{L{24mm}L{34mm}X}
+\toprule
+\textbf{Módszer} & \textbf{Alapelv} & \textbf{Megjegyzés} \\
+\midrule
+ALOHA & Az állomás azonnal ad, ha kerete van. & Egyszerű, de sok az ütközés; kis terhelésű, sok állomásos környezetben értelmezhető. \\
+Réselt ALOHA & Az adás csak időrések elején kezdhető. & Csökkenti az ütközési lehetőséget, de szinkronizációt igényel. \\
+CSMA & Adás előtt csatornafigyelés. & Jobb kihasználtság, de a terjedési késleltetés miatt továbbra is lehet ütközés. \\
+CSMA/CD & CSMA + CD. & Klasszikus megosztott közegű Ethernet; ütközéskor jam jel és backoff következik. \\
+CSMA/CA & CSMA ütközéselkerüléssel. & WLAN-oknál használatos; DIFS, SIFS, ACK, backoff, NAV és opcionális RTS/CTS segíti. \\
+\bottomrule
+\end{tabularx}

@@ -1,0 +1,29 @@
+
+\begin{figure}[htbp]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=8mm]
+  \tikzset{box/.style={draw, rounded corners, align=center, minimum width=35mm, minimum height=8mm}}
+  \node[box, fill=accent!12] (root) {Csatornamegosztás};
+  \node[box, fill=lightaccent, below left=13mm and 22mm of root] (stat) {Statikus\\előre kiosztott rész};
+  \node[box, fill=lightaccent, below right=13mm and 22mm of root] (dyn) {Dinamikus\\aktuális igény szerint};
+  \node[box, fill=black!5, below left=11mm and 6mm of stat] (fdm) {FDM\\frekvenciaosztás};
+  \node[box, fill=black!5, below right=11mm and 6mm of stat] (tdm) {TDM\\időosztás};
+  \node[box, fill=warnbg, below left=11mm and 6mm of dyn] (cont) {Versengő\\ütközéses};
+  \node[box, fill=warnbg, below right=11mm and 6mm of dyn] (det) {Determinisztikus\\ütközésmentes};
+  \node[box, fill=black!5, below=10mm of cont] (aloha) {ALOHA, CSMA,\\CSMA/CD, CSMA/CA};
+  \node[box, fill=black!5, below=10mm of det] (token) {vezérjel, polling,\\foglalás};
+
+  \draw[arrow] (root) -- (stat);
+  \draw[arrow] (root) -- (dyn);
+  \draw[arrow] (stat) -- (fdm);
+  \draw[arrow] (stat) -- (tdm);
+  \draw[arrow] (dyn) -- (cont);
+  \draw[arrow] (dyn) -- (det);
+  \draw[arrow] (cont) -- (aloha);
+  \draw[arrow] (det) -- (token);
+\end{tikzpicture}%
+}
+\caption{Csatornamegosztási módszerek fő csoportjai}
+\label{fig:zv23_csatornamegosztas}
+\end{figure}

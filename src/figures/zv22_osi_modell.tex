@@ -1,0 +1,25 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.92\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=2.2mm]
+  \tikzset{osilayer/.style={draw, rounded corners, minimum width=52mm, minimum height=7.5mm, align=center}}
+  \node[osilayer, fill=warnbg] (l7) {7. Alkalmazási réteg\\alkalmazási hálózati szolgáltatások};
+  \node[osilayer, fill=lightaccent, below=of l7] (l6) {6. Megjelenítési réteg\\kódolás, tömörítés, titkosítás};
+  \node[osilayer, fill=black!5, below=of l6] (l5) {5. Viszonyréteg\\párbeszéd, szinkronizáció};
+  \node[osilayer, fill=lightaccent, below=of l5] (l4) {4. Szállítási réteg\\végpont--végpont kapcsolat};
+  \node[osilayer, fill=black!5, below=of l4] (l3) {3. Hálózati réteg\\útválasztás, csomagok};
+  \node[osilayer, fill=lightaccent, below=of l3] (l2) {2. Adatkapcsolati réteg\\keretek, hibakezelés};
+  \node[osilayer, fill=warnbg, below=of l2] (l1) {1. Fizikai réteg\\bitfolyam, közeg, jelek};
+
+  \coordinate (sendTop) at ([xshift=-13mm]l7.west);
+  \coordinate (sendBottom) at ([xshift=-13mm]l1.west);
+  \coordinate (recvBottom) at ([xshift=13mm]l1.east);
+  \coordinate (recvTop) at ([xshift=13mm]l7.east);
+  \draw[arrow] (sendTop) -- (sendBottom) node[midway, left=2mm, align=center]{küldéskor\\lefelé halad};
+  \draw[arrow] (recvBottom) -- (recvTop) node[midway, right=2mm, align=center]{fogadáskor\\felfelé halad};
+
+\end{tikzpicture}%
+}
+\caption{Az ISO--OSI modell hét rétege és az adat útja}
+\label{fig:zv22_osi_modell}
+\end{figure}

@@ -1,0 +1,22 @@
+
+\begin{figure}[htbp]
+\centering
+\resizebox{0.9\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=18mm]
+  \tikzset{sta/.style={draw, circle, fill=lightaccent, minimum size=9mm, align=center},
+           ap/.style={draw, rounded corners, fill=warnbg, minimum width=13mm, minimum height=8mm, align=center}}
+  \node[sta] (a) {A};
+  \node[ap, right=of a] (b) {Vevő\\AP};
+  \node[sta, right=of b] (c) {C};
+  \draw[thick] (a) -- node[above]{hallják egymást} (b);
+  \draw[thick] (b) -- node[above]{hallják egymást} (c);
+  \draw[dashed, red] (a) .. controls +(0,-1.2) and +(0,-1.2) .. node[below]{A és C nem hallják egymást} (c);
+
+  \node[draw, rounded corners, fill=black!5, align=left, below=12mm of b, text width=72mm] (steps)
+    {1. A RTS-t küld a vevőnek.\\2. A vevő CTS-t küld, amit C is hall.\\3. A és C a Duration mezők alapján NAV-ot állít.\\4. Az adatkeret védettebb, mert C nem kezd adásba.};
+  \draw[arrow] (b) -- (steps);
+\end{tikzpicture}%
+}
+\caption{Rejtett állomás probléma és RTS/CTS alapötlet}
+\label{fig:zv23_rts_cts}
+\end{figure}

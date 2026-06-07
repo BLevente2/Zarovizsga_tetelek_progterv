@@ -1,0 +1,13 @@
+
+\begin{tabularx}{\textwidth}{L{37mm}L{45mm}X}
+\toprule
+\textbf{Szempont} & \textbf{DCF} & \textbf{PCF} \\
+\midrule
+Teljes név & Distributed Coordination Function & Point Coordination Function \\
+Hozzáférés jellege & Elosztott, versengéses. & Központosított, versengésmentes periódusokat hoz létre. \\
+Vezérlés & Az állomások CSMA/CA szerint versengenek. & A Point Coordinator, tipikusan az AP, pollinggal irányít. \\
+Interframe space & DIFS után indul az általános versengés. & PIFS-t használhat, ezért megelőzheti a DIFS-t használó állomásokat. \\
+Tipikus szerep & Alapértelmezett WLAN adatforgalom. & Időkorlátos forgalom elvi támogatása, kevésbé elterjedt. \\
+Ütközéskezelés & ACK hiánya, backoff, CW növelése, RTS/CTS opció. & A CFP alatt a polling miatt nincs normál versengés. \\
+\bottomrule
+\end{tabularx}

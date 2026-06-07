@@ -1,0 +1,14 @@
+
+\begin{tabularx}{\textwidth}{L{28mm}L{22mm}X}
+\toprule
+\textbf{Mező} & \textbf{Méret} & \textbf{Feladat} \\
+\midrule
+Preamble & 7 bájt & Szinkronizáció, váltakozó 1 és 0 bitek. \\
+SFD & 1 bájt & Start of Frame Delimiter, a keret kezdetét jelzi. \\
+DA & 6 bájt & Destination Address, cél MAC-cím. \\
+SA & 6 bájt & Source Address, forrás MAC-cím. \\
+Length / Type & 2 bájt & IEEE 802.3-nál hosszmező, Ethernet II-nél felsőbb protokolltípus. \\
+Data + Pad & 46--1500 bájt & Hasznos adat; rövid adat esetén kitöltés a minimális keretméret miatt. \\
+FCS & 4 bájt & Frame Check Sequence, CRC-32 alapú hibadetektálás. \\
+\bottomrule
+\end{tabularx}

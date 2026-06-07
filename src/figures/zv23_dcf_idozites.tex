@@ -1,0 +1,18 @@
+
+\begin{figure}[htbp]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize]
+  \draw[thick] (0,0) -- (12,0) node[right]{idő};
+  \draw[fill=black!10] (0.4,0.15) rectangle (2.1,0.65) node[midway]{korábbi adás};
+  \draw[<->] (2.1,0.85) -- (3.2,0.85) node[midway, above]{DIFS};
+  \draw[fill=lightaccent] (3.2,0.15) rectangle (5.4,0.65) node[midway]{backoff rések};
+  \draw[fill=warnbg] (5.4,0.15) rectangle (8.2,0.65) node[midway]{DATA};
+  \draw[<->] (8.2,0.85) -- (8.8,0.85) node[midway, above]{SIFS};
+  \draw[fill=lightaccent] (8.8,0.15) rectangle (9.8,0.65) node[midway]{ACK};
+  \node[draw, rounded corners, fill=black!5, align=center] at (6,-1.05) {A backoff csak tétlen közeg alatt csökken.\\ACK hiánya esetén új, nagyobb ablakból választott backoff következik.};
+\end{tikzpicture}%
+}
+\caption{DCF időzítés: DIFS, véletlen backoff, DATA, SIFS és ACK}
+\label{fig:zv23_dcf_idozites}
+\end{figure}

@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize]
+  \def\h{0.8}
+  \draw[fill=lightaccent] (0,0) rectangle (1.1,\h);      \node[align=center] at (0.55,0.4) {PA\\7 B};
+  \draw[fill=warnbg] (1.1,0) rectangle (1.8,\h);          \node[align=center] at (1.45,0.4) {SFD\\1 B};
+  \draw[fill=lightaccent] (1.8,0) rectangle (2.8,\h);     \node[align=center] at (2.3,0.4) {DA\\6 B};
+  \draw[fill=lightaccent] (2.8,0) rectangle (3.8,\h);     \node[align=center] at (3.3,0.4) {SA\\6 B};
+  \draw[fill=warnbg] (3.8,0) rectangle (4.8,\h);          \node[align=center] at (4.3,0.4) {Len vagy Type\\2 B};
+  \draw[fill=black!5] (4.8,0) rectangle (7.6,\h);         \node[align=center] at (6.2,0.4) {Data\\46--1500 B};
+  \draw[fill=black!10] (7.6,0) rectangle (8.4,\h);        \node[align=center] at (8.0,0.4) {Pad\\ha kell};
+  \draw[fill=lightaccent] (8.4,0) rectangle (9.3,\h);     \node[align=center] at (8.85,0.4) {FCS\\4 B};
+  \draw[decorate, decoration={brace, mirror, amplitude=4pt}] (1.8,-0.15) -- (9.3,-0.15) node[midway, below=4pt]{64--1518 bájt: DA-tól FCS-ig};
+  \node[align=center] at (4.65,1.25) {IEEE 802.3: Length + LLC PDU\qquad Ethernet II: Type + Data};
+\end{tikzpicture}%
+}
+\caption{IEEE 802.3/Ethernet keret fő mezői}
+\label{fig:zv23_ethernet_keret}
+\end{figure}

@@ -1,0 +1,10 @@
+\begin{tabularx}{\textwidth}{L{31mm}L{32mm}X}
+\toprule
+\textbf{Kapcsolási mód} & \textbf{Alapelv} & \textbf{Előnyök, hátrányok, példa} \\
+\midrule
+Vonalkapcsolás & A kommunikáció előtt dedikált kapcsolat épül fel, majd az adatcsere után lebontják. & Kiszámítható késleltetés és sávszélesség; burst jellegű forgalomnál rossz kihasználtság. Klasszikus példa: telefonhálózat. \\
+Üzenetkapcsolás & A teljes üzenetet a csomópontok eltárolják, majd továbbítják. & Nincs fix üzenetméret-korlát, a közeg jól kihasználható; nagy késleltetés és nagy tárolóigény lehet. \\
+Csomagkapcsolás / datagram & Az üzenetet korlátos méretű csomagokra bontják, a csomagok önállóan haladhatnak. & Jó közeghasználat, kisebb késleltetés, interaktív kommunikációra alkalmas; sorrendfelborulás és torlódás előfordulhat. \\
+Virtuális vonalkapcsolás & Csomagkapcsolás, de előre logikai útvonal jön létre, és a csomagok ezt követik. & A csomagok sorrendben érkezhetnek, de a vonal nem dedikált; kapcsolatfelépítés szükséges. Példa: virtuális áramkör szemlélet. \\
+\bottomrule
+\end{tabularx}

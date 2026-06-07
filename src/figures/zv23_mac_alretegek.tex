@@ -1,0 +1,25 @@
+
+\begin{figure}[htbp]
+\centering
+\resizebox{0.88\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=5mm]
+  \tikzset{layer/.style={draw, rounded corners, minimum width=45mm, minimum height=8mm, align=center}}
+  \node[layer, fill=black!5] (net) {3. Hálózati réteg\\csomagok, útválasztás};
+  \node[layer, fill=lightaccent, below=of net] (llc) {LLC alréteg\\logikai kapcsolatvezérlés};
+  \node[layer, fill=warnbg, below=of llc] (mac) {MAC alréteg\\közeghozzáférés vezérlése};
+  \node[layer, fill=black!5, below=of mac] (phy) {1. Fizikai réteg\\jelek, bitfolyam, közeg};
+
+  \node[layer, fill=lightaccent, right=22mm of mac, minimum width=48mm] (shared) {Üzenetszórásos közeg\\több állomás versenghet};
+  \draw[arrow] (net) -- (llc);
+  \draw[arrow] (llc) -- (mac);
+  \draw[arrow] (mac) -- (phy);
+  \draw[arrow] (mac.east) -- (shared.west) node[midway, above]{csatornamegosztás};
+
+  \node[draw, rounded corners, fill=black!5, below=7mm of shared, align=center, minimum width=48mm] (goal)
+    {MAC célja:\\pont--pont jellegű szolgáltatás\\közös közeg felett};
+  \draw[arrow] (shared) -- (goal);
+\end{tikzpicture}%
+}
+\caption{Az adatkapcsolati réteg LLC és MAC alrétege}
+\label{fig:zv23_mac_alretegek}
+\end{figure}

@@ -29,6 +29,8 @@ Jelenleg a projekt az alábbi kidolgozott tételeket tartalmazza:
 - `zv_tetel_19.tex` - 19. tétel: relációs adatmodell, relációs struktúra, integritási feltételek, ER modell, ER--relációs konverzió és relációs algebra
 - `zv_tetel_20.tex` - 20. tétel: SQL nyelv, DDL, DML, DCL, SELECT, beágyazott SELECT és relációs algebrai műveletek SQL-ben
 - `zv_tetel_21.tex` - 21. tétel: adatkezelés, fájlszervezés, DBMS-architektúra, B-fa index, normalizálás és dekompozíció
+- `zv_tetel_22.tex` - 22. tétel: számítógép-hálózati alapfogalmak, méret és topológia szerinti osztályozás, kapcsolástechnika és ISO--OSI modell
+- `zv_tetel_23.tex` - 23. tétel: MAC alréteg, csatornamegosztás, IEEE 802.3 Ethernet, CSMA/CD, MAC-címek, duplex működés és IEEE 802.11 WLAN, CSMA/CA, DCF, PCF
 
 Minden tétel külön PDF-be fordul, így az egyes tételek önálló dokumentumként is használhatók.
 
@@ -70,6 +72,8 @@ A tételek fedlapján szereplő hivatalos tételkiírások is ebből a fájlból
     ├── zv_tetel_19.tex
     ├── zv_tetel_20.tex
     ├── zv_tetel_21.tex
+    ├── zv_tetel_22.tex
+    ├── zv_tetel_23.tex
     ├── figures/
     │   ├── zv_abrak.tex
     │   └── ... külön TikZ-ábrák ...

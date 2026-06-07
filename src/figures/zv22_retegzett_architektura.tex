@@ -1,0 +1,37 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=8mm]
+  \tikzset{layerbox/.style={draw, rounded corners, minimum width=34mm, minimum height=9mm, align=center},
+           iface/.style={draw, dashed, minimum width=76mm, minimum height=4mm, align=center, fill=black!3},
+           vcomm/.style={<->, >=stealth, thick, accent!80!black},
+           realcomm/.style={->, >=stealth, thick}}
+
+  \node[layerbox, fill=warnbg] (a3) {A hoszt\\N+1. réteg};
+  \node[iface, below=2mm of a3] (ai32) {interfész};
+  \node[layerbox, fill=lightaccent, below=2mm of ai32] (a2) {funkcionális elem\\N. réteg};
+  \node[iface, below=2mm of a2] (ai21) {interfész};
+  \node[layerbox, fill=black!5, below=2mm of ai21] (a1) {N-1. réteg};
+
+  \node[layerbox, fill=warnbg, right=36mm of a3] (b3) {B hoszt\\N+1. réteg};
+  \node[iface, below=2mm of b3] (bi32) {interfész};
+  \node[layerbox, fill=lightaccent, below=2mm of bi32] (b2) {funkcionális elem\\N. réteg};
+  \node[iface, below=2mm of b2] (bi21) {interfész};
+  \node[layerbox, fill=black!5, below=2mm of bi21] (b1) {N-1. réteg};
+
+  \draw[realcomm] (a3) -- (ai32);
+  \draw[realcomm] (ai32) -- (a2);
+  \draw[realcomm] (a2) -- (ai21);
+  \draw[realcomm] (ai21) -- (a1);
+  \draw[realcomm] (b3) -- (bi32);
+  \draw[realcomm] (bi32) -- (b2);
+  \draw[realcomm] (b2) -- (bi21);
+  \draw[realcomm] (bi21) -- (b1);
+
+  \draw[vcomm] (a2.east) -- node[above, align=center]{virtuális kommunikáció\\rétegprotokoll szerint} (b2.west);
+  \draw[vcomm, dashed] (a1.east) -- node[below, align=center]{valós továbbítás az alsóbb rétegeken\\és a fizikai közegen át} (b1.west);
+\end{tikzpicture}%
+}
+\caption{Rétegezett hálózati architektúra: virtuális és valós kommunikáció}
+\label{fig:zv22_retegzett_architektura}
+\end{figure}
