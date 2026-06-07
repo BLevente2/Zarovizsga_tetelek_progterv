@@ -1,0 +1,33 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.88\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize]
+  \node[font=\small\bfseries] at (1.1,4.55) {Virtuális címtér};
+  \foreach \i/\name in {0/lap 0,1/lap 1,2/lap 2,3/lap 3,4/lap 4,5/lap 5,6/lap 6,7/lap 7} {
+    \draw[thick, fill=lightaccent!60] (0,\i*0.45) rectangle (2.2,\i*0.45+0.43);
+    \node at (1.1,\i*0.45+0.215) {\name};
+  }
+
+  \node[font=\small\bfseries] at (6.0,4.55) {Fizikai RAM};
+  \foreach \i/\name/\col in {0/keret 0/lightaccent,1/keret 1/warnbg,2/keret 2/lightaccent,3/keret 3/black!5} {
+    \draw[thick, fill=\col] (5.0,\i*0.55+0.6) rectangle (7.0,\i*0.55+1.1);
+    \node at (6.0,\i*0.55+0.85) {\name};
+  }
+
+  \node[font=\small\bfseries] at (10.3,4.55) {Háttértár / swap};
+  \foreach \i/\name in {0/kilapozott,1/lapok,2/program-,3/részek} {
+    \draw[thick, fill=black!5] (9.0,\i*0.55+0.6) rectangle (11.6,\i*0.55+1.1);
+    \node at (10.3,\i*0.55+0.85) {\name};
+  }
+
+  \draw[arrow] (2.2,0.225) -- (5.0,0.85);
+  \draw[arrow] (2.2,1.125) -- (5.0,2.5);
+  \draw[arrow] (2.2,2.475) -- (9.0,1.15);
+  \draw[arrow] (2.2,3.375) -- (9.0,2.25);
+
+  \node[align=center] at (6.0,-0.35) {Csak a szükséges lapok vannak RAM-ban,\ a többi lap háttértáron maradhat.};
+\end{tikzpicture}%
+}
+\caption{Virtuális memória: a folyamat címtartományának csak egy része van a RAM-ban}
+\label{fig:zv17_virtualis_memoria}
+\end{figure}

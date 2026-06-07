@@ -1,0 +1,13 @@
+\begin{tabularx}{\textwidth}{L{36mm}X X}
+\toprule
+\textbf{Kontextuselem} & \textbf{Tartalma} & \textbf{Miért szükséges?} \\
+\midrule
+Azonosítók & Processzazonosító, szülőprocessz, tulajdonos, jogosultsági adatok. & Ezek alapján tudja az operációs rendszer megkülönböztetni és ellenőrizni a folyamatokat. \\
+Állapot & Például új, futásra kész, futó, blokkolt, felfüggesztett vagy befejezett állapot. & Az ütemező ebből látja, hogy a folyamat kaphat-e CPU-t, vagy valamilyen eseményre vár. \\
+Programsámláló és regiszterek & A következő utasítás címe, általános és speciális CPU-regiszterek, veremmutató. & Kontextusváltáskor ezeket menteni és visszaállítani kell, hogy a folyamat ott folytatódjon, ahol félbeszakadt. \\
+Ütemezési adatok & Prioritás, CPU-használat, időszelet, várakozási idő, ütemezési sorokhoz tartozó hivatkozások. & Ezek alapján dönt az ütemező a futtatási sorrendről és a CPU-idő elosztásáról. \\
+Memória-információ & Címtér, lap- vagy szegmenstábla adatai, memóriahatárok, jogosultságok. & A folyamat izolációjához, címleképzéséhez és védelméhez szükséges. \\
+I/O és fájlinformáció & Nyitott fájlok, eszközök, I/O kérések, kommunikációs kapcsolatok. & A folyamat erőforrásait és függő műveleteit tartja nyilván. \\
+Nyilvántartási adatok & Elhasznált CPU-idő, indulási idő, kvóták, statisztikák. & Teljesítményméréshez, elszámoláshoz és adminisztrációhoz használható. \\
+\bottomrule
+\end{tabularx}

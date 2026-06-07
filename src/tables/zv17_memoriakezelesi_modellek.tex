@@ -1,0 +1,11 @@
+\begin{tabularx}{\textwidth}{L{31mm}X X}
+\toprule
+\textbf{Modell} & \textbf{Lényege} & \textbf{Jellemző probléma} \\
+\midrule
+Egyprogramos modell & A RAM egyik részén az operációs rendszer, a másikon egyetlen felhasználói program található. & Egyszerű, de nincs valódi multiprogramozás, és pazarló lehet. \\
+Fix partíciók & A memória előre rögzített méretű blokkokra van osztva, egy folyamat egy partíciót kap. & Belső töredezettség és folyamatméret-korlát jelentkezhet. \\
+Változó partíciók & A partíciók mérete a folyamatok igényei szerint alakul ki. & Csökkenti a belső töredezettséget, de külső töredezettséget okozhat. \\
+Lapozás & A logikai és fizikai memória azonos méretű lapokra, illetve keretekre bomlik. & Külső töredezettség helyett laptábla-kezelési költség és laphiba jelenik meg. \\
+Szegmentáció & A program logikai egységekre, különböző méretű szegmensekre bomlik. & Jól illeszkedik a program szerkezetéhez, de külső töredezettséget okozhat. \\
+\bottomrule
+\end{tabularx}

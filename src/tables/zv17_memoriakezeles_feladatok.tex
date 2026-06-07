@@ -1,0 +1,14 @@
+\begin{tabularx}{\textwidth}{L{35mm}X X}
+\toprule
+\textbf{Feladat} & \textbf{Jelentése} & \textbf{Miért fontos?} \\
+\midrule
+Allokálás & Memóriaterület kiosztása folyamatnak, szálnak, kernelobjektumnak vagy puffernek. & A program csak akkor futhat, ha a szükséges kódja és adatai elérhetők a címtérben. \\
+Felszabadítás & A már nem használt memóriaterületek visszaadása a rendszernek. & Ha elmarad, memória elfogyásához vagy tartós erőforrás-pazarláshoz vezethet. \\
+Nyilvántartás & Annak követése, hogy mely területek szabadok, foglaltak, mely folyamatokhoz tartoznak, és milyen jogosultságúak. & Enélkül az operációs rendszer nem tud biztonságosan és hatékonyan memóriát osztani. \\
+Címleképzés & A program által használt logikai vagy virtuális címek fizikai memóriacímekké alakítása. & A folyamatok elkülönítésének, a védelemnek és a virtuális memória működésének alapja. \\
+Védelem & Annak megakadályozása, hogy egy folyamat más folyamat vagy a kernel memóriáját jogosulatlanul elérje. & Hibás vagy rosszindulatú program ne ronthassa el más folyamatok és az operációs rendszer állapotát. \\
+Megosztás & Bizonyos memóriaterületek tudatos közös használata, például könyvtárak vagy osztott memória esetén. & Csökkenti a memóriaigényt, és gyors folyamatközi kommunikációt tehet lehetővé. \\
+Háttértár-kezelés & A RAM és a másodlagos háttértár közötti lapmozgatás, például belapozás és kilapozás vezérlése. & A virtuális memória ettől tud nagyobb címtartományt mutatni, mint a tényleges fizikai RAM. \\
+Töredezettség csökkentése & A belső és külső fragmentáció mérséklése megfelelő allokációs és lapozási technikákkal. & A rendelkezésre álló memória nagyobb része marad ténylegesen használható. \\
+\bottomrule
+\end{tabularx}

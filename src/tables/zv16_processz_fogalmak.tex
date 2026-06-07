@@ -1,0 +1,11 @@
+\begin{tabularx}{\textwidth}{L{30mm}X X}
+\toprule
+\textbf{Fogalom} & \textbf{Jelentése} & \textbf{Vizsgán fontos megjegyzés} \\
+\midrule
+Program & Háttértáron tárolt, statikus utasítássorozat és a hozzá tartozó adatok. & Önmagában még nem fut; akkor lesz belőle folyamat, ha az operációs rendszer betölti és végrehajtás alá helyezi. \\
+Processz / folyamat & Egy program végrehajtás alatti példánya. & Saját címtérrel, vezérlési információval és erőforrásokkal rendelkezik; az operációs rendszer PCB-ben tartja nyilván. \\
+Taszk & Feladat vagy végrehajtható egység; a pontos jelentése rendszerfüggő. & Sok környezetben közel áll a processzhez, más rendszerekben inkább az ütemezhető végrehajtási egységet jelenti. \\
+Szál / fonál & Egy processzen belüli végrehajtási út. & Saját programszámlálóval, regiszterállapottal és veremmel rendelkezik, de megosztja a processz címtérét és erőforrásait. \\
+Ütemezhető egység & Az az egység, amelynek az ütemező CPU-időt ad. & Modern rendszerekben gyakran a szál az ütemezhető egység, míg a processz inkább erőforrás-tulajdonos. \\
+\bottomrule
+\end{tabularx}

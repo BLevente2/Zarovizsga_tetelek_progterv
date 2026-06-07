@@ -1,0 +1,34 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize]
+  \node[font=\small\bfseries] at (2.6,1.4) {Belső töredezettség};
+  \draw[thick] (0.5,0.35) rectangle (4.7,1.0);
+  \fill[lightaccent] (0.5,0.35) rectangle (3.45,1.0);
+  \fill[warnbg] (3.45,0.35) rectangle (4.7,1.0);
+  \node at (1.95,0.68) {használt rész};
+  \node at (4.08,0.68) {veszteség};
+  \node[align=center, text width=4.4cm] at (2.6,-0.45) {A kiosztott blokk nagyobb, mint a folyamat tényleges igénye.};
+
+  \node[font=\small\bfseries] at (10.0,1.4) {Külső töredezettség};
+  \draw[thick] (7.0,0.35) rectangle (13.0,1.0);
+  \fill[lightaccent] (7.0,0.35) rectangle (7.85,1.0);
+  \fill[warnbg] (7.85,0.35) rectangle (8.4,1.0);
+  \fill[lightaccent] (8.4,0.35) rectangle (9.35,1.0);
+  \fill[warnbg] (9.35,0.35) rectangle (10.0,1.0);
+  \fill[lightaccent] (10.0,0.35) rectangle (11.0,1.0);
+  \fill[warnbg] (11.0,0.35) rectangle (11.75,1.0);
+  \fill[lightaccent] (11.75,0.35) rectangle (13.0,1.0);
+  \node at (7.42,0.68) {P1};
+  \node at (8.13,0.68) {sz.};
+  \node at (8.88,0.68) {P2};
+  \node at (9.67,0.68) {sz.};
+  \node at (10.5,0.68) {P3};
+  \node at (11.38,0.68) {sz.};
+  \node at (12.37,0.68) {P4};
+  \node[align=center, text width=5.2cm] at (10.0,-0.45) {A szabad hely összesen elég lehet, de nem alkot egybefüggő blokkot.};
+\end{tikzpicture}%
+}
+\caption{Belső és külső töredezettség szemléltetése}
+\label{fig:zv17_fragmentacio}
+\end{figure}

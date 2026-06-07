@@ -1,0 +1,11 @@
+\begin{tabularx}{\textwidth}{X X}
+\toprule
+\textbf{Előnyök} & \textbf{Hátrányok} \\
+\midrule
+A folyamatnak nem kell folytonos fizikai memóriaterületet kapnia. & Laptáblákra, TLB-re és hardveres címfordításra van szükség. \\
+Csökkenti vagy megszünteti a külső töredezettséget. & Belső töredezettség keletkezhet az utolsó, csak részben használt lapban. \\
+Nagyobb virtuális címtartományt adhat, mint a fizikai RAM mérete. & Laphiba esetén a háttértár elérése nagyon lassú a RAM-hoz képest. \\
+Támogatja az igény szerinti betöltést, a megosztott könyvtárakat és a védelmet. & Rossz lapcsere vagy túl magas multiprogramozási fok thrashinget okozhat. \\
+Egyszerűbbé teszi a folyamatok elkülönítését és a jogosultságok kezelését. & A címleképzés minden memóriahivatkozásnál többletmunkát jelent, amelyet gyorsítótárakkal kell csökkenteni. \\
+\bottomrule
+\end{tabularx}

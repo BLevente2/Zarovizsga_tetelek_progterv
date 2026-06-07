@@ -1,0 +1,14 @@
+\small
+\begin{tabularx}{\textwidth}{L{32mm}X X}
+\toprule
+\textbf{Állapot} & \textbf{Jelentése} & \textbf{Tipikus átmenet} \\
+\midrule
+Új & A folyamat létrejött, de még nem feltétlenül került be a futásra kész sorba. & Létrehozás után felvétel a ready sorba. \\
+Futásra kész & A folyamat futtatható, csak CPU-ra vár. & Az ütemező kiválasztja: ready $\rightarrow$ running. \\
+Futó & A folyamat éppen CPU-t használ. & Időszelet lejár: running $\rightarrow$ ready; I/O kérés: running $\rightarrow$ blocked; befejezés: running $\rightarrow$ terminated. \\
+Blokkolt / várakozó & A folyamat nem tud futni, mert valamilyen eseményre vár, például I/O befejezésére. & Az esemény bekövetkezik: blocked $\rightarrow$ ready. \\
+Felfüggesztett ready & A folyamat futtatható lenne, de átmenetileg ki van vonva a CPU-ért folyó versenyből, gyakran memóriakezelési okból. & Resume után visszakerül a ready állapotba. \\
+Felfüggesztett blokkolt & A folyamat eseményre vár és közben felfüggesztett állapotban van. & Az esemény bekövetkezhet, de a folyamat csak resume után lehet futásra kész. \\
+Befejezett & A folyamat végrehajtása lezárult vagy megszakadt. & Az operációs rendszer felszabadítja az erőforrásokat és törli a nyilvántartási adatokat. \\
+\bottomrule
+\end{tabularx}

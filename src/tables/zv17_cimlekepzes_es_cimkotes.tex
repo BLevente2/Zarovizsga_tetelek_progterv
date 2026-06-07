@@ -1,0 +1,12 @@
+\begin{tabularx}{\textwidth}{L{31mm}X X}
+\toprule
+\textbf{Fogalom} & \textbf{Jelentése} & \textbf{Vizsgán fontos megjegyzés} \\
+\midrule
+Logikai cím & A CPU vagy a program által használt cím; virtuális címnek is nevezhető. & A folyamat saját címtartományán belül értelmezett cím, nem feltétlenül egyezik meg a RAM tényleges címével. \\
+Fizikai cím & A tényleges főmemória-rekesz címe. & Ezt a felhasználói program általában nem látja közvetlenül; az MMU állítja elő. \\
+Fordításkori címkötés & A fizikai cím már fordításkor ismert. & Csak akkor használható jól, ha előre tudjuk, hova kerül a program; áthelyezéskor újrafordítás kellhet. \\
+Betöltéskori címkötés & A fordító áthelyezhető kódot készít, a végleges címek betöltéskor alakulnak ki. & Rugalmasabb, de futás közbeni áthelyezést önmagában nem támogat. \\
+Futásidejű címkötés & A logikai címek futás közben, hardvertámogatással fordulnak fizikai címre. & A virtuális memória, a lapozás és a dinamikus áthelyezés alapja; MMU szükséges hozzá. \\
+MMU & Memory Management Unit, vagyis memóriakezelő egység. & Hardveresen gyorsítja és ellenőrzi a címleképzést, jogosultságokat és lapjelenlétet. \\
+\bottomrule
+\end{tabularx}

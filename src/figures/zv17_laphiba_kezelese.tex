@@ -1,0 +1,30 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize, node distance=10mm and 10mm]
+  \node[zvflowprocess, fill=lightaccent, minimum width=28mm] (ref) {memóriahivatkozás};
+  \node[zvflowdecision, fill=warnbg, right=of ref, minimum width=27mm] (present) {lap RAM-ban van?};
+  \node[zvflowprocess, fill=lightaccent, right=of present, minimum width=24mm] (access) {RAM elérés};
+
+  \node[zvflowprocess, fill=black!6, below=of present, minimum width=28mm] (fault) {laphiba csapda};
+  \node[zvflowdecision, fill=warnbg, below=of fault, minimum width=28mm] (legal) {cím érvényes?};
+  \node[zvflowprocess, fill=warnbg, left=of legal, minimum width=28mm] (abort) {védelemsértés / hiba};
+  \node[zvflowprocess, fill=black!6, right=of legal, minimum width=31mm] (frame) {szabad keret vagy áldozatlap};
+  \node[zvflowprocess, fill=black!6, right=of frame, minimum width=29mm] (io) {lap beolvasása háttértárról};
+  \node[zvflowprocess, fill=lightaccent, above=of io, minimum width=29mm] (update) {laptábla frissítése};
+
+  \draw[arrow] (ref) -- (present);
+  \draw[arrow] (present) -- node[above] {igen} (access);
+  \draw[arrow] (present) -- node[right] {nem} (fault);
+  \draw[arrow] (fault) -- (legal);
+  \draw[arrow] (legal) -- node[above] {nem} (abort);
+  \draw[arrow] (legal) -- node[above] {igen} (frame);
+  \draw[arrow] (frame) -- (io);
+  \draw[arrow] (io) -- (update);
+  \draw[arrow] (update.west) |- ([yshift=-2mm]access.south) -- (access.south);
+
+\end{tikzpicture}%
+}
+\caption{Laphiba kezelésének leegyszerűsített folyamata}
+\label{fig:zv17_laphiba_kezelese}
+\end{figure}

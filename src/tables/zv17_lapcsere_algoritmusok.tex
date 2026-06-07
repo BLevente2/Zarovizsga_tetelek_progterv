@@ -1,0 +1,12 @@
+\begin{tabularx}{\textwidth}{L{23mm}X X}
+\toprule
+\textbf{Stratégia} & \textbf{Csere elve} & \textbf{Megjegyzés} \\
+\midrule
+FIFO & A legrégebben betöltött lap kerül ki. & Egyszerű, sorral könnyen megvalósítható, de nem figyeli a használatot; Belady-anomália előfordulhat. \\
+OPT & Az a lap kerül ki, amelyre a jövőben a legkésőbb lesz szükség. & Elméleti optimum és összehasonlítási alap, de valós rendszerben a jövőbeli hivatkozások nem ismertek. \\
+LRU & Az a lap kerül ki, amelyet a legrégebben nem használtak. & Jó gyakorlati elv, de pontos megvalósítása többletadatot és gyakran hardvertámogatást igényel. \\
+LIFO & A legutóbb betöltött lap kerül ki. & Egyszerű, de rossz döntéseket adhat, mert a régi, akár nem használt lapok sokáig bent maradhatnak. \\
+Random & Véletlenszerűen választ áldozatlapot. & Nagyon egyszerű, de teljesítménye bizonytalan, és nem használja ki a program lokalitását. \\
+LFU & A legritkábban használt lap kerül ki. & Használatszámláló alapján dönt, de a régi múltbeli használat torzíthatja a döntést. \\
+\bottomrule
+\end{tabularx}

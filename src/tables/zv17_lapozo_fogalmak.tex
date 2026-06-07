@@ -1,0 +1,15 @@
+\begin{tabularx}{\textwidth}{L{30mm}X X}
+\toprule
+\textbf{Fogalom} & \textbf{Jelentése} & \textbf{Szerepe a lapozásban} \\
+\midrule
+Lap & A virtuális címtartomány azonos méretű darabja. & A folyamat logikai címtartományát lapokra bontjuk. \\
+Lapkeret & A fizikai memória azonos méretű darabja. & Egy lap bármely szabad lapkeretbe betölthető. \\
+Lapméret & Egy lap és egy lapkeret mérete. & Tipikusan kettő hatványa, ezért a cím lapszámra és eltolásra bontható. \\
+Eltolás & A lapon belüli pozíció. & Címleképzéskor változatlanul átkerül a fizikai címbe. \\
+Laptábla & Folyamatonkénti adatszerkezet, amely a lapok és lapkeretek kapcsolatát tartalmazza. & Megmondja, hogy egy virtuális lap melyik fizikai keretben van, illetve érvényes-e. \\
+Valid/invalid bit & Azt jelzi, hogy a lap érvényes és jelen van-e, vagy nem használható/nincs RAM-ban. & Invalid hivatkozásnál védelemsértés vagy laphiba következhet be. \\
+Módosított bit & Azt jelzi, hogy a lap tartalma megváltozott-e a RAM-ban. & Kilapozáskor csak a módosított lapot kell visszaírni a háttértárra. \\
+Hivatkozási bit & Azt jelzi, hogy a lapot nemrég használták-e. & Lapcsere algoritmusok használhatják közelítő LRU-szerű döntésekhez. \\
+TLB & Gyorsítótár a legutóbbi címfordításokhoz. & Csökkenti annak költségét, hogy minden memóriahivatkozáshoz laptáblát kelljen olvasni. \\
+\bottomrule
+\end{tabularx}

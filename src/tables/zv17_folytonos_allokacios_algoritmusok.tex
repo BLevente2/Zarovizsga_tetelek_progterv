@@ -1,0 +1,12 @@
+\begin{tabularx}{\textwidth}{L{24mm}X X}
+\toprule
+\textbf{Algoritmus} & \textbf{Működése} & \textbf{Előny / hátrány} \\
+\midrule
+First fit & Az első olyan szabad blokkot választja, amely elég nagy a kérés teljesítéséhez. & Gyors és egyszerű, de sok kisebb lyukat hagyhat a memória elején. \\
+Next fit & A first fit változata: az előző sikeres foglalás helyétől folytatja a keresést. & Csökkentheti az elejére torlódó keresést, de a kihasználtsága nem feltétlenül jobb. \\
+Best fit & A legkisebb olyan blokkot választja, amelybe a kérés még belefér. & Csökkentheti a közvetlen maradékot, de lassabb keresést és sok apró lyukat okozhat. \\
+Worst fit & A legnagyobb szabad blokkot választja ki. & Nagyobb maradék blokkokat hagyhat, de gyakran gyenge memória-kihasználást ad. \\
+Coalescing & Egymás melletti szabad blokkok összevonása. & Csökkenti a külső töredezettséget, ha a szabad területek szomszédosak. \\
+Compaction & A foglalt blokkok átrendezése, hogy a szabad helyek egy nagyobb tartományba kerüljenek. & Hatékony lehet, de drága művelet, és csak áthelyezhető programoknál alkalmazható jól. \\
+\bottomrule
+\end{tabularx}

@@ -1,0 +1,12 @@
+\begin{tabularx}{\textwidth}{L{32mm}X X}
+\toprule
+\textbf{Szempont} & \textbf{Processz} & \textbf{Szál / fonál} \\
+\midrule
+Alapjelentés & Program végrehajtás alatti példánya. & Végrehajtási út egy processzen belül. \\
+Címtér & Általában saját, védett címtérrel rendelkezik. & Megosztja a processz címtérét a többi szállal. \\
+Saját adatok & PCB, címtér, nyitott erőforrások, legalább egy végrehajtási szál. & Saját programszámláló, regiszterállapot és verem. \\
+Erőforrás-megosztás & Processzek között drágább és szabályozottabb, például IPC kellhet. & Azonos processzen belüli szálak könnyen megosztják a kódot, adatokat, heapet és fájlokat. \\
+Létrehozás és váltás költsége & Általában drágább, mert több erőforrás és több védelmi információ kapcsolódik hozzá. & Általában olcsóbb, ezért nevezik könnyűsúlyú folyamatnak is. \\
+Hibatűrés & Egy processz hibája gyakran elszigetelhető más processzektől. & Egy szál hibája az egész processzt érintheti, mert közös címtéren osztoznak. \\
+\bottomrule
+\end{tabularx}

@@ -1,0 +1,11 @@
+\begin{tabularx}{\textwidth}{L{34mm}X X}
+\toprule
+\textbf{Típus} & \textbf{Jellemző} & \textbf{Következmény} \\
+\midrule
+Felhasználói szintű szál & A szálakat felhasználói könyvtár kezeli, az operációs rendszer csak a processzt látja. & A szálváltás gyors lehet, de ha egy szál blokkoló rendszerhívást végez, az egész processz blokkolódhat. \\
+Kernel szintű szál & A szálakat az operációs rendszer kernelje ismeri és ütemezi. & Egy szál blokkolása nem feltétlenül állítja meg a processz többi szálát; a váltás viszont drágább lehet. \\
+Egy--több modell & Több felhasználói szál tartozik egy kernel végrehajtási egységhez. & Egyszerű, de valódi többmagos párhuzamosságot korlátozottan ad. \\
+Egy--egy modell & Minden felhasználói szálhoz külön kernel szál tartozik. & Jó párhuzamosságot ad, de sok kernel szál erőforrásigényes lehet. \\
+Több--több modell & Több felhasználói szál több kernel szálra képeződik le. & Rugalmasabb, de bonyolultabb megvalósítani. \\
+\bottomrule
+\end{tabularx}

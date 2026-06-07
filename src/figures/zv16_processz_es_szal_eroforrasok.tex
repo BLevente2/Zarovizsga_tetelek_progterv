@@ -1,0 +1,28 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small]
+  \node[draw, rounded corners, fill=lightaccent, minimum width=12.8cm, minimum height=5.8cm] (proc) at (0,0) {};
+  \node[anchor=west, font=\bfseries\sffamily\large, color=accent] at (-5.85,2.25) {Processz};
+
+  \node[zvflowprocess, fill=black!5, minimum width=29mm, minimum height=8mm] (code) at (-4.35,1.2) {kód / text};
+  \node[zvflowprocess, fill=black!5, minimum width=25mm, minimum height=8mm] (data) at (-1.6,1.2) {adatok};
+  \node[zvflowprocess, fill=black!5, minimum width=25mm, minimum height=8mm] (heap) at (1.1,1.2) {heap};
+  \node[zvflowprocess, fill=black!5, minimum width=31mm, minimum height=8mm] (files) at (4.2,1.2) {nyitott fájlok};
+
+  \draw[decorate, decoration={brace, mirror, amplitude=5pt}, thick]
+    (-5.2,0.58) -- (5.2,0.58)
+    node[midway, below=7pt, align=center] {megosztott processzszintű erőforrások és közös címtér};
+
+  \node[draw, rounded corners, fill=warnbg, minimum width=34mm, minimum height=17mm, align=center] (t1) at (-3.6,-1.4) {Szál 1\\{\scriptsize PC + regiszterek}\\{\scriptsize verem}};
+  \node[draw, rounded corners, fill=warnbg, minimum width=34mm, minimum height=17mm, align=center] (t2) at (0,-1.4) {Szál 2\\{\scriptsize PC + regiszterek}\\{\scriptsize verem}};
+  \node[draw, rounded corners, fill=warnbg, minimum width=34mm, minimum height=17mm, align=center] (t3) at (3.6,-1.4) {Szál 3\\{\scriptsize PC + regiszterek}\\{\scriptsize verem}};
+
+  \draw[arrow] (-3.6,0.55) -- (t1.north);
+  \draw[arrow] (0,0.55) -- (t2.north);
+  \draw[arrow] (3.6,0.55) -- (t3.north);
+
+  \node[font=\scriptsize, align=center] at (0,-2.55) {Minden szálnak saját végrehajtási állapota van, miközben a processz erőforrásait közösen használják.};
+\end{tikzpicture}
+\caption{Processz és szál kapcsolata: közös erőforrások, saját végrehajtási állapot}
+\label{fig:zv16_processz_es_szal_eroforrasok}
+\end{figure}

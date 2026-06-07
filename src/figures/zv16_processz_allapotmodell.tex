@@ -1,0 +1,29 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.92\textwidth}{!}{%
+\begin{tikzpicture}[font=\small]
+  \node[zvflowprocess, fill=black!5, minimum width=20mm] (new) at (0,0) {Új};
+  \node[zvflowprocess, fill=lightaccent, minimum width=31mm] (ready) at (3.1,0) {Futásra kész};
+  \node[zvflowprocess, fill=warnbg, minimum width=23mm] (running) at (6.4,0) {Futó};
+  \node[zvflowprocess, fill=black!5, minimum width=27mm] (terminated) at (9.5,0) {Befejezett};
+
+  \node[zvflowprocess, fill=lightaccent!65, minimum width=29mm] (blocked) at (6.4,-2.0) {Blokkolt};
+  \node[zvflowprocess, fill=lightaccent!45, minimum width=30mm, align=center] (sready) at (1.9,-4.0) {Felfüggesztett\\ ready};
+  \node[zvflowprocess, fill=lightaccent!45, minimum width=31mm, align=center] (sblocked) at (7.0,-4.0) {Felfüggesztett\\ blokkolt};
+
+  \draw[arrow] (new) -- (ready);
+  \draw[arrow, bend left=25] (ready) to (running);
+  \draw[arrow, bend left=25] (running) to (ready);
+  \draw[arrow] (running) -- (terminated);
+  \draw[arrow] (running) -- (blocked);
+  \draw[arrow] (blocked.west) to[out=180,in=-60] (ready.south);
+  \draw[arrow] (ready.south west) to[out=-110,in=80] (sready.north);
+  \draw[arrow] (sready.north east) to[out=80,in=-120] (ready.south);
+  \draw[arrow] (blocked) -- (sblocked);
+  \draw[arrow] (sblocked) -- (blocked);
+  \draw[arrow] (sblocked) -- (sready);
+\end{tikzpicture}%
+}
+\caption{Folyamatállapotok bővített modellje és tipikus állapotátmenetei}
+\label{fig:zv16_processz_allapotmodell}
+\end{figure}

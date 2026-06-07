@@ -1,0 +1,19 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize]
+  \node[zvflowprocess, fill=warnbg, minimum width=18mm, minimum height=8mm] (p1run) at (0,0) {P1 fut};
+  \node[zvflowprocess, fill=black!6, minimum width=25mm, minimum height=8mm] (save) at (2.7,0) {P1 mentése};
+  \node[zvflowprocess, fill=lightaccent, minimum width=22mm, minimum height=8mm] (sched) at (5.3,0) {ütemező};
+  \node[zvflowprocess, fill=black!6, minimum width=27mm, minimum height=8mm] (restore) at (8.0,0) {P2 visszaállítás};
+  \node[zvflowprocess, fill=warnbg, minimum width=18mm, minimum height=8mm] (p2run) at (10.8,0) {P2 fut};
+
+  \draw[arrow] (p1run) -- node[above, font=\tiny] {megszakítás} (save);
+  \draw[arrow] (save) -- (sched);
+  \draw[arrow] (sched) -- (restore);
+  \draw[arrow] (restore) -- node[above, font=\tiny] {visszatérés} (p2run);
+\end{tikzpicture}%
+}
+\caption{Kontextusváltás leegyszerűsített menete két folyamat között}
+\label{fig:zv16_kontextusvaltas}
+\end{figure}

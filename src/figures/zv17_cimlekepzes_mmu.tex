@@ -1,0 +1,24 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize]
+  \node[zvflowprocess, fill=warnbg, minimum width=19mm, minimum height=9mm] (cpu) at (0,0) {CPU};
+  \node[zvflowprocess, fill=lightaccent, minimum width=32mm, minimum height=10mm, align=center] (logical) at (2.8,0) {logikai /\ virtuális cím};
+  \node[zvflowprocess, fill=black!6, minimum width=31mm, minimum height=11mm, align=center] (mmu) at (6.3,0) {MMU\ címfordítás};
+  \node[zvflowprocess, fill=lightaccent, minimum width=25mm, minimum height=9mm] (physical) at (9.6,0) {fizikai cím};
+  \node[zvflowprocess, fill=warnbg, minimum width=18mm, minimum height=9mm] (ram) at (12.1,0) {RAM};
+
+  \node[zvflowprocess, fill=black!4, minimum width=25mm, minimum height=9mm, align=center] (ptable) at (5.05,-1.65) {laptábla};
+  \node[zvflowprocess, fill=black!4, minimum width=32mm, minimum height=9mm, align=center] (prot) at (8.2,-1.65) {jogosultságok,\ valid bit};
+
+  \draw[arrow] (cpu) -- (logical);
+  \draw[arrow] (logical) -- (mmu);
+  \draw[arrow] (mmu) -- (physical);
+  \draw[arrow] (physical) -- (ram);
+  \draw[arrow] (ptable.north) -- (mmu.south west);
+  \draw[arrow] (prot.north) -- (mmu.south east);
+\end{tikzpicture}%
+}
+\caption{Logikai cím fizikai címmé alakítása hardveres MMU-támogatással}
+\label{fig:zv17_cimlekepzes_mmu}
+\end{figure}
