@@ -1,0 +1,13 @@
+\begin{tabularx}{\textwidth}{L{32mm}X X}
+\toprule
+\textbf{Szempont} & \textbf{Absztrakt osztály} & \textbf{Interfész} \\
+\midrule
+Szerep & Közös alap és részleges implementáció megadása rokon osztályoknak. & Szerződés megadása arról, hogy egy típus milyen műveleteket biztosít. \\
+Példányosítás & Közvetlenül nem példányosítható. & Közvetlenül nem példányosítható. \\
+Állapot & Tartalmazhat példánymezőket és konstruktorokat. & Általában nem objektumállapot tárolására való; konstansokat tartalmazhat. \\
+Metódusok & Lehetnek absztrakt és konkrét metódusai is. & Tartalmazhat absztrakt metódusokat, valamint Java 8 óta \code{default} és \code{static} metódusokat is. \\
+Öröklési korlát & Egy osztály csak egy közvetlen osztályból örökölhet. & Egy osztály több interfészt is megvalósíthat. \\
+Használati helyzet & Akkor célszerű, ha közös kódot és közös állapotot is meg akarunk osztani. & Akkor célszerű, ha képességet, protokollt vagy szerepet akarunk leírni lazább csatolással. \\
+Kulcsszavak & \code{abstract class}, \code{extends}. & \code{interface}, \code{implements}. \\
+\bottomrule
+\end{tabularx}

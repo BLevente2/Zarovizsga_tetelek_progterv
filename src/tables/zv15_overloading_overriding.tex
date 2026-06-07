@@ -1,0 +1,14 @@
+\begin{tabularx}{\textwidth}{L{31mm}X X}
+\toprule
+\textbf{Szempont} & \textbf{Túlterhelés} & \textbf{Felüldefiniálás} \\
+\midrule
+Angol név & Overloading. & Overriding. \\
+Kapcsolat & Egy osztályon belül vagy öröklési láncban is előfordulhat. & Öröklődéshez kötődik: a leszármazott újra megadja az ős metódusát. \\
+Metódusnév & Azonos. & Azonos. \\
+Paraméterlista & Kötelezően eltér. & Azonos szignatúra szükséges. \\
+Visszatérési típus & Önmagában nem elég a megkülönböztetéshez. & Lehet azonos vagy kovariáns visszatérési típus. \\
+Kiválasztás ideje & Fordítási időben, a referencia statikus típusa és az argumentumok alapján. & Futási időben, az objektum dinamikus típusa alapján. \\
+Kulcsszó & Nincs külön kulcsszó. & Java-ban ajánlott az \code{@Override} annotáció használata. \\
+Példa & \code{print(String)} és \code{print(int)}. & \code{Dog.makeSound()} felüldefiniálja az \code{Animal.makeSound()} metódust. \\
+\bottomrule
+\end{tabularx}

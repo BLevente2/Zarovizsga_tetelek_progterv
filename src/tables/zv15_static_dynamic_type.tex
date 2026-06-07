@@ -1,0 +1,12 @@
+\begin{tabularx}{\textwidth}{L{32mm}X X}
+\toprule
+\textbf{Fogalom} & \textbf{Mit jelent?} & \textbf{Miért fontos?} \\
+\midrule
+Statikus típus & A változó, paraméter vagy kifejezés fordításkor ismert deklarált típusa. & Meghatározza, hogy milyen tagokat enged meghívni a fordító. \\
+Dinamikus típus & A futásidőben ténylegesen létrejött objektum konkrét osztálya. & Felüldefiniált példánymetódusnál ez dönti el, melyik implementáció fut le. \\
+Upcast & Leszármazott objektum kezelése ősosztály vagy interfész típusú referencián keresztül. & Biztonságos és automatikus; a polimorfizmus alapja. \\
+Downcast & Őstípusú referencia visszaalakítása konkrétabb típusra. & Csak akkor helyes, ha a dinamikus típus valóban kompatibilis; különben \code{ClassCastException} keletkezhet. \\
+Dinamikus kötés & Felüldefiniált példánymetódus kiválasztása futási időben. & Lehetővé teszi, hogy ugyanaz a hívás különböző objektumokon eltérően viselkedjen. \\
+Statikus kötés & A hívott elem fordítási időben eldől. & Túlterhelésnél, \code{static}, \code{private} és \code{final} metódusoknál fontos. \\
+\bottomrule
+\end{tabularx}

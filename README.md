@@ -22,6 +22,7 @@ Jelenleg a projekt az alábbi kidolgozott tételeket tartalmazza:
 - `zv_tetel_12.tex` - 12. tétel: nemdeterminisztikus Turing-gépek, NP és coNP, tanú-tétel, nemdeterminisztikus bonyolultság, NP-teljesség, Cook--Levin-tétel
 - `zv_tetel_13.tex` - 13. tétel: Java alapok, program szerkezete, OOP alapelvek, objektumok élettartama, szemétgyűjtés és kivételkezelés
 - `zv_tetel_14.tex` - 14. tétel: egységbezárás, információrejtés, osztálydefiníció, példányosítás, osztály- és példányszintű tagok, konstansok, hozzáférési kategóriák
+- `zv_tetel_15.tex` - 15. tétel: öröklődés, polimorfizmus, túlterhelés, felüldefiniálás, statikus és dinamikus típus, absztrakt osztályok és interfészek
 
 Minden tétel külön PDF-be fordul, így az egyes tételek önálló dokumentumként is használhatók.
 
@@ -56,6 +57,7 @@ A tételek fedlapján szereplő hivatalos tételkiírások is ebből a fájlból
     ├── zv_tetel_12.tex
     ├── zv_tetel_13.tex
     ├── zv_tetel_14.tex
+    ├── zv_tetel_15.tex
     ├── figures/
     │   ├── zv_abrak.tex
     │   └── ... külön TikZ-ábrák ...

@@ -1,0 +1,12 @@
+\begin{tabularx}{\textwidth}{L{34mm}X X}
+\toprule
+\textbf{Fogalom} & \textbf{Jelentése} & \textbf{Java-beli eszköz / megjegyzés} \\
+\midrule
+Öröklődés & Új osztály létrehozása meglévő osztály specializálásával. & \code{extends}; Java-ban osztályok között egyszeres öröklődés van, de több interfész is megvalósítható. \\
+Ősosztály & Az általánosabb osztály, amely közös állapotot és viselkedést adhat. & Közös mezők, metódusok, konstruktorlogika; minden osztály közvetve a \code{Object} leszármazottja. \\
+Leszármazott osztály & Az ősosztály speciálisabb változata. & Örökli az elérhető tagokat, új tagokat vehet fel, metódusokat felüldefiniálhat. \\
+Polimorfizmus & Ugyanazon típusú referencia mögött többféle tényleges objektum állhat. & Őstípusú, absztrakt osztály típusú vagy interfész típusú referencia; dinamikus metóduskötés. \\
+Túlterhelés & Azonos nevű metódusok eltérő paraméterlistával. & Fordítási időben dől el, hogy melyik metódusváltozat illeszkedik. \\
+Felüldefiniálás & Örökölt példánymetódus új implementációja leszármazottban. & \code{@Override}; futási időben a dinamikus típus alapján választódik ki. \\
+\bottomrule
+\end{tabularx}

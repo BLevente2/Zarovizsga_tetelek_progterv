@@ -1,0 +1,23 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small]
+  \node[zvflowprocess, fill=lightaccent, minimum width=38mm, minimum height=10mm] (animal) at (0,2.3) {\texttt{Animal}\\ ősosztály};
+
+  \node[zvflowprocess, fill=warnbg, minimum width=32mm, minimum height=10mm] (dog) at (-2.7,0.45) {\texttt{Dog}\\ leszármazott};
+  \node[zvflowprocess, fill=warnbg, minimum width=32mm, minimum height=10mm] (cat) at (2.7,0.45) {\texttt{Cat}\\ leszármazott};
+
+  \node[zvflowprocess, fill=black!6, minimum width=35mm, minimum height=8mm] (ref1) at (-2.7,-1.05) {\texttt{Animal a1}};
+  \node[zvflowprocess, fill=black!6, minimum width=35mm, minimum height=8mm] (ref2) at (2.7,-1.05) {\texttt{Animal a2}};
+
+  \draw[arrow] (dog.north) -- node[left,font=\scriptsize] {\code{extends}} (animal.south west);
+  \draw[arrow] (cat.north) -- node[right,font=\scriptsize] {\code{extends}} (animal.south east);
+
+  \draw[arrow] (ref1) -- node[left,font=\scriptsize] {dinamikus: \texttt{Dog}} (dog);
+  \draw[arrow] (ref2) -- node[right,font=\scriptsize] {dinamikus: \texttt{Cat}} (cat);
+
+  \node[align=center, font=\scriptsize] at (0,-1.85) {mindkét referencia statikus típusa \texttt{Animal}};
+  \draw[decorate, decoration={brace, amplitude=5pt}, thick] (-4.45,-2.25) -- node[below=6pt, font=\scriptsize, align=center] {ugyanaz a hívás: \texttt{makeSound()} -- a dinamikus típus alapján más implementáció fut} (4.45,-2.25);
+\end{tikzpicture}
+\caption{Öröklődés és polimorfizmus: ősosztály típusú referencia, eltérő dinamikus típus}
+\label{fig:zv15_oroklodes_polimorfizmus}
+\end{figure}
