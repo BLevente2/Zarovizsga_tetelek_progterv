@@ -1,0 +1,10 @@
+\begin{tabularx}{\textwidth}{L{26mm}L{38mm}X}
+\toprule
+\textbf{Módosító} & \textbf{Láthatóság Java-ban} & \textbf{Tipikus használat} \\
+\midrule
+\code{public} & Minden csomagból elérhető, ha maga a típus is elérhető. & Publikus API: olyan osztályok, metódusok és konstansok, amelyeket külső kódnak is használnia kell. \\
+Nincs módosító & Csomagszintű, más néven package-private láthatóság. & Belső segédosztályok és tagok, amelyeket csak az adott csomagon belül akarunk megosztani. \\
+\code{protected} & Az adott csomagon belül, valamint leszármazott osztályokból elérhető. & Örökléshez szánt bővítési pontok; óvatosan használjuk, mert a leszármazottakkal is szerződést képez. \\
+\code{private} & Csak az adott osztály törzsén belül érhető el. & Belső állapot, segédmetódus, implementációs részlet; az információrejtés alapvető eszköze. \\
+\bottomrule
+\end{tabularx}

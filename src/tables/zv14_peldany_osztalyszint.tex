@@ -1,0 +1,12 @@
+\begin{tabularx}{\textwidth}{L{29mm}X X}
+\toprule
+\textbf{Szempont} & \textbf{Példányszintű tag} & \textbf{Osztályszintű tag} \\
+\midrule
+Jelölés & Nincs \code{static} módosító. & \code{static} módosítóval definiáljuk. \\
+Mihez tartozik? & Egy konkrét objektumpéldányhoz. & Magához az osztályhoz. \\
+Adattagból hány példány van? & Minden objektumnak saját példánya van belőle. & Egy közös példány tartozik az osztályhoz. \\
+Elérés módja & Objektumreferencián keresztül, például \code{account.getBalance()}. & Osztálynévvel minősítve, például \code{Math.max(a, b)}. \\
+\code{this} használata & Példányszintű metódusban van aktuális objektum, ezért használható a \code{this}. & Statikus metódusban nincs aktuális objektum, ezért \code{this} nem használható. \\
+Tipikus szerep & Objektum állapotának és viselkedésének modellezése. & Közös adatok, segédműveletek, gyármetódusok, számlálók, konstansok. \\
+\bottomrule
+\end{tabularx}

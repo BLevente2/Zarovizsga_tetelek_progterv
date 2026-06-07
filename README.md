@@ -6,7 +6,7 @@ A dokumentumokat Baba Levente készítette ChatGPT segítségével. A projekt c�
 
 ## Tartalom
 
-Jelenleg a projekt az alábbi tételeket tartalmazza:
+Jelenleg a projekt az alábbi kidolgozott tételeket tartalmazza:
 
 - `zv_tetel_01.tex` - 1. tétel: adatok, adattípusok, adatműveletek és adatstruktúrák
 - `zv_tetel_02.tex` - 2. tétel: algoritmus, iteráció, rekurzió, memória, verem, procedúra, folyamatábra, pszeudokód, elemi algoritmusok
@@ -20,6 +20,8 @@ Jelenleg a projekt az alábbi tételeket tartalmazza:
 - `zv_tetel_10.tex` - 10. tétel: Turing-gép, RAM-gép, Boole-függvények és logikai hálózatok
 - `zv_tetel_11.tex` - 11. tétel: algoritmikus eldönthetőség, Church-tézis, rekurzív és rekurzívan felsorolható nyelvek, eldönthetetlen problémák, polinomiális idő
 - `zv_tetel_12.tex` - 12. tétel: nemdeterminisztikus Turing-gépek, NP és coNP, tanú-tétel, nemdeterminisztikus bonyolultság, NP-teljesség, Cook--Levin-tétel
+- `zv_tetel_13.tex` - 13. tétel: Java alapok, program szerkezete, OOP alapelvek, objektumok élettartama, szemétgyűjtés és kivételkezelés
+- `zv_tetel_14.tex` - 14. tétel: egységbezárás, információrejtés, osztálydefiníció, példányosítás, osztály- és példányszintű tagok, konstansok, hozzáférési kategóriák
 
 Minden tétel külön PDF-be fordul, így az egyes tételek önálló dokumentumként is használhatók.
 
@@ -52,6 +54,8 @@ A tételek fedlapján szereplő hivatalos tételkiírások is ebből a fájlból
     ├── zv_tetel_10.tex
     ├── zv_tetel_11.tex
     ├── zv_tetel_12.tex
+    ├── zv_tetel_13.tex
+    ├── zv_tetel_14.tex
     ├── figures/
     │   ├── zv_abrak.tex
     │   └── ... külön TikZ-ábrák ...

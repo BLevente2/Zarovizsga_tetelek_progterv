@@ -1,0 +1,20 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[font=\small]
+  \node[zvflowprocess, fill=lightaccent, minimum width=90mm, minimum height=21mm, align=left] (class) at (0,2.1) {\textbf{BankAccount osztály}\\\texttt{static final MIN\_BALANCE} és \texttt{static createdCount}\\közös metóduskód: \texttt{deposit()}, \texttt{withdraw()}};
+
+  \node[zvflowprocess, fill=warnbg, minimum width=43mm, minimum height=23mm, align=left] (obj1) at (-3,-1.1) {\textbf{Objektum 1}\\\texttt{owner = "Anna"}\\\texttt{balance = 12000}};
+
+  \node[zvflowprocess, fill=warnbg, minimum width=43mm, minimum height=23mm, align=left] (obj2) at (3,-1.1) {\textbf{Objektum 2}\\\texttt{owner = "Béla"}\\\texttt{balance = 8000}};
+
+  \node[zvflowprocess, fill=black!6, minimum width=31mm, minimum height=8mm, align=center] (ref1) at (-3,0.55) {\texttt{account1}};
+  \node[zvflowprocess, fill=black!6, minimum width=31mm, minimum height=8mm, align=center] (ref2) at (3,0.55) {\texttt{account2}};
+
+  \draw[arrow] (ref1) -- (obj1);
+  \draw[arrow] (ref2) -- (obj2);
+  \draw[arrow] (obj1.north) -- node[left,font=\scriptsize] {közös osztálytagok} (class.south west);
+  \draw[arrow] (obj2.north) -- node[right,font=\scriptsize] {közös metóduskód} (class.south east);
+\end{tikzpicture}
+\caption{Osztály, objektum, referencia, példányállapot és osztályszintű tagok kapcsolata}
+\label{fig:zv14_osztaly_objektum_tagok}
+\end{figure}
