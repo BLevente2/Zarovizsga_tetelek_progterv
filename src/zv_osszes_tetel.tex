@@ -1,0 +1,173 @@
+\documentclass[12pt,a4paper]{article}
+
+\newcommand{\ZVTetelsorDataOnly}{}
+\input{src/zv_tetelsor.tex}
+
+\newcommand{\ZVHEADERLEFT}{}
+\newcommand{\ZVHEADERRIGHT}{}
+\input{src/preamble.tex}
+
+\hypersetup{
+  pdftitle={Programtervező Informatikus BSc záróvizsga tételek - teljes tételkidolgozás},
+  pdfauthor={Baba Levente - ChatGPT segítségével készült tanulási segédanyag}
+}
+
+\newcommand{\ZVFullDocTitle}{Programtervező Informatikus BSc záróvizsga tételek}
+\newcommand{\ZVFullDocSubtitle}{Teljes tételkidolgozás}
+\newcommand{\ZVFullDocDate}{2026. június 8.}
+\newcommand{\ZVCurrentHeader}{}
+\newcommand{\zvsetheader}[1]{\gdef\ZVCurrentHeader{#1}}
+
+\fancyhf{}
+\fancyhead[L]{\ZVCurrentHeader}
+\fancyhead[R]{Programtervező Informatikus BSc}
+\fancyfoot[C]{\thepage}
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{4}
+\titleformat{\paragraph}{\normalsize\bfseries\sffamily\color{accent}}{\theparagraph.}{0.6em}{}
+\titlespacing*{\paragraph}{0pt}{1.0ex plus .2ex}{0.6ex}
+\makeatletter
+\renewcommand*{\l@section}{\@dottedtocline{1}{0em}{3.6em}}
+\renewcommand*{\l@subsection}{\@dottedtocline{2}{1.5em}{4.2em}}
+\renewcommand*{\l@subsubsection}{\@dottedtocline{3}{3.8em}{5.0em}}
+\renewcommand*{\l@paragraph}{\@dottedtocline{4}{6.3em}{5.8em}}
+\makeatother
+
+\newcommand{\ZVFullCover}{%
+\begin{titlepage}
+  \thispagestyle{empty}
+  \centering
+  \vspace*{18mm}
+  {\Large\sffamily Miskolci Egyetem\par}
+  \vspace{2mm}
+  {\large\sffamily Gépészmérnöki és Informatikai Kar\par}
+  \vspace{18mm}
+  {\Huge\bfseries\sffamily \ZVFullDocTitle\par}
+  \vspace{4mm}
+  {\LARGE\bfseries\sffamily \ZVFullDocSubtitle\par}
+  \vspace{14mm}
+  \begin{summarybox}
+    Ez a dokumentum a Programtervező Informatikus BSc záróvizsgára való felkészüléshez készült. Egyetlen, közös oldalszámozású PDF-ben tartalmazza a teljes tételsort és a 27 kidolgozott tételt.
+  \end{summarybox}
+  \vfill
+  \begin{tabular}{rl}
+    \textbf{Készítette:} & Baba Levente \\
+    \textbf{Készült:} & \ZVFullDocDate \\
+    \textbf{Készült mire:} & Programtervező Informatikus BSc záróvizsgára való felkészülés \\
+    \textbf{Segítség:} & ChatGPT segítségével készült tanulási segédanyag \\
+    \textbf{Tartalom:} & teljes tételsor és 27 kidolgozott tétel \\
+  \end{tabular}
+  \vspace*{10mm}
+\end{titlepage}%
+}
+
+\newcommand{\ZVFullTetelsorItem}[2]{%
+  \item \hyperref[sec:zvfull-tetel-#1]{#2}%
+}
+
+\newcommand{\ZVFullTetelsor}{%
+\section*{Tételsor}
+\phantomsection
+\addcontentsline{toc}{section}{Tételsor}
+\begin{enumerate}[leftmargin=7mm,label=\arabic*.,itemsep=2pt,topsep=2pt,parsep=0pt]
+  \ZVFullTetelsorItem{01}{\ZVTetelKiiras{1}}
+  \ZVFullTetelsorItem{02}{\ZVTetelKiiras{2}}
+  \ZVFullTetelsorItem{03}{\ZVTetelKiiras{3}}
+  \ZVFullTetelsorItem{04}{\ZVTetelKiiras{4}}
+  \ZVFullTetelsorItem{05}{\ZVTetelKiiras{5}}
+  \ZVFullTetelsorItem{06}{\ZVTetelKiiras{6}}
+  \ZVFullTetelsorItem{07}{\ZVTetelKiiras{7}}
+  \ZVFullTetelsorItem{08}{\ZVTetelKiiras{8}}
+  \ZVFullTetelsorItem{09}{\ZVTetelKiiras{9}}
+  \ZVFullTetelsorItem{10}{\ZVTetelKiiras{10}}
+  \ZVFullTetelsorItem{11}{\ZVTetelKiiras{11}}
+  \ZVFullTetelsorItem{12}{\ZVTetelKiiras{12}}
+  \ZVFullTetelsorItem{13}{\ZVTetelKiiras{13}}
+  \ZVFullTetelsorItem{14}{\ZVTetelKiiras{14}}
+  \ZVFullTetelsorItem{15}{\ZVTetelKiiras{15}}
+  \ZVFullTetelsorItem{16}{\ZVTetelKiiras{16}}
+  \ZVFullTetelsorItem{17}{\ZVTetelKiiras{17}}
+  \ZVFullTetelsorItem{18}{\ZVTetelKiiras{18}}
+  \ZVFullTetelsorItem{19}{\ZVTetelKiiras{19}}
+  \ZVFullTetelsorItem{20}{\ZVTetelKiiras{20}}
+  \ZVFullTetelsorItem{21}{\ZVTetelKiiras{21}}
+  \ZVFullTetelsorItem{22}{\ZVTetelKiiras{22}}
+  \ZVFullTetelsorItem{23}{\ZVTetelKiiras{23}}
+  \ZVFullTetelsorItem{24}{\ZVTetelKiiras{24}}
+  \ZVFullTetelsorItem{25}{\ZVTetelKiiras{25}}
+  \ZVFullTetelsorItem{26}{\ZVTetelKiiras{26}}
+  \ZVFullTetelsorItem{27}{\ZVTetelKiiras{27}}
+\end{enumerate}%
+}
+
+\newcommand{\ZVFullIncludeTetel}[3]{%
+  \clearpage
+  \zvsetheader{Tétel #1}
+  \section{tétel: #2}
+  \label{sec:zvfull-tetel-#1}
+  \begin{summarybox}
+    \textbf{Tételkiírás:} \ZVTetelKiiras{#1}
+  \end{summarybox}
+  \begingroup
+    \let\ZVOldSection\section
+    \let\ZVOldSubsection\subsection
+    \let\ZVOldSubsubsection\subsubsection
+    \let\ZVOldParagraph\paragraph
+    \renewcommand{\section}{\ZVOldSubsection}
+    \renewcommand{\subsection}{\ZVOldSubsubsection}
+    \renewcommand{\subsubsection}{\ZVOldParagraph}
+    \input{#3}
+  \endgroup
+}
+
+\begin{document}
+\sloppy
+\pagestyle{fancy}
+\hypersetup{pageanchor=false}
+\ZVFullCover
+
+\clearpage
+\hypersetup{pageanchor=true}
+\pagenumbering{Roman}
+\zvsetheader{Tételsor}
+\ZVFullTetelsor
+
+\clearpage
+\zvsetheader{Tartalomjegyzék}
+\pdfbookmark[1]{Tartalomjegyzék}{zvfull-toc}
+{\small
+\tableofcontents
+}
+
+\clearpage
+\pagenumbering{arabic}
+\setcounter{section}{0}
+\ZVFullIncludeTetel{01}{Adatok, adattípusok és adatstruktúrák}{src/bodies/zv_tetel_01_body.tex}
+\ZVFullIncludeTetel{02}{Algoritmusok, memória és elemi algoritmusok}{src/bodies/zv_tetel_02_body.tex}
+\ZVFullIncludeTetel{03}{Strukturált programozás és programgráfok}{src/bodies/zv_tetel_03_body.tex}
+\ZVFullIncludeTetel{04}{Számelméleti algoritmusok}{src/bodies/zv_tetel_04_body.tex}
+\ZVFullIncludeTetel{05}{Rendezések és időelemzéseik}{src/bodies/zv_tetel_05_body.tex}
+\ZVFullIncludeTetel{06}{Gráfalgoritmusok}{src/bodies/zv_tetel_06_body.tex}
+\ZVFullIncludeTetel{07}{Párhuzamos algoritmusok alapjai}{src/bodies/zv_tetel_07_body.tex}
+\ZVFullIncludeTetel{08}{Aggregáció, redukció, prefixszámítás és párhuzamos összefésülő rendezés}{src/bodies/zv_tetel_08_body.tex}
+\ZVFullIncludeTetel{09}{Topológiák, kommunikációs modellek és aszinkron programozás}{src/bodies/zv_tetel_09_body.tex}
+\ZVFullIncludeTetel{10}{Turing-gép, RAM-gép, Boole-függvények és logikai hálózatok}{src/bodies/zv_tetel_10_body.tex}
+\ZVFullIncludeTetel{11}{Algoritmikus eldönthetőség, rekurzív nyelvek és polinomiális idő}{src/bodies/zv_tetel_11_body.tex}
+\ZVFullIncludeTetel{12}{Nemdeterminisztikus Turing-gépek, NP, coNP és NP-teljesség}{src/bodies/zv_tetel_12_body.tex}
+\ZVFullIncludeTetel{13}{Java alapok, objektumok, szemétgyűjtés és kivételkezelés}{src/bodies/zv_tetel_13_body.tex}
+\ZVFullIncludeTetel{14}{Egységbezárás, információrejtés, osztálytagok és hozzáférés}{src/bodies/zv_tetel_14_body.tex}
+\ZVFullIncludeTetel{15}{Öröklődés, polimorfizmus, absztrakt osztály és interfész}{src/bodies/zv_tetel_15_body.tex}
+\ZVFullIncludeTetel{16}{Folyamatok, szálak és állapotmodellek az operációs rendszerekben}{src/bodies/zv_tetel_16_body.tex}
+\ZVFullIncludeTetel{17}{Memóriamenedzsment, címleképzés és lapozós virtuális memória}{src/bodies/zv_tetel_17_body.tex}
+\ZVFullIncludeTetel{18}{Fájlrendszerek megvalósítása}{src/bodies/zv_tetel_18_body.tex}
+\ZVFullIncludeTetel{19}{Relációs adatmodell, ER modell és relációs algebra}{src/bodies/zv_tetel_19_body.tex}
+\ZVFullIncludeTetel{20}{SQL nyelv, lekérdezések és relációs algebra SQL-ben}{src/bodies/zv_tetel_20_body.tex}
+\ZVFullIncludeTetel{21}{Adatkezelés, adatbázis-architektúra, indexek és normalizálás}{src/bodies/zv_tetel_21_body.tex}
+\ZVFullIncludeTetel{22}{Számítógép-hálózatok alapfogalmai és az ISO--OSI modell}{src/bodies/zv_tetel_22_body.tex}
+\ZVFullIncludeTetel{23}{MAC alréteg, Ethernet és WLAN közeghozzáférés}{src/bodies/zv_tetel_23_body.tex}
+\ZVFullIncludeTetel{24}{TCP/IP protokollszövet, Internet és IP-címzés}{src/bodies/zv_tetel_24_body.tex}
+\ZVFullIncludeTetel{25}{Szoftvertechnológia és szoftverfolyamat}{src/bodies/zv_tetel_25_body.tex}
+\ZVFullIncludeTetel{26}{Szoftverkövetelmények és vezérlési stílusok}{src/bodies/zv_tetel_26_body.tex}
+\ZVFullIncludeTetel{27}{UML diagramok: use case, osztály-, szekvencia- és komponensdiagram}{src/bodies/zv_tetel_27_body.tex}
+
+\end{document}

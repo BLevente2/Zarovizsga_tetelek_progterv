@@ -1,0 +1,348 @@
+\section{A tétel lényege és vizsgaszintű vázlata}
+
+\begin{summarybox}
+A 15. tétel az objektumorientált programozás típuskapcsolatait tárgyalja. Az öröklődés segítségével általánosabb osztályból speciálisabb osztályt hozunk létre, a polimorfizmus pedig lehetővé teszi, hogy ugyanazon ősosztály vagy interfész típusú referencián keresztül különböző dinamikus típusú objektumokat kezeljünk. Ehhez kapcsolódik a metódusok túlterhelése és felüldefiniálása, a referencia statikus és dinamikus típusa, valamint az absztrakt osztály és az interfész szerepe.
+\end{summarybox}
+
+Vizsgán célszerű a következő sorrendet követni:
+
+\begin{enumerate}
+  \item röviden megfogalmazni, hogy az öröklődés az ``is-a'' jellegű specializáció eszköze;
+  \item bemutatni az öröklődés Java-beli szabályait: \code{extends}, egyszeres osztályöröklés, \code{super}, konstruktorok, láthatóság;
+  \item elválasztani a metódustúlterhelést és a metódusfelüldefiniálást;
+  \item megmagyarázni a statikus és dinamikus típust;
+  \item bemutatni, hogyan következik ebből a futásidejű polimorfizmus;
+  \item definiálni az absztrakt osztályt és az interfészt;
+  \item összehasonlítani az absztrakt osztályt és az interfészt;
+  \item példával szemléltetni, hogy az ősosztály/interfész típusú referencia mögött eltérő objektumok állhatnak.
+\end{enumerate}
+
+A legfontosabb vizsgamondat: a referencia statikus típusa határozza meg, hogy a fordító milyen tagok használatát engedi meg, a felüldefiniált példánymetódus tényleges implementációját viszont futási időben az objektum dinamikus típusa alapján választja ki a rendszer.
+
+\begin{center}
+\input{src/tables/zv15_oroklodes_poli_osszefoglalo.tex}
+\end{center}
+
+\section{Öröklődés az objektumorientált programozásban}
+
+\subsection{Az öröklődés fogalma}
+
+Az \textbf{öröklődés} olyan objektumorientált eszköz, amellyel egy meglévő, általánosabb osztályból új, speciálisabb osztályt hozunk létre. Az általánosabb osztályt ősosztálynak, alaposztálynak vagy szülőosztálynak, a speciálisabbat leszármazott osztálynak vagy gyermekosztálynak nevezzük.
+
+Az öröklődés lényege, hogy a leszármazott osztály megkapja az ősosztály elérhető tagjait, és ezekhez új tagokat adhat hozzá, illetve bizonyos műveletek viselkedését átdefiniálhatja. Például az \code{Animal} általános állatot jelenthet, a \code{Dog} és a \code{Cat} pedig ennek speciálisabb változatai.
+
+Az öröklődés tipikus céljai:
+
+\begin{itemize}
+  \item közös tulajdonságok és műveletek kiemelése egy közös ősosztályba;
+  \item kódújrafelhasználás, mert a közös metódusokat nem kell több helyen megírni;
+  \item típushierarchia kialakítása;
+  \item polimorf használat lehetővé tétele;
+  \item az általános és speciális viselkedés szétválasztása.
+\end{itemize}
+
+\begin{warningbox}
+Az öröklődés nem egyszerű kódmásolás. Tervezési jelentése van: azt fejezi ki, hogy a leszármazott objektum az ősosztály egy speciális esete. Ha csak egy másik osztály szolgáltatásait akarjuk használni, gyakran jobb megoldás a kompozíció, vagyis amikor egy objektum egy másik objektumot adattagként tartalmaz.
+\end{warningbox}
+
+\subsection{Is-a kapcsolat és specializáció}
+
+Az öröklődés természetes értelmezése az \textbf{is-a} kapcsolat. A \code{Dog} objektum egy \code{Animal}, ezért egy kutyát lehet állatként kezelni. Ezzel szemben ha egy \code{Car} tartalmaz egy \code{Engine} objektumot, az nem öröklődési kapcsolat, mert az autó nem motor, hanem van motorja. Ez inkább \textbf{has-a} kapcsolat, amelyet összetétellel célszerű modellezni.
+
+A jó öröklési hierarchiában az ősosztály általános szerződést ad, a leszármazott pedig ennek megfelelően működik. Ha az ősosztály helyére behelyettesített leszármazott objektum meglepően vagy ellentmondásosan viselkedik, akkor a hierarchia valószínűleg rosszul lett megtervezve.
+
+\subsection{Java-beli alapszintaxis}
+
+Java-ban az osztályöröklődés kulcsszava az \code{extends}:
+
+\[
+  \code{class Dog extends Animal \{ ... \}}
+\]
+
+Ez azt jelenti, hogy a \code{Dog} osztály közvetlen ősosztálya az \code{Animal}. Java-ban egy osztálynak legfeljebb egy közvetlen ősosztálya lehet. Ha nem adunk meg ősosztályt, akkor az osztály közvetlenül vagy közvetve a \code{java.lang.Object} leszármazottja.
+
+A \code{Object} osztályból származik több általános metódus, például a \code{toString}, az \code{equals}, a \code{hashCode} és a \code{getClass}. Ezeket szükség esetén felül lehet definiálni, például azért, hogy egy objektum szöveges megjelenítése vagy összehasonlítása a saját osztályunk szemantikájának megfelelő legyen.
+
+\section{Az öröklődés szabályai Java-ban}
+
+\subsection{Mit örököl a leszármazott?}
+
+A leszármazott osztály örökli az ősosztály elérhető tagjait, de ez nem azt jelenti, hogy minden tagot közvetlenül ugyanúgy használhat. A láthatóság meghatározza, hogy a leszármazott forráskódjából mi érhető el.
+
+Általános szabályok:
+
+\begin{itemize}
+  \item a \code{public} tagok mindenhol elérhetők, ha maga a típus is elérhető;
+  \item a \code{protected} tagok az adott csomagon belül és leszármazott osztályból is elérhetők;
+  \item a csomagszintű, vagyis módosító nélküli tagok csak azonos csomagból láthatók;
+  \item a \code{private} tagok nem érhetők el közvetlenül a leszármazott osztály forráskódjából;
+  \item a konstruktorok nem öröklődnek, de a leszármazott konstruktorának hívnia kell az ős megfelelő konstruktorát.
+\end{itemize}
+
+Fontos, hogy a \code{private} mező fizikailag része az objektumnak, ha az ősosztály definiálta, de a leszármazott csak az ősosztály publikus vagy védett metódusain keresztül férhet hozzá. Ez az információrejtés miatt lényeges.
+
+\subsection{Konstruktorok és a \code{super} kulcsszó}
+
+A konstruktorok nem öröklődnek. Amikor leszármazott objektum jön létre, először az ősosztály része inicializálódik, utána a leszármazott osztály saját része. Ezért a leszármazott konstruktorának közvetlenül vagy közvetve meg kell hívnia az ősosztály konstruktorát.
+
+Ha a leszármazott konstruktorában nem szerepel explicit \code{super(...)} hívás, a fordító megpróbál egy paraméter nélküli \code{super()} hívást beszúrni. Ha az ősosztálynak nincs paraméter nélküli konstruktora, akkor a leszármazott konstruktorában kötelező explicit módon meghívni valamelyik ős-konstruktort.
+
+A \code{super} másik szerepe, hogy az ősosztály felüldefiniált metódusára vagy elrejtett tagjára lehet vele hivatkozni:
+
+\[
+  \code{super.makeSound();}
+\]
+
+Ezt akkor használjuk, ha a leszármazott viselkedése az ős viselkedésére épül, és azt kiegészíti.
+
+\subsection{A \code{final} szerepe öröklődésnél}
+
+A \code{final} módosító öröklődésnél tiltó szerepet is kaphat:
+
+\begin{itemize}
+  \item \code{final class}: az osztályból nem lehet leszármazni;
+  \item \code{final} metódus: a metódust nem lehet felüldefiniálni;
+  \item \code{final} mező vagy lokális változó: egyszer kaphat értéket, utána nem módosítható.
+\end{itemize}
+
+Az osztály vagy metódus \code{final} jelölése akkor hasznos, ha a tervező nem akar további specializációt engedni, vagy biztosítani akarja, hogy egy metódus viselkedése ne változhasson meg leszármazott osztályban.
+
+\subsection{Öröklődés és csatolás}
+
+Az öröklődés erős kapcsolatot hoz létre az ősosztály és a leszármazott között. A leszármazott függ az ős publikus és védett szerződésétől, gyakran pedig az ős implementációjának részleteitől is. Emiatt az öröklődést körültekintően kell használni.
+
+Jó használat esetén az öröklődés áttekinthető hierarchiát és polimorf felületet ad. Rossz használat esetén mély, nehezen karbantartható hierarchia alakulhat ki, ahol az ősosztály módosítása váratlanul több leszármazott működését is megváltoztatja.
+
+\section{Metódusok túlterhelése és felüldefiniálása}
+
+\subsection{Metódustúlterhelés}
+
+A \textbf{metódustúlterhelés} azt jelenti, hogy ugyanazon a néven több metódust definiálunk, de eltérő paraméterlistával. A paraméterlista része a paraméterek száma, típusa és sorrendje. A visszatérési típus önmagában nem elegendő két metódus megkülönböztetésére.
+
+Például egy \code{Logger} osztályban lehet több \code{log} metódus:
+
+\begin{itemize}
+  \item \code{log(String message)};
+  \item \code{log(int value)};
+  \item \code{log(Object value)}.
+\end{itemize}
+
+Túlterhelésnél a fordító választja ki, hogy az argumentumok alapján melyik metódusváltozat illeszkedik. Ezért ezt gyakran fordításidejű vagy statikus polimorfizmusnak is nevezik.
+
+\subsection{Metódusfelüldefiniálás}
+
+A \textbf{metódusfelüldefiniálás} azt jelenti, hogy a leszármazott osztály új implementációt ad az ősosztály egyik örökölt példánymetódusára. A metódus neve és paraméterlistája azonos, a visszatérési típus pedig azonos vagy kovariáns lehet.
+
+Java-ban felüldefiniáláskor ajánlott az \code{@Override} annotáció használata. Ez nem kötelező a működéshez, de segít, mert a fordító hibát jelez, ha valójában nem sikerült felüldefiniálni az ős metódusát, például elírtuk a metódus nevét vagy paraméterlistáját.
+
+A felüldefiniálás szabályai közül vizsgán különösen fontosak:
+
+\begin{itemize}
+  \item csak öröklött példánymetódus definiálható felül;
+  \item a \code{private} metódus nem definiálható felül, mert nem látható örökölt metódusként;
+  \item a \code{static} metódus nem felüldefiniálódik, hanem legfeljebb elrejtődik;
+  \item a \code{final} metódus nem definiálható felül;
+  \item a leszármazott nem szűkítheti a láthatóságot, például \code{public} metódusból nem lehet \code{protected} felüldefiniált metódus.
+\end{itemize}
+
+\begin{center}
+\input{src/tables/zv15_overloading_overriding.tex}
+\end{center}
+
+\zvcode[language=Java,caption={Túlterhelés és felüldefiniálás különbsége},label={lst:zv15_overloading_overriding}]{src/code/zv15_overloading_overriding.java}
+
+A példában a \code{log} metódus túl van terhelve, mert több változata létezik különböző paraméterlistával. A \code{PrefixedLogger} osztály ugyanakkor felüldefiniálja a \code{log(String)} metódust, ezért ha a tényleges objektum \code{PrefixedLogger}, akkor a szöveges naplózásnál ez az implementáció fut le.
+
+\section{Statikus és dinamikus típus}
+
+\subsection{A referencia statikus típusa}
+
+A \textbf{statikus típus} a változó vagy kifejezés fordításkor ismert, deklarált típusa. Például:
+
+\[
+  \code{Animal animal = new Dog("Morzsa");}
+\]
+
+Ebben a sorban az \code{animal} referencia statikus típusa \code{Animal}. A fordító ez alapján dönti el, hogy a változón milyen metódusokat enged meghívni. Ha az \code{Animal} típusban nincs \code{fetchBall} metódus, akkor \code{animal.fetchBall()} akkor sem fordul le, ha a dinamikus objektum valójában \code{Dog}.
+
+\subsection{A referencia dinamikus típusa}
+
+A \textbf{dinamikus típus} annak az objektumnak a konkrét osztálya, amelyre a referencia futásidőben mutat. Az előző példában a dinamikus típus \code{Dog}, mert a \code{new Dog(...)} kifejezés kutya objektumot hozott létre.
+
+A statikus és dinamikus típus különbsége teszi lehetővé a polimorfizmust. Egy \code{Animal} típusú tömbben vagy listában tárolhatunk \code{Dog}, \code{Cat} vagy más \code{Animal} leszármazott objektumokat, és mindegyiken meghívhatjuk az \code{Animal} által meghatározott metódusokat.
+
+\subsection{Dinamikus metóduskötés}
+
+Felüldefiniált példánymetódus hívásakor a ténylegesen lefutó metódust a futtatókörnyezet az objektum dinamikus típusa alapján választja ki. Ezt \textbf{dinamikus kötésnek} vagy késői kötésnek nevezzük.
+
+Ez a polimorfizmus gyakorlati alapja:
+
+\begin{itemize}
+  \item a programozó általános típusra írhat kódot;
+  \item a konkrét viselkedést a tényleges objektumtípus adja;
+  \item új leszármazott típusok később is beilleszthetők, ha betartják az ősosztály vagy interfész szerződését.
+\end{itemize}
+
+\begin{center}
+\input{src/tables/zv15_static_dynamic_type.tex}
+\end{center}
+
+\input{src/figures/zv15_oroklodes_polimorfizmus.tex}
+
+\zvcode[language=Java,caption={Öröklődés, statikus/dinamikus típus és polimorf metódushívás},label={lst:zv15_inheritance_polymorphism}]{src/code/zv15_inheritance_polymorphism.java}
+
+A példában a \code{first} és \code{second} változó statikus típusa egyaránt \code{Animal}. A dinamikus típusuk viszont eltérő: az egyik \code{Dog}, a másik \code{Cat}. Emiatt a \code{makeSound()} hívás ugyanazzal a statikus típussal más implementációhoz vezet.
+
+\section{Polimorfizmus}
+
+\subsection{A polimorfizmus fogalma}
+
+A \textbf{polimorfizmus} szó szerint többalakúságot jelent. Objektumorientált programozásban azt jelenti, hogy ugyanaz az üzenet vagy metódushívás különböző objektumokon különböző módon hajtódhat végre. A felhasználó kód általános típust lát, a konkrét viselkedést pedig a tényleges objektum osztálya adja.
+
+A tétel szempontjából két fontos forma különíthető el:
+
+\begin{itemize}
+  \item \textbf{ad-hoc vagy fordításidejű polimorfizmus}: metódustúlterhelés, ahol a fordító választ a szignatúrák között;
+  \item \textbf{szubtípus-polimorfizmus}: ősosztály vagy interfész típusú referencia mögött többféle leszármazott objektum állhat.
+\end{itemize}
+
+Vizsgán a hangsúly általában a szubtípus-polimorfizmuson van, mert ez kapcsolja össze az öröklődést, a felüldefiniálást, az absztrakt osztályokat és az interfészeket.
+
+\subsection{Polimorf kód előnye}
+
+Polimorf kódban a vezérlő logika nem konkrét osztályokra épül, hanem általános felületre. Például ha minden alakzatnak van \code{area()} metódusa, akkor egy területszámító algoritmusnak nem kell külön vizsgálnia, hogy az objektum kör, téglalap vagy háromszög. Elég az absztrakt \code{Shape} típus vagy egy megfelelő interfész.
+
+Ennek előnyei:
+
+\begin{itemize}
+  \item kisebb függés konkrét osztályoktól;
+  \item könnyebb bővíthetőség új leszármazottakkal;
+  \item áttekinthetőbb, általánosabb algoritmusok;
+  \item egységes kezelés különböző objektumokra.
+\end{itemize}
+
+\subsection{Upcast és downcast}
+
+\textbf{Upcast} esetén egy leszármazott objektumot ősosztály vagy interfész típusú referenciával kezelünk. Ez biztonságos és automatikus:
+
+\[
+  \code{Animal animal = new Dog("Morzsa");}
+\]
+
+\textbf{Downcast} esetén egy általánosabb típusú referenciát konkrétabb típusra alakítunk vissza:
+
+\[
+  \code{Dog dog = (Dog) animal;}
+\]
+
+Ez csak akkor helyes, ha az objektum dinamikus típusa valóban \code{Dog} vagy annak leszármazottja. Ha nem, akkor futásidőben \code{ClassCastException} keletkezik. Biztonságosabb megoldás az \code{instanceof} használata, ha tényleg szükség van konkrét típusfüggő műveletre.
+
+\section{Absztrakt osztály}
+
+\subsection{Fogalma és szerepe}
+
+Az \textbf{absztrakt osztály} olyan osztály, amelyet közvetlenül nem lehet példányosítani. Célja, hogy közös alapot adjon a leszármazott osztályoknak. Tartalmazhat konkrét mezőket, konstruktorokat és megvalósított metódusokat, de tartalmazhat absztrakt metódusokat is.
+
+Absztrakt metódus esetén csak a metódus fejét adjuk meg, implementáció nélkül. Az absztrakt metódus azt jelenti, hogy a konkrét leszármazott osztályoknak kell megadniuk a viselkedést. Ha egy osztály nem valósítja meg az összes örökölt absztrakt metódust, akkor maga is absztrakt marad.
+
+Java-ban az absztrakt osztály jelölése:
+
+\[
+  \code{abstract class Shape \{ ... \}}
+\]
+
+Absztrakt metódus példája:
+
+\[
+  \code{public abstract double area();}
+\]
+
+\subsection{Mikor célszerű absztrakt osztályt használni?}
+
+Absztrakt osztályt akkor érdemes használni, ha a leszármazottak között valódi rokonság van, és közös kódot vagy közös állapotot is meg akarunk osztani. Például minden \code{Shape} alakzatnak lehet közös \code{color} mezője és \code{describe()} metódusa, miközben az \code{area()} kiszámítása alakzatonként eltérő.
+
+Az absztrakt osztály tehát részleges implementáció: egyszerre adhat közös működést és kötelezően megvalósítandó műveleteket.
+
+\section{Interfész}
+
+\subsection{Fogalma és szerepe}
+
+Az \textbf{interfész} olyan típus, amely szerződést ír elő. Megmondja, hogy az interfészt megvalósító osztályoknak milyen műveleteket kell biztosítaniuk. Java-ban az interfészt az \code{interface} kulcsszóval definiáljuk, az osztály pedig az \code{implements} kulcsszóval valósítja meg.
+
+Például egy \code{Drawable} interfész azt fejezheti ki, hogy az objektum kirajzolható:
+
+\[
+  \code{interface Drawable \{ void draw(); \}}
+\]
+
+Egy osztály több interfészt is megvalósíthat. Ez azért fontos, mert Java-ban osztályok között nincs többszörös öröklődés, de interfészeken keresztül egy objektum több szerepet vagy képességet is vállalhat. Például egy \code{Circle} lehet egyszerre \code{Shape}, \code{Drawable} és \code{Scalable}.
+
+\subsection{Interfész mint polimorf felület}
+
+Az interfész egyik legfontosabb szerepe a laza csatolás. Ha egy metódus \code{Drawable} típusú paramétert vár, akkor nem kell tudnia, hogy a konkrét objektum \code{Circle}, \code{Button}, \code{Icon} vagy más típus. Csak az számít, hogy rendelkezzen \code{draw()} metódussal.
+
+Ez különösen hasznos nagyobb rendszerekben, mert a kód nem konkrét implementációktól függ, hanem szerződésektől. Így könnyebb tesztelni, cserélni és bővíteni az egyes részeket.
+
+\section{Absztrakt osztály és interfész összehasonlítása}
+
+Az absztrakt osztály és az interfész is absztrakt típus: egyikből sem hozunk létre közvetlen objektumot, viszont referenciatípusként mindkettő használható. Mindkettő segíti a polimorfizmust, mert a konkrét objektumokat általánosabb típuson keresztül kezelhetjük.
+
+A különbség főleg a szerepükben van. Az absztrakt osztály közös alapot és részleges implementációt ad rokon osztályoknak. Az interfész inkább képességet, protokollt vagy szerződést ír le, és több, egymástól független osztály is megvalósíthatja.
+
+\begin{center}
+\input{src/tables/zv15_absztrakt_interfesz.tex}
+\end{center}
+
+\zvcode[language=Java,caption={Absztrakt osztály és interfészek együtt használva},label={lst:zv15_abstract_interface}]{src/code/zv15_abstract_interface.java}
+
+A példában a \code{Shape} absztrakt osztály közös állapotot és közös metódust ad, az \code{area()} metódus implementációját viszont a konkrét alakzatokra bízza. A \code{Drawable} és \code{Scalable} interfészek képességeket írnak le: egy objektum kirajzolható, illetve skálázható lehet.
+
+\section{Gyakori félreértések}
+
+\subsection{A túlterhelés nem ugyanaz, mint a felüldefiniálás}
+
+A túlterhelésnél azonos nevű, de eltérő paraméterlistájú metódusokról van szó. A fordító a statikus típusok és az argumentumok alapján választ. Felüldefiniálásnál viszont az örökölt metódus új implementációjáról van szó, és a választás futásidőben, a dinamikus típus alapján történik.
+
+\subsection{A \code{private} tag nem polimorf bővítési pont}
+
+A \code{private} metódust a leszármazott nem definiálja felül, mert az nem látható örökölt metódusként. Ha a leszármazottban ugyanilyen nevű metódust írunk, az egy új, külön metódus lesz. Polimorf működéshez elérhető, felüldefiniálható példánymetódus kell.
+
+\subsection{A statikus típus korlátozza, mit hívhatunk meg}
+
+Ha egy \code{Dog} objektumot \code{Animal} típusú referencián keresztül kezelünk, akkor a fordító csak az \code{Animal} típusban ismert tagokat engedi meghívni. A dinamikus típus a felüldefiniált metódus kiválasztásánál számít, nem általános jogosultság arra, hogy bármilyen \code{Dog}-specifikus metódust meghívjunk.
+
+\subsection{Az interfész nem pusztán üres osztály}
+
+Az interfész nem osztály, hanem szerződés. Nem az a fő célja, hogy közös állapotot tároljon, hanem az, hogy egységesen előírjon bizonyos műveleteket. Egy osztály több interfészt is megvalósíthat, ezért az interfészek alkalmasak többféle szerep kifejezésére.
+
+\subsection{Az öröklés nem mindig jobb, mint a kompozíció}
+
+Sok kezdő hiba abból ered, hogy minden kapcsolatot öröklődéssel próbálnak modellezni. Ha az egyik objektum csak használja vagy tartalmazza a másikat, akkor gyakran jobb megoldás a kompozíció. Öröklődést akkor célszerű alkalmazni, ha valódi specializációról van szó.
+
+\section{Tipikus vizsgakérdések és rövid válaszvázlatok}
+
+\subsection{Mit jelent az öröklődés?}
+
+Az öröklődés az OOP egyik alapelve, amelyben egy leszármazott osztály egy meglévő ősosztály specializációjaként jön létre. A leszármazott örökli az ős elérhető tagjait, új tagokat vehet fel, és felüldefiniálhat örökölt metódusokat. Java-ban az osztályöröklés kulcsszava az \code{extends}, és egy osztálynak csak egy közvetlen ősosztálya lehet.
+
+\subsection{Mi a különbség a túlterhelés és a felüldefiniálás között?}
+
+Túlterhelésnél azonos nevű, de eltérő paraméterlistájú metódusok vannak, és a választás fordítási időben történik. Felüldefiniálásnál a leszármazott osztály új implementációt ad az ősosztály azonos szignatúrájú példánymetódusára, és a ténylegesen futó implementációt a dinamikus típus alapján választja ki a rendszer.
+
+\subsection{Mit jelent a statikus és dinamikus típus?}
+
+A statikus típus a referencia deklarált, fordításkor ismert típusa. Ez határozza meg, milyen tagokat enged meghívni a fordító. A dinamikus típus a futásidőben ténylegesen létrejött objektum konkrét osztálya. Felüldefiniált példánymetódus hívásakor a dinamikus típus dönti el, melyik implementáció fut le.
+
+\subsection{Mi az absztrakt osztály szerepe?}
+
+Az absztrakt osztály közvetlenül nem példányosítható. Közös alapot ad leszármazott osztályoknak: tartalmazhat közös állapotot, konstruktorokat, konkrét metódusokat és absztrakt metódusokat is. Akkor célszerű használni, ha rokon osztályok között közös kódot vagy közös állapotot is meg akarunk osztani.
+
+\subsection{Mi az interfész szerepe?}
+
+Az interfész szerződést ír elő: megadja, hogy az azt megvalósító osztálynak milyen műveleteket kell biztosítania. Interfészen keresztül a kód nem konkrét implementációtól, hanem képességtől vagy protokolltól függ. Java-ban egy osztály több interfészt is megvalósíthat, ezért az interfész fontos eszköz a rugalmas, polimorf tervezéshez.
+
+\section{Összefoglalás vizsgára}
+
+\begin{summarybox}
+Az öröklődés az általánosabb osztályból speciálisabb osztály létrehozásának eszköze. Java-ban osztályok között egyszeres öröklődés van, az \code{extends} kulcsszóval. A leszármazott örökli az ős elérhető tagjait, de a konstruktorokat nem; az ős konstruktorát \code{super(...)} hívással lehet elérni. A túlterhelés azonos nevű, eltérő paraméterlistájú metódusokat jelent, és fordítási időben dől el. A felüldefiniálás örökölt példánymetódus új implementációja, amely polimorf hívásnál futásidőben, a dinamikus típus alapján választódik ki. A statikus típus a deklarált típus, a dinamikus típus a tényleges objektumtípus. Az absztrakt osztály közös részleges implementációt és absztrakt műveleteket adhat, az interfész pedig szerződést, képességet vagy szerepet ír le. Mindkettő használható polimorf referenciatípusként.
+\end{summarybox}

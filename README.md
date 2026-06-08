@@ -36,11 +36,12 @@ Jelenleg a projekt az alábbi kidolgozott tételeket tartalmazza:
 - `zv_tetel_26.tex` - 26. tétel: szoftverkövetelmény, követelmények osztályozása, követelményproblémák, követelményfeltárás és elemzés, vezérlési stílusok
 - `zv_tetel_27.tex` - 27. tétel: UML diagramok, use case diagram, osztálydiagram, szekvenciadiagram és komponensdiagram
 
-Minden tétel külön PDF-be fordul, így az egyes tételek önálló dokumentumként is használhatók.
+Minden tétel külön PDF-be fordul, így az egyes tételek önálló dokumentumként is használhatók. Emellett külön build targettel elkészíthető egy egybefűzött, közös fedlapos, közös tételsoros, közös tartalomjegyzékes teljes PDF is.
 
 A teljes hivatalos tételsor külön dokumentumként is szerepel a projektben:
 
 - `zv_tetelsor.tex` - a 27 tételes záróvizsga tételsor LuaLaTeX-forrása
+- `zv_osszes_tetel.tex` - az összes kidolgozott tételt egyetlen PDF-be rendező LuaLaTeX-forrás
 
 A tételek fedlapján szereplő hivatalos tételkiírások is ebből a fájlból származnak, ezért a tételkiírások csak egy helyen vannak letárolva.
 
@@ -55,6 +56,7 @@ A tételek fedlapján szereplő hivatalos tételkiírások is ebből a fájlból
 └── src/
     ├── preamble.tex
     ├── zv_tetelsor.tex
+    ├── zv_osszes_tetel.tex
     ├── zv_tetel_01.tex
     ├── zv_tetel_02.tex
     ├── zv_tetel_03.tex
@@ -82,6 +84,8 @@ A tételek fedlapján szereplő hivatalos tételkiírások is ebből a fájlból
     ├── zv_tetel_25.tex
     ├── zv_tetel_26.tex
     ├── zv_tetel_27.tex
+    ├── bodies/
+    │   └── ... a tételek tényleges tartalmi törzsei ...
     ├── figures/
     │   ├── zv_abrak.tex
     │   └── ... külön TikZ-ábrák ...
@@ -108,6 +112,26 @@ A fájl két szerepet tölt be:
 - adatforrásként szolgál a kidolgozott tételek fedlapjához, tehát a fedlapokon szereplő hivatalos tételkiírások innen kerülnek be.
 
 Ennek az az előnye, hogy ha a tételsor szövegét javítani kell, akkor nem kell minden egyes tételben külön módosítani: elegendő a `src/zv_tetelsor.tex` fájlban javítani.
+
+### `src/zv_osszes_tetel.tex`
+
+Ez a fájl készíti el az egyetlen, összesített PDF-et, amely nem a külön lefordított PDF-ek utólagos összefűzésével jön létre, hanem ugyanazokat a tételtörzs-fájlokat szedi újra egy közös dokumentumban.
+
+Az összesített dokumentum szerkezete:
+
+- fedlap oldalszámozás és élőfej nélkül;
+- kattintható tételsor római oldalszámozással;
+- közös, nagy tartalomjegyzék római oldalszámozással;
+- az összes kidolgozott tétel arab oldalszámozással, közös számozással;
+- élőfej, amely jelzi, hogy az oldal a tételsorhoz, a tartalomjegyzékhez vagy melyik tételhez tartozik.
+
+Az összesített PDF forrása a `src/bodies/` mappában lévő tételtörzseket használja, ezért a tételkidolgozások tényleges szövege továbbra is csak egy helyen szerepel.
+
+### `src/bodies/`
+
+Ebben a mappában vannak a tételek tényleges tartalmi törzsei. A `src/zv_tetel_XX.tex` fájlok önállóan fordítható wrapperként működnek: beállítják az adott tétel metaadatait, elkészítik az egyedi fedlapot és tartalomjegyzéket, majd beolvassák a megfelelő `src/bodies/zv_tetel_XX_body.tex` fájlt.
+
+Ez teszi lehetővé, hogy ugyanaz a tételtartalom külön PDF-ként és az összesített PDF részeként is felhasználható legyen duplikáció nélkül.
 
 ### `src/preamble.tex`
 
@@ -256,11 +280,11 @@ Ez a kidolgozott tételeket és a teljes tételsort fordítja le:
 - `output/zv_tetel_05.pdf`
 - `output/zv_tetelsor.pdf`
 
-A sima `make` nem fordítja le külön az ábragyűjteményt és a táblázatgyűjteményt.
+A sima `make` nem fordítja le külön az ábragyűjteményt, a táblázatgyűjteményt és az összesített PDF-et.
 
 ### Teljes fordítás ábra- és táblázatgyűjteménnyel együtt
 
-Ha a tételek mellett az összesített ábra- és táblázatdokumentumot is le kell fordítani:
+Ha a tételek mellett az ábra- és táblázatgyűjteményt, valamint az összesített PDF-et is le kell fordítani:
 
 ```bash
 make -j16 full
@@ -276,6 +300,7 @@ Eredményként a tételek és a tételsor mellett ezek is elkészülnek:
 
 - `output/zv_abrak.pdf`
 - `output/zv_tablazatok.pdf`
+- `output/zv_osszes_tetel.pdf`
 
 ### Csak egy tétel fordítása
 
@@ -290,6 +315,28 @@ vagy közvetlen PDF-célként:
 ```bash
 make output/zv_tetel_05.pdf
 ```
+
+### Összesített PDF fordítása
+
+Az összesített, egybefűzött tételkidolgozás külön targettel fordítható:
+
+```bash
+make osszes
+```
+
+Angol alias is használható:
+
+```bash
+make combined
+```
+
+Az eredmény:
+
+- `output/zv_osszes_tetel.pdf`
+
+Ez a target nem része az `all` célnak, ezért sima `make` vagy `make all` esetén nem fut le. A `full` cél része, tehát `make full` esetén az összesített PDF is elkészül az ábra- és táblázatgyűjteménnyel együtt.
+
+Az összesített PDF a külön PDF-eknél hosszabb ideig fordulhat, mert nem PDF-összefűzést végez, hanem a teljes LaTeX-dokumentumot újraszedi.
 
 A `tetelXX` forma a többi tételre is működik, például:
 

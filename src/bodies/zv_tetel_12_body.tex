@@ -1,0 +1,445 @@
+\section{A tétel lényege és vizsgaszintű vázlata}
+
+\begin{summarybox}
+A 12. tétel a 11. tételben megkezdett kiszámíthatósági és bonyolultságelméleti gondolatmenetet folytatja. Itt már nem az a fő kérdés, hogy egy probléma eldönthető-e, hanem az, hogy a megoldás hatékonyan megtalálható-e, illetve legalább hatékonyan ellenőrizhető-e. A központi fogalmak: nemdeterminisztikus Turing-gép, $\mathrm{NP}$, $\mathrm{coNP}$, polinomiális tanú, polinomiális visszavezetés, NP-teljesség és a Cook--Levin-tétel.
+\end{summarybox}
+
+Vizsgán a tétel jól felépíthető a következő sorrendben:
+
+\begin{enumerate}
+  \item döntési problémák és nyelvek rövid ismétlése;
+  \item determinisztikus és nemdeterminisztikus Turing-gép különbsége;
+  \item nemdeterminisztikus futás mint számítási fa;
+  \item polinomiális nemdeterminisztikus idő és az $\mathrm{NP}$ osztály;
+  \item tanúsítványos, ellenőrző algoritmusos jellemzés, vagyis a tanú-tétel;
+  \item $\mathrm{coNP}$ és kapcsolata $\mathrm{NP}$-vel;
+  \item példák $\mathrm{NP}$-beli problémákra;
+  \item polinomiális visszavezetés;
+  \item NP-nehéz és NP-teljes problémák;
+  \item Cook--Levin-tétel és néhány klasszikus NP-teljes probléma.
+\end{enumerate}
+
+A legfontosabb vizsgamondat: egy probléma akkor tartozik $\mathrm{NP}$-be, ha az igen válaszhoz tartozó megoldásjelölt polinomiális hosszú tanúval megadható, és ez a tanú polinomiális időben ellenőrizhető. Egy probléma akkor NP-teljes, ha maga is $\mathrm{NP}$-beli, és minden $\mathrm{NP}$-beli probléma polinomiálisan visszavezethető rá.
+
+\begin{center}
+\input{src/tables/zv12_p_np_conp_osszefoglalo.tex}
+\end{center}
+
+\section{Döntési problémák és nyelvek}
+
+A bonyolultságelméletben a problémákat gyakran döntési problémaként vizsgáljuk. Egy döntési probléma minden bemenetre igen vagy nem választ vár. A bemeneteket véges szavakkal kódoljuk egy $\Sigma$ ábécé felett, ezért a probléma egy nyelvként is megadható:
+\[
+  L\subseteq\Sigma^*.
+\]
+A $w\in L$ azt jelenti, hogy a $w$ bemenet az igen példányok közé tartozik.
+
+Példák döntési problémákra:
+
+\begin{itemize}
+  \item SAT: kielégíthető-e egy adott Boole-formula;
+  \item 3-SAT: kielégíthető-e egy háromliterálos klózokból álló KNF formula;
+  \item Hamilton-kör: van-e a gráfban minden csúcsot pontosan egyszer érintő kör;
+  \item Klikk: van-e a gráfban legalább $k$ méretű teljes részgráf;
+  \item Részletösszeg: van-e adott számhalmaznak olyan részhalmaza, amelynek összege $t$.
+\end{itemize}
+
+Az optimalizálási problémákat sokszor döntési változattal vizsgáljuk. Például nem azt kérdezzük, hogy mekkora a legnagyobb klikk, hanem azt, hogy van-e legalább $k$ méretű klikk. Ez azért hasznos, mert az $\mathrm{NP}$, $\mathrm{coNP}$ és NP-teljesség definíciói nyelvekre, illetve döntési problémákra épülnek.
+
+\section{Nemdeterminisztikus Turing-gép}
+
+\subsection{Motiváció}
+
+A determinisztikus Turing-gép minden konfigurációból legfeljebb egy következő konfigurációba lép. A nemdeterminisztikus Turing-gép ezzel szemben egy adott konfigurációból több lehetséges folytatást is engedhet. Ez nem azt jelenti, hogy a gép véletlent használ, hanem azt, hogy az elméleti modell egyszerre tekinti az összes lehetséges számítási ágat.
+
+Szemléletesen a nemdeterminisztikus gép úgy viselkedik, mintha minden elágazásnál lemásolódna, és minden lehetséges választást kipróbálna. Egy bemenetet akkor fogad el, ha van legalább egy olyan számítási ág, amely elfogadó állapotba jut.
+
+\subsection{Formális szemlélet}
+
+A determinisztikus Turing-gépnél az átmeneti függvény egyértelmű következő lépést ad. Nemdeterminisztikus esetben az átmenet egy halmazt ad vissza:
+\[
+  \delta(q,a)\subseteq Q\times\Gamma\times\{L,R,S\}.
+\]
+Itt $q$ az aktuális állapot, $a$ az olvasott szalagszimbólum, $Q$ az állapotok halmaza, $\Gamma$ a szalagábécé, $L$ a balra lépést, $R$ a jobbra lépést, $S$ pedig a helyben maradást jelöli.
+
+Ha egy konfigurációból több átmenet is lehetséges, akkor a számítás elágazik. A teljes futás nem egyetlen konfigurációsorozat, hanem egy számítási fa.
+
+\input{src/figures/zv12_ndtm_szamitasi_fa.tex}
+
+\subsection{Elfogadás és elutasítás}
+
+Egy nemdeterminisztikus Turing-gép elfogadási szabálya:
+
+\begin{itemize}
+  \item a bemenet elfogadott, ha létezik legalább egy elfogadó ág;
+  \item a bemenet elutasított, ha minden lehetséges ág elutasít, vagy a döntő változatban minden ág megáll és egyik sem fogad el.
+\end{itemize}
+
+A lényeg tehát egzisztenciális: nem az összes ágnak kell elfogadnia, elég egy sikeres ág. Ezért kapcsolódik a modell a tanú fogalmához: a sikeres ág megfelelhet annak, hogy a gép ``kitalál'' egy megoldásjelöltet, majd ellenőrzi.
+
+\zvpseudocode[caption={Nemdeterminisztikus elfogadás számítási fával szemléltetve},label={lst:zv12_nemdet_turing_elfogadas}]{src/code/zv12_nemdet_turing_elfogadas.pseudo}
+
+\section{Nemdeterminisztikus algoritmusok bonyolultsága}
+
+\subsection{Időigény nemdeterminisztikus gépnél}
+
+Egy nemdeterminisztikus Turing-gép időigényét általában az ágak hosszával mérjük. Azt mondjuk, hogy a gép $T(n)$ időben működik, ha minden $n$ hosszú bemeneten minden releváns számítási ág legfeljebb $T(n)$ lépés hosszú.
+
+Fontos, hogy a nemdeterminisztikus modellben nem az összes ág tényleges soros végigpróbálásának idejét számoljuk. Ha egy determinisztikus gép szimulálná az összes ágat, az általában exponenciális lehetne. Az $\mathrm{NP}$ éppen azt ragadja meg, hogy nemdeterminisztikus választásokkal polinomiális hosszú sikeres számítási ág létezik.
+
+\subsection{Polinomiális nemdeterminisztikus idő}
+
+Egy nyelv akkor dönthető el nemdeterminisztikus polinomiális időben, ha létezik olyan nemdeterminisztikus Turing-gép, amely:
+
+\begin{itemize}
+  \item $w\in L$ esetén legalább egy ágon elfogad;
+  \item $w\notin L$ esetén nincs elfogadó ág;
+  \item minden ág hossza legfeljebb $p(|w|)$ valamely $p$ polinomra.
+\end{itemize}
+
+Ezzel definiálható az $\mathrm{NP}$ osztály:
+\[
+  \mathrm{NP}=\bigcup_{k\geq 0}\mathrm{NTIME}(n^k).
+\]
+
+A $\mathrm{P}$ osztály természetesen része $\mathrm{NP}$-nek, mert egy determinisztikus polinomiális algoritmus tekinthető olyan nemdeterminisztikus algoritmusnak, amelynek nincs valódi választása:
+\[
+  \mathrm{P}\subseteq\mathrm{NP}.
+\]
+
+Nem ismert, hogy ez a tartalmazás szigorú-e. Ez a híres $\mathrm{P}$ kontra $\mathrm{NP}$ probléma.
+
+\section{Az NP osztály tanúsítványos jellemzése}
+
+\subsection{Ellenőrző algoritmus és tanú}
+
+A nemdeterminisztikus definíció mellett az $\mathrm{NP}$ gyakorlati szempontból legfontosabb jellemzése a tanúsítványos definíció.
+
+\begin{summarybox}
+Egy $L$ nyelv akkor van $\mathrm{NP}$-ben, ha létezik olyan determinisztikus polinomiális idejű ellenőrző algoritmus $V$, valamint polinom $p$, hogy minden $x$ bemenetre:
+\[
+  x\in L
+  \quad\Longleftrightarrow\quad
+  \exists y\text{ úgy, hogy } |y|\leq p(|x|) \text{ és } V(x,y)=1.
+\]
+A $y$ szó neve tanú, tanúsítvány vagy bizonyíték.
+\end{summarybox}
+
+A tanú nem feltétlenül maga a teljes számítási folyamat. Gyakran egy konkrét megoldásjelölt:
+
+\begin{itemize}
+  \item SAT esetén egy változóértékelés;
+  \item Hamilton-kör esetén a csúcsok sorrendje;
+  \item Klikk esetén a kiválasztott csúcsok listája;
+  \item Részletösszeg esetén a kiválasztott elemek indexei.
+\end{itemize}
+
+\zvpseudocode[caption={Általános NP-ellenőrző algoritmus sémája},label={lst:zv12_np_ellenorzo}]{src/code/zv12_np_ellenorzo.pseudo}
+
+\subsection{A tanú-tétel}
+
+A tanú-tétel az $\mathrm{NP}$ két szemléletét kapcsolja össze.
+
+\begin{summarybox}
+\textbf{Tanú-tétel.} Egy $L$ nyelv pontosan akkor tartozik $\mathrm{NP}$-be, ha van hozzá polinomiális hosszúságú tanú és polinomiális idejű determinisztikus ellenőrző algoritmus.
+\end{summarybox}
+
+A tétel két iránya szemléletesen:
+
+\begin{itemize}
+  \item Ha $L$-et nemdeterminisztikus polinomiális idejű gép dönti el, akkor a tanú lehet az elfogadó ág választásainak leírása. A determinisztikus ellenőrző algoritmus ezt az ágat szimulálja.
+  \item Ha van polinomiális tanú és ellenőrző algoritmus, akkor a nemdeterminisztikus gép először ``kitalálja'' a tanút, majd determinisztikusan lefuttatja az ellenőrzést.
+\end{itemize}
+
+Ezért mondjuk gyakran, hogy $\mathrm{NP}$ nem feltétlenül azt jelenti, hogy gyorsan meg tudjuk találni a megoldást, hanem azt, hogy egy megadott megoldásjelöltet gyorsan tudunk ellenőrizni.
+
+\subsection{SAT ellenőrzése}
+
+A SAT probléma $\mathrm{NP}$-beli, mert tanúként elég megadni a változók igazságértékeit. Az ellenőrző algoritmus ezután kiértékeli a formulát.
+
+3-SAT esetén a formula klózok konjunkciója, és minden klóz pontosan három literált tartalmaz. Egy hozzárendelés akkor kielégítő, ha minden klózban van legalább egy igaz literál.
+
+\zvpseudocode[caption={3-SAT tanújának ellenőrzése},label={lst:zv12_3sat_ellenorzes}]{src/code/zv12_3sat_ellenorzes.pseudo}
+
+\begin{center}
+\input{src/tables/zv12_np_pelda_tanuk.tex}
+\end{center}
+
+\section{A coNP osztály}
+
+\subsection{Definíció}
+
+A $\mathrm{coNP}$ az $\mathrm{NP}$ komplementerosztálya. Egy $L$ nyelv akkor tartozik $\mathrm{coNP}$-be, ha a komplementere $\mathrm{NP}$-beli:
+\[
+  L\in\mathrm{coNP}
+  \quad\Longleftrightarrow\quad
+  \overline L\in\mathrm{NP}.
+\]
+
+Másképpen: $L\in\mathrm{coNP}$ esetén a nem válaszokhoz létezik polinomiális hosszú, polinomiális időben ellenőrizhető tanú.
+
+\subsection{NP és coNP kapcsolata}
+
+A $\mathrm{P}$ osztály komplementerre zárt, ezért:
+\[
+  \mathrm{P}\subseteq\mathrm{NP}\cap\mathrm{coNP}.
+\]
+Ha egy probléma $\mathrm{P}$-beli, akkor az igen és a nem válasz is polinomiális időben eldönthető, így mindkét irányban van gyors ellenőrzés.
+
+Nem ismert, hogy:
+\[
+  \mathrm{NP}=\mathrm{coNP}.
+\]
+A legtöbb feltételezés szerint nem egyenlők, de ez nincs bizonyítva. Az sem ismert, hogy $\mathrm{P}=\mathrm{NP}$ teljesül-e. Ha $\mathrm{P}=\mathrm{NP}$ lenne, akkor $\mathrm{NP}=\mathrm{coNP}$ is következne, mert $\mathrm{P}$ zárt komplementerre.
+
+\input{src/figures/zv12_np_conp_kapcsolatok.tex}
+
+\subsection{Példa: tautológia és kielégíthetetlenség}
+
+A SAT probléma azt kérdezi, hogy egy formula kielégíthető-e. Ez $\mathrm{NP}$-beli, mert egy kielégítő értékelés tanú.
+
+A TAUT probléma azt kérdezi, hogy egy formula minden értékelés mellett igaz-e. A nem tautológia tanúja egy olyan értékelés, amely mellett a formula hamis. Ezért a TAUT tipikusan $\mathrm{coNP}$-beli probléma.
+
+Hasonlóan az UNSAT probléma azt kérdezi, hogy egy formula kielégíthetetlen-e. Ennek komplementere SAT, ezért UNSAT $\mathrm{coNP}$-beli.
+
+\begin{warningbox}
+Gyakori vizsgahiba, hogy valaki azt mondja: a $\mathrm{coNP}$ az $\mathrm{NP}$-n kívüli problémák osztálya. Ez hibás. A $\mathrm{coNP}$ nem komplementer halmazként értendő az összes probléma univerzumában, hanem komplementernyelvek alapján képzett osztály.
+\end{warningbox}
+
+\section{Példák NP-beli nyelvekre}
+
+\subsection{Hamilton-kör}
+
+A Hamilton-kör probléma bemenete egy gráf. A kérdés: van-e olyan kör, amely minden csúcsot pontosan egyszer érint, majd visszatér a kiinduló csúcsba?
+
+A probléma $\mathrm{NP}$-beli, mert tanúként megadható a csúcsok sorrendje. Az ellenőrzés polinomiális:
+
+\begin{enumerate}
+  \item ellenőrizzük, hogy minden csúcs pontosan egyszer szerepel;
+  \item ellenőrizzük, hogy minden egymást követő csúcspár között van él;
+  \item ellenőrizzük, hogy az utolsó csúcs össze van kötve az elsővel.
+\end{enumerate}
+
+\subsection{Klikk}
+
+A klikk probléma bemenete egy gráf és egy $k$ szám. A kérdés: van-e a gráfban $k$ csúcsból álló teljes részgráf?
+
+A tanú a kiválasztott $k$ csúcs listája. Az ellenőrzés során minden kiválasztott csúcspárról meg kell nézni, hogy van-e közöttük él. Ez legfeljebb $O(k^2)$ pár ellenőrzését jelenti, tehát polinomiális.
+
+\subsection{Részletösszeg}
+
+A részletösszeg probléma bemenete számok egy véges halmaza vagy sorozata és egy célérték $t$. A kérdés: kiválasztható-e néhány szám úgy, hogy az összegük pontosan $t$ legyen?
+
+A tanú a kiválasztott elemek halmaza vagy bitvektora. Az ellenőrzés az összeg kiszámítása és összehasonlítása $t$-vel, ami polinomiális a bemenet méretében.
+
+\subsection{Összetettség}
+
+Az összetettség problémája azt kérdezi, hogy egy $n$ szám összetett-e. Tanúként megadható egy $d$ osztó. Ellenőrizni kell, hogy:
+\[
+  1<d<n
+  \quad\text{és}\quad
+  d\mid n.
+\]
+Ez polinomiális időben ellenőrizhető. Ez jó példa arra, hogy egy matematikai állítás igazságát gyakran rövid tanúval lehet bizonyítani.
+
+\section{Polinomiális visszavezetés}
+
+\subsection{A visszavezetés fogalma}
+
+Legyen $A$ és $B$ két döntési probléma, azaz két nyelv. Azt mondjuk, hogy $A$ polinomiálisan visszavezethető $B$-re, jelölése:
+\[
+  A\leq_p B,
+\]
+ha létezik olyan polinomiális időben kiszámítható $f$ függvény, amely minden $x$ bemenetre teljesíti:
+\[
+  x\in A
+  \quad\Longleftrightarrow\quad
+  f(x)\in B.
+\]
+
+Ez azt jelenti, hogy az $A$ probléma példányait hatékonyan át tudjuk alakítani a $B$ probléma példányaivá úgy, hogy az igen/nem válasz megmaradjon.
+
+\zvpseudocode[caption={Polinomiális visszavezetés használata},label={lst:zv12_redukcios_sema}]{src/code/zv12_redukcios_sema.pseudo}
+
+\subsection{Miért fontos a visszavezetés?}
+
+Ha $A\leq_p B$ és $B\in\mathrm{P}$, akkor $A\in\mathrm{P}$ is. Ennek oka, hogy $A$ megoldható úgy, hogy először kiszámítjuk $f(x)$-et, majd lefuttatjuk a $B$-re ismert polinomiális algoritmust.
+
+Másik irányból nézve: ha $A$ nehéz problémának ismert, és $A\leq_p B$, akkor $B$ legalább olyan nehéz, mint $A$. NP-teljességi bizonyításokban ezt használjuk. Egy ismert NP-teljes problémát visszavezetünk az új vizsgált problémára.
+
+\begin{center}
+\input{src/tables/zv12_redukcio_fogalmak.tex}
+\end{center}
+
+\section{NP-nehézség és NP-teljesség}
+
+\subsection{NP-nehéz probléma}
+
+Egy $B$ probléma NP-nehéz, ha minden $A\in\mathrm{NP}$ problémára:
+\[
+  A\leq_p B.
+\]
+Ez azt jelenti, hogy $B$ legalább olyan nehéz, mint az $\mathrm{NP}$ összes problémája.
+
+Az NP-nehéz probléma nem feltétlenül tartozik $\mathrm{NP}$-be. Lehet például optimalizálási probléma is, nem csak döntési probléma. Ezért az NP-nehézség önmagában nem ugyanaz, mint az NP-teljesség.
+
+\subsection{NP-teljes probléma}
+
+Egy $B$ nyelv NP-teljes, ha:
+
+\begin{enumerate}
+  \item $B\in\mathrm{NP}$;
+  \item minden $A\in\mathrm{NP}$ esetén $A\leq_p B$.
+\end{enumerate}
+
+Vagyis az NP-teljes problémák az $\mathrm{NP}$ osztály legnehezebb problémái. Ha bármelyik NP-teljes problémára találnánk polinomiális idejű algoritmust, akkor minden $\mathrm{NP}$-beli problémára lenne polinomiális algoritmus, tehát:
+\[
+  B\in\mathrm{NPC}\cap\mathrm{P}
+  \quad\Longrightarrow\quad
+  \mathrm{P}=\mathrm{NP}.
+\]
+
+\subsection{NP-teljességi bizonyítás sémája}
+
+Egy új $B$ problémáról tipikusan így bizonyítjuk, hogy NP-teljes:
+
+\begin{enumerate}
+  \item Belátjuk, hogy $B\in\mathrm{NP}$, vagyis egy igen válasz tanúja polinomiális időben ellenőrizhető.
+  \item Választunk egy már ismert NP-teljes $A$ problémát.
+  \item Megadunk egy polinomiális időben kiszámítható transzformációt $f$, amelyre $x\in A\Longleftrightarrow f(x)\in B$.
+  \item Ezzel $A\leq_p B$, tehát $B$ NP-nehéz.
+  \item Az 1. ponttal együtt következik, hogy $B$ NP-teljes.
+\end{enumerate}
+
+\input{src/figures/zv12_np_teljesseg_redukciok.tex}
+
+\section{Cook-tétel és Cook--Levin-tétel}
+
+\subsection{A tétel szerepe}
+
+Az NP-teljesség definíciója önmagában még nem garantálja, hogy létezik NP-teljes probléma. A Cook--Levin-tétel történeti és elméleti jelentősége éppen az, hogy megadja az első természetes NP-teljes problémát.
+
+\begin{summarybox}
+\textbf{Cook--Levin-tétel.} A SAT probléma NP-teljes.
+\end{summarybox}
+
+A tétel azt mondja ki, hogy minden $\mathrm{NP}$-beli döntési probléma polinomiális időben visszavezethető a Boole-formulák kielégíthetőségi problémájára.
+
+\subsection{Miért hihető a bizonyítás ötlete?}
+
+Legyen $L\in\mathrm{NP}$. Ekkor van egy nemdeterminisztikus polinomiális idejű Turing-gép, amely eldönti $L$-et. Egy $x$ bemenetről azt kell megfogalmazni Boole-formulaként, hogy létezik-e elfogadó számítási ág.
+
+A bizonyítás ötlete:
+
+\begin{enumerate}
+  \item A gép polinomiális ideig fut, ezért a teljes számítási táblázat polinomiális méretű.
+  \item Boole-változókkal leírjuk, hogy az egyes időpillanatokban melyik cellában milyen jel van, hol áll a fej, és mi az állapot.
+  \item Klózokkal kikényszerítjük, hogy a táblázat érvényes Turing-gép-számítást írjon le.
+  \item Klózokkal kikényszerítjük, hogy a kezdő konfiguráció a $x$ bemenethez tartozzon.
+  \item Klózokkal kikényszerítjük, hogy valamelyik időpillanatban elfogadó állapot szerepeljen.
+\end{enumerate}
+
+Így kapunk egy $\varphi_x$ formulát, amely pontosan akkor kielégíthető, ha a gép elfogadja $x$-et. A konstrukció polinomiális méretű, ezért polinomiális visszavezetés.
+
+\subsection{Cook-tétel és Cook--Levin-tétel elnevezése}
+
+A szakirodalomban gyakran Cook-tételként vagy Cook--Levin-tételként is szerepel. A lényeg vizsgán ugyanaz: a SAT NP-teljes. Ez az alap, amelyből sok további NP-teljes probléma NP-teljességét visszavezetésekkel bizonyítjuk.
+
+\section{3-SAT és további NP-teljes problémák}
+
+\subsection{SAT és 3-SAT}
+
+A SAT probléma általános Boole-formulák kielégíthetőségét kérdezi. A 3-SAT ennek speciális változata, ahol a formula konjunktív normálformában van, és minden klóz pontosan három literált tartalmaz.
+
+Fontos eredmény:
+\[
+  \mathrm{3SAT}\text{ NP-teljes.}
+\]
+Ez azért hasznos, mert a 3-SAT szabályos, jól kezelhető szerkezete miatt sok más problémára kényelmesen visszavezethető.
+
+\subsection{Klasszikus NP-teljes problémák}
+
+\begin{center}
+\input{src/tables/zv12_npteljes_problemak.tex}
+\end{center}
+
+Ezeknél a problémáknál mindig két dolgot kell különválasztani:
+
+\begin{itemize}
+  \item könnyű ellenőrizni egy megadott megoldást;
+  \item általában nem ismert polinomiális algoritmus a megoldás megtalálására.
+\end{itemize}
+
+Ez adja az $\mathrm{NP}$-beli problémák jellegzetes nehézségét.
+
+\section{P, NP, coNP és NPC kapcsolatai}
+
+A legfontosabb tartalmazások:
+\[
+  \mathrm{P}\subseteq\mathrm{NP},
+  \qquad
+  \mathrm{P}\subseteq\mathrm{coNP},
+  \qquad
+  \mathrm{NPC}\subseteq\mathrm{NP}.
+\]
+
+A jelenleg nem ismert kapcsolatok:
+\[
+  \mathrm{P}\stackrel{?}{=}\mathrm{NP},
+  \qquad
+  \mathrm{NP}\stackrel{?}{=}\mathrm{coNP}.
+\]
+
+Ha egy NP-teljes probléma $\mathrm{P}$-beli lenne, akkor $\mathrm{P}=\mathrm{NP}$ következne. Ha pedig egy NP-teljes probléma komplementere is könnyen tanúsítható lenne, akkor az erős következményekkel járna $\mathrm{NP}$ és $\mathrm{coNP}$ viszonyára nézve.
+
+\begin{warningbox}
+Nem szabad összekeverni a következő állításokat:
+\begin{itemize}
+  \item $L\in\mathrm{NP}$: az igen válaszokhoz van gyorsan ellenőrizhető tanú;
+  \item $L\in\mathrm{coNP}$: a nem válaszokhoz van gyorsan ellenőrizhető tanú;
+  \item $L\in\mathrm{P}$: az igen és nem válasz is közvetlenül eldönthető polinomiális időben;
+  \item $L$ NP-teljes: $L$ az $\mathrm{NP}$ egyik legnehezebb problémája.
+\end{itemize}
+\end{warningbox}
+
+\section{Gyakori vizsgahibák és pontosítások}
+
+\subsection{Az NP nem azt jelenti, hogy nem polinomiális}
+
+Az $\mathrm{NP}$ rövidítés nem azt jelenti, hogy ``not polynomial''. A jelentése: nemdeterminisztikus polinomiális idő. Minden $\mathrm{P}$-beli probléma $\mathrm{NP}$-beli is.
+
+\subsection{A nemdeterminisztikus gép nem véletlen algoritmus}
+
+A nemdeterminisztikus Turing-gép nem valószínűségi gép. Nem arról van szó, hogy szerencsésen választ. Az elfogadás definíciója egzisztenciális: ha van elfogadó ág, akkor a bemenet elfogadott.
+
+\subsection{A tanú ellenőrzése nem ugyanaz, mint a tanú megtalálása}
+
+SAT esetén egy értékelés gyorsan ellenőrizhető, de általánosan nem ismert hatékony módszer egy kielégítő értékelés megtalálására. Ez a különbség az $\mathrm{NP}$ szemléletének lényege.
+
+\subsection{Az NP-nehéz és NP-teljes nem ugyanaz}
+
+Az NP-teljes probléma mindig $\mathrm{NP}$-beli és NP-nehéz. Az NP-nehéz probléma viszont nem feltétlenül $\mathrm{NP}$-beli. Ezért bizonyításkor nem elég csak visszavezetést mutatni; azt is igazolni kell, hogy a probléma $\mathrm{NP}$-ben van.
+
+\subsection{A redukció iránya számít}
+
+Ha azt akarjuk bizonyítani, hogy $B$ NP-nehéz, akkor egy ismert NP-teljes $A$ problémát kell visszavezetni $B$-re:
+\[
+  A\leq_p B.
+\]
+Fordítva, a $B\leq_p A$ redukció csak azt mutatná, hogy $B$ legfeljebb olyan nehéz, mint $A$, ez nem bizonyítaná $B$ NP-nehézségét.
+
+\section{Összefoglalás}
+
+\begin{summarybox}
+A 12. tétel központi gondolata, hogy a hatékony megoldhatóság és a hatékony ellenőrizhetőség nem nyilvánvalóan ugyanaz. A $\mathrm{P}$ osztály a polinomiális időben eldönthető problémákat tartalmazza. Az $\mathrm{NP}$ osztály azokat a problémákat tartalmazza, amelyek igen válaszai polinomiális hosszú tanúval polinomiális időben ellenőrizhetők. A $\mathrm{coNP}$ a komplementernyelveken keresztül definiált osztály, ahol a nem válaszok tanúsíthatók. Az NP-teljes problémák az $\mathrm{NP}$ legnehezebb problémái; a Cook--Levin-tétel szerint a SAT NP-teljes. Ha bármely NP-teljes problémára polinomiális algoritmust találnánk, akkor $\mathrm{P}=\mathrm{NP}$ következne.
+\end{summarybox}
+
+Rövid vizsgaválaszban érdemes ezt a láncot fejben tartani:
+\[
+  \mathrm{P}\subseteq\mathrm{NP},
+  \qquad
+  \mathrm{P}\subseteq\mathrm{coNP},
+  \qquad
+  \mathrm{NPC}\subseteq\mathrm{NP}.
+\]
+
+A legjobb záró mondat: az $\mathrm{NP}$ problémákban a megoldásjelölt ellenőrzése polinomiális, de a megoldás megtalálására általánosan nem ismert polinomiális algoritmus; az NP-teljesség pedig azt fejezi ki, hogy egy probléma az $\mathrm{NP}$ osztály legnehezebbjei közé tartozik.

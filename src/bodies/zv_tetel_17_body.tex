@@ -1,0 +1,338 @@
+\section{A tétel lényege és vizsgaszintű vázlata}
+
+\begin{summarybox}
+A 17. tétel az operációs rendszer memóriamenedzselési feladatait tárgyalja. A memória többpéldányos, megosztott, drága és védelemre szoruló erőforrás, amelyet az operációs rendszernek folyamatok között kell kiosztania. A memóriakezelő feladata a memória lefoglalása és felszabadítása, a foglalt és szabad területek nyilvántartása, a címleképzés, a védelem, a töredezettség csökkentése, valamint a RAM és a háttértár közötti lapmozgatás kezelése. A lapozós virtuális memória lényege, hogy a folyamat virtuális címtartományát lapokra, a fizikai memóriát lapkeretekre bontjuk, és csak a szükséges lapokat tartjuk a RAM-ban. Ha egy hivatkozott lap nincs a memóriában, laphiba keletkezik, amelyet az operációs rendszer kezel.
+\end{summarybox}
+
+Vizsgán célszerű a következő sorrendet követni:
+
+\begin{enumerate}
+  \item memória mint operációs rendszerbeli erőforrás;
+  \item a memóriamenedzser helye és feladatai;
+  \item logikai és fizikai cím, címleképzés, MMU;
+  \item címkötés: fordításkori, betöltéskori és futásidejű kötés;
+  \item betöltés, dinamikus betöltés, statikus és dinamikus linkelés;
+  \item folytonos memóriakezelési modellek, partíciók, allokációs algoritmusok;
+  \item belső és külső töredezettség;
+  \item lapozás, virtuális memória, lap, lapkeret, laptábla;
+  \item igény szerinti lapozás és laphiba-kezelés;
+  \item lapcsere algoritmusok: FIFO, OPT, LRU és egyszerűbb változatok;
+  \item thrashing, lokalitás, előnyök és hátrányok.
+\end{enumerate}
+
+A legfontosabb vizsgamondat: a virtuális memória a folyamat által látott logikai címtartományt elválasztja a tényleges fizikai memóriától, a címleképzést az MMU és az operációs rendszer által karbantartott laptáblák végzik, laphiba esetén pedig az operációs rendszer a szükséges lapot háttértárról betölti, szükség esetén egy másik lap kilapozása után.
+
+\begin{center}
+\input{src/tables/zv17_memoriakezeles_feladatok.tex}
+\end{center}
+
+\section{A memória mint erőforrás}
+
+\subsection{A főmemória szerepe}
+
+A főmemória, vagyis a RAM a számítógépes rendszer központi adatterülete. A processzor közvetlenül innen olvassa a végrehajtandó utasításokat és a feldolgozandó adatokat. A háttértárhoz képest gyors, de kapacitása korlátozott és drágább. A RAM felejtő memória: áramellátás nélkül a tartalma elveszik.
+
+Operációs rendszeres szempontból a RAM különösen fontos, mert egyszerre több folyamat szeretné használni. Az operációs rendszer egy része maga is a memóriában található, a maradék területet pedig a felhasználói folyamatok, a kernel adatszerkezetei, az I/O-pufferek, a gyorsítótárak és más rendszerkomponensek között kell elosztani.
+
+A memória tehát \textbf{erőforrás}. Erőforrásként a következő tulajdonságai fontosak:
+
+\begin{itemize}
+  \item korlátozott mennyiségben áll rendelkezésre;
+  \item egyszerre több folyamat versenyez érte;
+  \item kiosztását és felszabadítását nyilván kell tartani;
+  \item védeni kell a folyamatok és a kernel területeit;
+  \item hatékony használata erősen befolyásolja a rendszer teljesítményét.
+\end{itemize}
+
+A memóriamenedzselés célja, hogy a rendelkezésre álló memóriát a lehető leghatékonyabban használjuk fel, miközben a folyamatok egymástól és az operációs rendszertől védetten működnek.
+
+\subsection{A memóriamenedzser helye az operációs rendszerben}
+
+A \textbf{memóriamenedzser} az operációs rendszer azon része, amely a főmemória és a hozzá kapcsolódó háttértár-területek kezeléséért felel. Nem önállóan működik, hanem szorosan együttműködik a folyamatkezelővel, az ütemezővel, a fájlrendszerrel és az I/O-kezeléssel.
+
+Például amikor egy új folyamat létrejön, a folyamatkezelőnek memóriát kell kérnie a program kódjának, adatainak, heapjének és vermének. Amikor a folyamat befejeződik, ezeket az erőforrásokat vissza kell adni. Ha a folyamat futás közben olyan virtuális lapra hivatkozik, amely nincs a RAM-ban, a memóriamenedzsernek laphibát kell kezelnie, esetleg háttértárról kell beolvasnia a lapot.
+
+A memóriamenedzser tipikus feladatai:
+
+\begin{itemize}
+  \item folyamatok memóriaterületének létrehozása és megszüntetése;
+  \item szabad és foglalt területek nyilvántartása;
+  \item címleképzési adatszerkezetek, például laptáblák kezelése;
+  \item hozzáférési jogok és védelem ellenőrzése;
+  \item memóriamegosztás támogatása;
+  \item lapozás, kilapozás és belapozás vezérlése;
+  \item töredezettség mérséklése.
+\end{itemize}
+
+\begin{warningbox}
+Vizsgán nem elég azt mondani, hogy a memóriamenedzsment ``memóriát oszt''. A lényeg a teljes életciklus: kiosztás, nyilvántartás, címfordítás, védelem, megosztás, felszabadítás és szükség esetén háttértárra mozgatás.
+\end{warningbox}
+
+\subsection{Multiprogramozás és memóriaigény}
+
+Multiprogramozás esetén több folyamat tartózkodhat egyszerre a memóriában. Ennek előnye, hogy ha az egyik folyamat I/O-ra vár, a CPU másik folyamatot futtathat. A CPU kihasználtsága javul, a rendszer több feladatot tud párhuzamosan kiszolgálni.
+
+A multiprogramozás azonban memóriaigényt is jelent. Ha kevés folyamat fér be a RAM-ba, akkor a CPU gyakrabban várhat. Ha túl sok folyamatot tartunk a rendszerben, akkor a RAM kevés lehet, és a rendszer sok időt tölthet lapmozgatással. A memóriamenedzsment ezért nem csak tárhely-kiosztási feladat, hanem teljesítménykritikus operációs rendszerbeli döntéssorozat.
+
+\section{Címek, címleképzés és címkötés}
+
+\subsection{Logikai és fizikai cím}
+
+A program által használt cím általában nem azonos a RAM tényleges fizikai címével. A \textbf{logikai cím} vagy \textbf{virtuális cím} az a cím, amelyet a CPU a folyamat végrehajtása közben generál. A \textbf{fizikai cím} az a cím, amely a főmemória tényleges rekeszére mutat.
+
+A logikai cím használata azért előnyös, mert a folyamat úgy futhat, mintha saját, összefüggő címtartománya lenne. Közben az operációs rendszer a fizikai memóriában tetszőleges helyekre teheti a folyamat lapjait vagy szegmenseit, és a címleképzés elrejti ezt a részletet.
+
+\input{src/figures/zv17_cimlekepzes_mmu.tex}
+
+A címleképzéshez modern rendszerekben hardvertámogatás szükséges. Ezt a feladatot a \textbf{Memory Management Unit}, röviden \textbf{MMU} segíti. Az MMU a processzor által generált virtuális címet a laptáblák és egyéb vezérlési információk alapján fizikai címmé alakítja. Közben jogosultsági és érvényességi ellenőrzéseket is végezhet.
+
+\begin{center}
+\input{src/tables/zv17_cimlekepzes_es_cimkotes.tex}
+\end{center}
+
+\subsection{Címkötés}
+
+A \textbf{címkötés} azt jelenti, hogy a programban szereplő címekhez mikor rendelődik hozzá tényleges memóriabeli hely. Három fontos esetet különböztetünk meg.
+
+\textbf{Fordításkori címkötésnél} a fordító már ismeri, hogy a program hová kerül a memóriában, ezért abszolút címeket hozhat létre. Ez egyszerű, de merev megoldás: ha a program helye változik, újra kell fordítani vagy újra kell szerkeszteni.
+
+\textbf{Betöltéskori címkötésnél} a fordító áthelyezhető kódot készít. A végleges címek akkor alakulnak ki, amikor a program betöltődik a memóriába. Ez rugalmasabb, mert a program különböző indításokkor más helyre kerülhet.
+
+\textbf{Futásidejű címkötésnél} a címek végleges fizikai értéke futás közben alakul ki. Ez szükséges ahhoz, hogy a folyamat végrehajtás közben áthelyezhető legyen, és ez a virtuális memória tipikus megoldása. A futásidejű címkötés hardvertámogatást igényel, mert minden memóriahivatkozásnál gyors címfordításra van szükség.
+
+\subsection{Statikus és dinamikus betöltés}
+
+A program betöltése történhet statikusan vagy dinamikusan. \textbf{Statikus betöltésnél} a program szükséges részei indításkor bekerülnek a memóriába. Ez egyszerű és gyors lehet, ha van elegendő memória, de pazarló, ha a program sok ritkán használt rutint tartalmaz.
+
+\textbf{Dinamikus betöltésnél} egyes programrészek csak akkor kerülnek memóriába, amikor ténylegesen szükség van rájuk. Ez csökkentheti a memóriaigényt, de többletkezelést igényel, és a betöltés pillanatában időveszteséget okozhat.
+
+Hasonló különbség van a \textbf{statikus} és \textbf{dinamikus linkelés} között. Statikus linkeléskor a szükséges könyvtári kód a végrehajtható állományba kerül. Dinamikus linkeléskor a könyvtári rutinok futás közben töltődnek be vagy kapcsolódnak, így több folyamat is megoszthatja ugyanazt a memóriában lévő könyvtári kódot.
+
+\subsection{Söprés, lapozás és átlapolás}
+
+A régebbi vagy egyszerűbb megközelítésekben a rendszer teljes folyamatokat mozgathatott a RAM és a háttértár között. Ezt \textbf{söprésnek} vagy swappingnek nevezzük. Ilyenkor a folyamat egésze kikerülhet a memóriából, majd később visszakerülhet. Ez lehetővé teszi, hogy több folyamat létezzen, mint amennyi egyszerre a RAM-ban elférne, de nagy adatmozgatással jár.
+
+A \textbf{lapozás} finomabb megoldás. Nem a teljes folyamatot mozgatjuk, hanem csak annak azonos méretű lapokra bontott részeit. Így a folyamatnak csak azok a lapjai vannak a RAM-ban, amelyekre ténylegesen szükség van.
+
+Az \textbf{átlapolás} vagy overlay olyan technika, amikor egy nagy program egymást kizáróan használt részeit ugyanarra a memóriaterületre töltik be különböző időpontokban. Ez történetileg fontos megoldás volt, de a modern virtuális memória sok esetben kényelmesebb és általánosabb megoldást ad.
+
+\section{Memóriakezelési modellek és allokáció}
+
+\subsection{Folytonos memóriakezelési modellek}
+
+A memóriakezelés legegyszerűbb formái folytonos memóriaterületekkel dolgoznak. Ilyenkor egy folyamat egy összefüggő fizikai memóriarészt kap. Ez egyszerűen érthető, de több problémát is okoz: nehéz nagy összefüggő helyet találni, a folyamat mérete korlátozott lehet, és töredezettség alakulhat ki.
+
+\begin{center}
+\input{src/tables/zv17_memoriakezelesi_modellek.tex}
+\end{center}
+
+\subsection{Fix és változó partíciók}
+
+\textbf{Fix partíciós memóriakezelésnél} a memória előre meghatározott méretű részekre van osztva. Egy folyamat egy partíciót kap. A módszer egyszerű, de ha a folyamat kisebb, mint a partíció, akkor a partíció maradéka kihasználatlan marad. Ezt belső töredezettségnek nevezzük. Ha a folyamat nagyobb, mint bármelyik partíció, akkor nem tölthető be, még akkor sem, ha összesen lenne elég szabad memória.
+
+\textbf{Változó partíciós memóriakezelésnél} a partíciók a folyamatok igényei szerint jönnek létre. Ez jobban alkalmazkodik a különböző méretű folyamatokhoz, de idővel sok kisebb szabad terület maradhat a foglalt blokkok között. Ez külső töredezettséghez vezet.
+
+\subsection{Belső és külső töredezettség}
+
+\textbf{Belső töredezettség} akkor keletkezik, amikor egy folyamat nagyobb memóriablokkot kap, mint amennyit ténylegesen használ. A felesleges rész a kiosztott blokkon belül van, ezért más folyamat nem használhatja.
+
+\textbf{Külső töredezettség} akkor keletkezik, amikor a szabad memória több kisebb darabra szakad. Elképzelhető, hogy a szabad memória összege elég lenne egy új folyamat számára, de nincs egyetlen elég nagy összefüggő blokk.
+
+\input{src/figures/zv17_fragmentacio.tex}
+
+A külső töredezettség csökkenthető egymás melletti szabad blokkok összevonásával, vagyis coalescinggel. Erősebb megoldás a compaction, amikor a foglalt blokkokat fizikailag átrendezzük, hogy a szabad helyek egy nagy tartományba kerüljenek. Ez azonban költséges, és csak akkor működik jól, ha a programok címei áthelyezhetők.
+
+\subsection{Folytonos allokációs algoritmusok}
+
+Ha egy új folyamat vagy memóriakérés érkezik, az operációs rendszernek ki kell választania, melyik szabad blokkot adja oda. Folytonos memóriakezelésnél klasszikus stratégiák a first fit, next fit, best fit és worst fit.
+
+\begin{center}
+\input{src/tables/zv17_folytonos_allokacios_algoritmusok.tex}
+\end{center}
+
+Ezek az algoritmusok kompromisszumok. A gyors keresés nem mindig ad jó kihasználtságot, a pontosabb illesztés pedig időigényesebb lehet. A modern rendszerekben a folytonos partíciókra épülő módszerek helyett gyakran lapozás, illetve kerneloldalon speciális allokátorok működnek, de a fogalmak megértése fontos a töredezettség és az erőforrás-kiosztás miatt.
+
+\subsection{Nyilvántartási módszerek}
+
+A memóriamenedzsernek tudnia kell, mely részek szabadok és melyek foglaltak. Ennek több lehetséges módja van. Egyszerű megoldás a \textbf{bittérkép}, ahol minden egységhez egy bit jelzi, hogy szabad vagy foglalt. Másik gyakori megoldás a \textbf{szabadlista}, amely a szabad blokkok kezdőcímét és méretét tartalmazza.
+
+Lapozott rendszerekben külön nyilvántartás kell a fizikai lapkeretekről is: melyik keret szabad, melyik folyamat melyik lapja található benne, módosult-e a tartalma, és kilapozás esetén hová kell visszaírni.
+
+\section{Lapozós virtuális memória}
+
+\subsection{A virtuális memória célja}
+
+A \textbf{virtuális memória} olyan mechanizmus, amellyel az operációs rendszer és a hardver együtt azt az illúziót adja a folyamatoknak, hogy nagy, saját címtartománnyal rendelkeznek. A folyamat virtuális címtartománya nagyobb lehet, mint a tényleges fizikai RAM, mert a ritkán használt részek háttértáron is lehetnek.
+
+Ez azért működik jól, mert a programok általában lokalitást mutatnak: egy adott időszakban a kód és az adatok viszonylag kis részét használják intenzíven. Hibakezelő rutinok, ritka funkciók vagy nagy, de csak részben használt adatterületek nem feltétlenül kellenek folyamatosan a RAM-ba.
+
+\input{src/figures/zv17_virtualis_memoria.tex}
+
+A virtuális memória előnye, hogy növeli a multiprogramozás lehetőségét, egyszerűbbé teszi a folyamatok elkülönítését, és lehetővé teszi, hogy a rendszer a RAM és a háttértár között transzparensen mozgassa az adatokat.
+
+\subsection{Lap és lapkeret}
+
+Lapozásnál a folyamat virtuális címtartományát azonos méretű \textbf{lapokra} osztjuk. A fizikai memóriát ugyanekkora \textbf{lapkeretekre} bontjuk. Egy virtuális lap bármelyik szabad fizikai lapkeretbe betölthető, ezért a folyamatnak nem kell összefüggő fizikai memóriaterületet kapnia.
+
+A lapméret rendszerfüggő, de tipikusan kettő hatványa. Ez azért előnyös, mert a virtuális cím könnyen két részre bontható:
+
+\begin{itemize}
+  \item \textbf{lapszám}: megmondja, a folyamat melyik virtuális lapjáról van szó;
+  \item \textbf{eltolás}: megmondja, a lapon belül hol található a keresett byte vagy szó.
+\end{itemize}
+
+\input{src/figures/zv17_lapozas_cimfelbontas.tex}
+
+Címfordításkor a lapszám alapján a laptáblából kiderül a fizikai lapkeret száma. Az eltolás nem változik, mert a lap és a lapkeret mérete azonos. Így a fizikai cím a lapkeretszámból és ugyanabból az eltolásból áll össze.
+
+\begin{center}
+\input{src/tables/zv17_lapozo_fogalmak.tex}
+\end{center}
+
+\subsection{Laptábla és laptábla-bejegyzés}
+
+Minden folyamat saját laptáblával rendelkezhet. A laptábla egy logikai adatszerkezet, amely a folyamat virtuális lapjaihoz tartozó információkat tartalmazza. Egy laptábla-bejegyzés tipikusan megadja, hogy a lap melyik fizikai keretben van, illetve tartalmazhat különböző vezérlő biteket is.
+
+Fontos laptábla-információk:
+
+\begin{itemize}
+  \item \textbf{valid/invalid bit}: a lap érvényes-e és használható-e;
+  \item \textbf{jelenlét bit}: a lap a RAM-ban van-e;
+  \item \textbf{védelmi bitek}: olvasható, írható vagy végrehajtható-e;
+  \item \textbf{módosított bit}: változott-e a lap tartalma betöltés óta;
+  \item \textbf{hivatkozási bit}: használták-e a lapot a közelmúltban;
+  \item \textbf{lapkeretszám}: ha a lap a RAM-ban van, melyik fizikai keretben található.
+\end{itemize}
+
+A laptáblák mérete nagy lehet, ezért a valós rendszerek több szintű laptáblákat, inverz laptáblákat, TLB-t és más optimalizációkat alkalmazhatnak. Vizsgaszinten a legfontosabb, hogy a laptábla a virtuális lap és a fizikai lapkeret közötti leképzést tartalmazza.
+
+\subsection{TLB}
+
+A címfordítás önmagában többletköltség. Ha minden memóriahivatkozásnál előbb a laptáblát kellene a memóriából kiolvasni, az erősen lassítaná a rendszert. Ezért használható a \textbf{TLB}, vagyis Translation Lookaside Buffer. Ez egy gyors hardveres gyorsítótár, amely a legutóbbi virtuális lap - fizikai keret leképzéseket tárolja.
+
+Ha a keresett leképzés benne van a TLB-ben, a címfordítás gyors. Ha nincs benne, akkor TLB-miss történik, és a rendszernek a laptáblából kell kikeresnie a bejegyzést. A TLB ezért a virtuális memória teljesítményének fontos eleme.
+
+\section{Igény szerinti lapozás és laphiba}
+
+\subsection{Demand paging}
+
+Az \textbf{igény szerinti lapozás} lényege, hogy a folyamat indításakor nem feltétlenül töltjük be az összes lapját a RAM-ba. Csak azok a lapok kerülnek be, amelyekre ténylegesen szükség van. Ezt gyakran lusta stratégiaként lehet értelmezni: a rendszer addig halogatja a lap betöltését, amíg valóban nem történik rá hivatkozás.
+
+Ez jelentősen csökkentheti az indulási memóriaigényt. Egy nagy program sok olyan részt tartalmazhat, amelyet a futás során soha nem használunk. Igény szerinti lapozással ezek a részek nem foglalnak feleslegesen RAM-ot.
+
+\subsection{A laphiba fogalma}
+
+\textbf{Laphiba} akkor keletkezik, amikor a folyamat olyan virtuális lapra hivatkozik, amely érvényes ugyan, de nincs betöltve a fizikai memóriába. Ilyenkor a processzor vagy az MMU kivételt generál, és az operációs rendszer laphiba-kezelő rutinja veszi át a vezérlést.
+
+Fontos megkülönböztetni két esetet:
+
+\begin{itemize}
+  \item ha a cím nem tartozik a folyamat érvényes címtartományához, akkor hibás memóriahivatkozásról vagy védelemsértésről van szó;
+  \item ha a cím érvényes, csak a lap nincs RAM-ban, akkor valódi laphibáról beszélünk, amelyet belapozással kezelni lehet.
+\end{itemize}
+
+\input{src/figures/zv17_laphiba_kezelese.tex}
+
+\subsection{A laphiba kezelése}
+
+Laphiba esetén az operációs rendszer több lépésben jár el:
+
+\begin{enumerate}
+  \item Megállapítja, hogy a hivatkozott virtuális cím érvényes-e.
+  \item Ha a cím érvénytelen, hibát jelez a folyamatnak, például védelemsértést.
+  \item Ha a cím érvényes, megkeresi a lap háttértáron lévő helyét.
+  \item Keres egy szabad fizikai lapkeretet.
+  \item Ha nincs szabad keret, lapcsere algoritmussal kiválaszt egy áldozatlapot.
+  \item Ha az áldozatlap módosult, visszaírja a háttértárra.
+  \item Beolvassa a szükséges lapot a kiválasztott lapkeretbe.
+  \item Frissíti a laptáblát és a vezérlő biteket.
+  \item A folyamatot újra futtathatóvá teszi, majd az utasítás ismét végrehajtható.
+\end{enumerate}
+
+A laphiba drága esemény, mert háttértár-eléréssel járhat. A RAM elérése nagyságrendekkel gyorsabb, mint a lemez vagy akár az SSD elérése, ezért a laphibák számát alacsonyan kell tartani.
+
+\subsection{Lapcsere szükségessége}
+
+Ha laphiba történik, de nincs szabad lapkeret, akkor a rendszernek ki kell választania egy olyan lapot, amelyet eltávolít a RAM-ból. Ezt nevezzük lapcserének. A kiválasztott lap az \textbf{áldozatlap}. Ha az áldozatlap nem módosult, egyszerűen eldobható, mert a háttértáron már megvan az eredeti tartalma. Ha módosult, kilapozás előtt vissza kell írni.
+
+A lapcsere algoritmus célja, hogy olyan lapot válasszon, amelyre a közeljövőben várhatóan nem lesz szükség. Ha rossz lapot választunk, hamar újabb laphiba keletkezik.
+
+\section{Lapcsere stratégiák}
+
+\subsection{FIFO}
+
+A \textbf{FIFO} stratégia a legrégebben betöltött lapot cseréli ki. Sorral könnyen megvalósítható, ezért egyszerű és olcsó algoritmus. Hátránya, hogy nem veszi figyelembe, mely lapokat használjuk gyakran. Elképzelhető, hogy egy régen betöltött, de nagyon fontos lapot dob ki.
+
+A FIFO-hoz kapcsolódó jelenség a \textbf{Belady-anomália}: bizonyos hivatkozási sorozatoknál több rendelkezésre álló lapkeret mellett több laphiba történhet, nem kevesebb. Ez jól mutatja, hogy az egyszerű intuíció nem mindig elég a lapcsere algoritmusok megítéléséhez.
+
+\subsection{OPT}
+
+Az \textbf{optimális lapcsere} azt a lapot cseréli ki, amelyre a jövőben a legkésőbb lesz szükség. Ez adja a lehető legkevesebb laphibát az adott hivatkozási sorozatra. Valós rendszerben azonban nem tudjuk pontosan a jövőt, ezért az OPT közvetlenül nem megvalósítható.
+
+Ennek ellenére az OPT fontos, mert összehasonlítási alapként használható. Ha egy gyakorlati algoritmus teljesítményét vizsgáljuk, meg lehet nézni, mennyire közelíti az optimális lapcsere eredményét.
+
+\subsection{LRU}
+
+Az \textbf{LRU}, vagyis Least Recently Used stratégia azt a lapot cseréli ki, amelyet a legrégebben használtak. Az elv azon a megfigyelésen alapul, hogy amit a közelmúltban használtunk, arra a közeli jövőben is nagyobb eséllyel lesz szükség. Ez a programok lokalitási tulajdonságával függ össze.
+
+Az LRU gyakran jó döntéseket ad, de pontos megvalósítása költséges. A rendszernek tudnia kellene, mikor használtak utoljára egy lapot. Ehhez időbélyeg, verem, számláló vagy hardveres támogatás kellhet. Emiatt valós rendszerek sokszor LRU-közelítő algoritmusokat alkalmaznak.
+
+\subsection{Egyéb stratégiák}
+
+Egyszerűbb stratégia a \textbf{LIFO}, amely a legutóbb betöltött lapot cseréli ki. Ez könnyen megvalósítható, de sokszor rossz teljesítményt ad. A \textbf{random} stratégia véletlenszerűen választ áldozatlapot. Előnye az egyszerűség, hátránya a kiszámíthatatlanság. Az \textbf{LFU} a legritkábban használt lapot dobja ki, de a régi használati adatok torzíthatják a döntést.
+
+\begin{center}
+\input{src/tables/zv17_lapcsere_algoritmusok.tex}
+\end{center}
+
+\subsection{Lokalitás és munkahalmaz}
+
+A lapozás hatékonyságának alapja a \textbf{lokalitás}. Időbeli lokalitás esetén amit most használtunk, azt várhatóan hamarosan újra használni fogjuk. Térbeli lokalitás esetén ha egy címet használunk, akkor a közelében lévő címeket is valószínűleg használni fogjuk.
+
+A \textbf{munkahalmaz} azoknak a lapoknak az együttese, amelyekre a folyamatnak egy adott időszakban ténylegesen szüksége van. Ha a folyamat munkahalmaza elfér a neki jutó lapkeretekben, kevés laphiba lesz. Ha nem fér el, a folyamat folyamatosan lapokat cserélgethet.
+
+\subsection{Thrashing}
+
+\textbf{Thrashing} akkor alakul ki, amikor a rendszer túl sok időt tölt lapok ki- és belapozásával, és túl kevés idő marad tényleges utasítás-végrehajtásra. Gyakori ok, hogy túl magas a multiprogramozás foka, vagyis túl sok folyamat versenyez túl kevés fizikai lapkeretért.
+
+Thrashing esetén a CPU kihasználtsága paradox módon csökkenhet, miközben a rendszer nagyon aktívnak tűnik, mert folyamatosan I/O-t végez. Megoldás lehet a multiprogramozás fokának csökkentése, több lapkeret adása a folyamatoknak, jobb lapcsere stratégia, vagy a munkahalmaz figyelembevétele.
+
+\section{Előnyök, hátrányok és kapcsolódó technikák}
+
+\subsection{Lapozás előnyei és hátrányai}
+
+A lapozás egyik legnagyobb előnye, hogy a folyamatoknak nem kell folytonos fizikai memóriaterületet kapniuk. Ez jelentősen csökkenti a külső töredezettséget, és rugalmasabbá teszi a memória kiosztását. A virtuális memória emellett lehetővé teszi, hogy a folyamatok nagyobb címtartományt lássanak, mint a tényleges fizikai RAM.
+
+Ugyanakkor a lapozásnak ára van. Laptáblákra, hardveres címfordításra, TLB-re és bonyolultabb operációs rendszerbeli kezelésre van szükség. Laphiba esetén a háttértár elérése miatt nagy késleltetés keletkezhet. Rossz működés esetén thrashing is kialakulhat.
+
+\begin{center}
+\input{src/tables/zv17_lapozas_elonyok_hatranyok.tex}
+\end{center}
+
+\subsection{Szegmentáció röviden}
+
+A \textbf{szegmentáció} a folyamat címtartományát nem azonos méretű lapokra, hanem logikai egységekre, vagyis szegmensekre bontja. Ilyen szegmens lehet például kód, adat, verem vagy egy modul. A szegmensek mérete különböző lehet, ezért a szegmentáció jobban illeszkedik a program logikai szerkezetéhez.
+
+Szegmentáció esetén a logikai cím tipikusan szegmensszámból és szegmensen belüli eltolásból áll. A szegmenstábla bejegyzései a szegmens báziscímét és hosszát tartalmazzák. Ez támogatja a védelmet és a megosztást, de külső töredezettség alakulhat ki, mert a szegmensek változó méretűek.
+
+A modern rendszerekben a lapozás és a szegmentáció elvei kombinálhatók is, de vizsgán a 17. tételben a lapozós virtuális memória működése a központi elem.
+
+\section{Gyakori vizsgahibák és összefoglalás}
+
+\subsection{Gyakori félreértések}
+
+\begin{itemize}
+  \item \textbf{A virtuális memória nem egyszerűen ``több RAM''.} A háttértár egy részének és a címleképzésnek olyan használata, amely nagyobb és rugalmasabb címtartományt biztosít.
+  \item \textbf{A logikai cím és a fizikai cím nem ugyanaz.} A logikai címet a folyamat látja, a fizikai cím a RAM tényleges rekeszére mutat.
+  \item \textbf{A laphiba nem mindig programhiba.} Ha a cím érvényes, csak a lap nincs a RAM-ban, akkor a laphiba normális virtuális memória esemény.
+  \item \textbf{A lap és a lapkeret nem ugyanaz.} A lap virtuális címtartománybeli egység, a lapkeret fizikai memóriabeli egység.
+  \item \textbf{A FIFO egyszerű, de nem feltétlenül jó.} Belady-anomália is előfordulhat.
+  \item \textbf{A lapozás csökkenti a külső töredezettséget, de nem ingyenes.} Laptábla, TLB, címfordítási költség és laphiba-kezelés szükséges hozzá.
+  \item \textbf{A thrashing nem gyors működés, hanem túlzott lapmozgatás.} Ilyenkor a rendszer ideje nagy része nem hasznos számításra megy el.
+\end{itemize}
+
+\subsection{Rövid vizsgaválasz-minta}
+
+\begin{summarybox}
+A memóriamenedzsment az operációs rendszer egyik alapfeladata, mert a RAM korlátozott, megosztott és védelemre szoruló erőforrás. A memóriamenedzser memóriát foglal és szabadít fel, nyilvántartja a foglalt és szabad területeket, kezeli a címleképzést, védi a folyamatok címtartományait, és a virtuális memória esetén a RAM és a háttértár közötti lapmozgatást is irányítja. A program logikai vagy virtuális címeket használ, ezeket az MMU és a laptáblák alakítják fizikai címekké. Lapozásnál a virtuális címtartomány lapokra, a fizikai memória lapkeretekre bomlik. A laptábla megadja, hogy egy lap melyik keretben van, illetve érvényes-e, módosult-e és milyen jogosultságokkal érhető el. Igény szerinti lapozásnál csak a szükséges lapok kerülnek RAM-ba. Ha egy érvényes, de nem betöltött lapra hivatkozunk, laphiba keletkezik; az operációs rendszer betölti a lapot, szükség esetén lapcsere algoritmussal áldozatlapot választ. Fontos lapcsere stratégiák a FIFO, az elméleti OPT és az LRU. A lapozás előnye a rugalmas memóriahasználat és a külső töredezettség csökkentése, hátránya a címfordítási és laphiba-kezelési többletköltség, illetve rossz esetben a thrashing.
+\end{summarybox}

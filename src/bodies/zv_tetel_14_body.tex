@@ -1,0 +1,380 @@
+\section{A tétel lényege és vizsgaszintű vázlata}
+
+\begin{summarybox}
+A 14. tétel az objektumorientált programozás egyik legfontosabb gyakorlati részét tárgyalja: hogyan lesz egy valós fogalomból osztály, az osztályból objektum, az objektumból pedig ellenőrzött állapotú programegység. A központi gondolat az, hogy az osztály egy egységbe zárja az adatokat és a rajtuk végzett műveleteket, miközben a belső állapotot hozzáférési kategóriákkal és jól megtervezett publikus felülettel védi. Ehhez kapcsolódik a példányosítás, a példányszintű és osztályszintű tagok, a konstansok, valamint a \code{this}, az objektumreferencia és az osztálynévvel minősített taghivatkozás használata.
+\end{summarybox}
+
+Vizsgán a tételt célszerű a következő sorrendben felépíteni:
+
+\begin{enumerate}
+  \item OOP alapfogalmak: osztály, objektum, állapot, viselkedés, üzenet;
+  \item egységbezárás és információrejtés különbsége;
+  \item osztálydefiníció felépítése: adattagok, konstruktorok, metódusok;
+  \item példányosítás menete: \code{new}, konstruktorhívás, referencia;
+  \item példányszintű és osztályszintű tagok összehasonlítása;
+  \item konstansok: \code{final}, illetve közös konstansként \code{static final};
+  \item hozzáférési kategóriák: \code{public}, csomagszintű, \code{protected}, \code{private};
+  \item tagokra való hivatkozás: \code{this}, objektumreferencia, osztálynév;
+  \item tipikus hibák és vizsgaválaszok.
+\end{enumerate}
+
+A legfontosabb vizsgamondat: az egységbezárás az adatokat és az ezeken dolgozó műveleteket egy osztályba szervezi, az információrejtés pedig szabályozza, hogy ebből mi látható kívülről; a cél az, hogy az objektum állapota csak ellenőrzött, jól definiált műveleteken keresztül változhasson.
+
+\begin{center}
+\input{src/tables/zv14_oop_osztaly_alapfogalmak.tex}
+\end{center}
+
+\section{OOP alapfogalmak}
+
+\subsection{Objektumorientált szemlélet}
+
+Az objektumorientált programozásban a program egymással együttműködő objektumok rendszere. Egy objektum nem pusztán adatok halmaza, hanem olyan programegység, amelynek van állapota és viselkedése. Az állapotot az adattagok aktuális értékei adják, a viselkedést pedig a metódusok írják le.
+
+Egy objektum fontos jellemzői:
+
+\begin{itemize}
+  \item \textbf{azonosság}: az objektum megkülönböztethető más objektumoktól;
+  \item \textbf{állapot}: az adattagok aktuális értékeinek összessége;
+  \item \textbf{viselkedés}: az objektumon meghívható metódusok és azok hatása.
+\end{itemize}
+
+Az \textbf{osztály} a hasonló objektumok mintája. Megadja, hogy az adott típusú objektumok milyen adatokat tárolnak, milyen műveleteket tudnak végrehajtani, és hogyan jönnek létre. Az \textbf{objektum} az osztály konkrét példánya.
+
+\subsection{Üzenet és metódushívás}
+
+Az objektumok egymással metódushívásokon keresztül kommunikálnak. A klasszikus OOP szóhasználatban ezt üzenetküldésnek is nevezzük. Ha egy másik objektumtól valamilyen feladat elvégzését kérjük, akkor valójában meghívunk rajta egy kívülről elérhető metódust.
+
+Például:
+\[
+  \code{account.deposit(5000);}
+\]
+
+Itt az \code{account} a megszólított objektum referenciája, a \code{deposit} az üzenetnek megfelelő metódus, az \code{5000} pedig a paraméter. A hívott objektum felelős azért, hogy a műveletet a saját szabályai szerint, érvényes állapotot megőrizve hajtsa végre.
+
+\section{Egységbezárás és információrejtés}
+
+\subsection{Az egységbezárás jelentése}
+
+Az \textbf{egységbezárás} azt jelenti, hogy az osztály egyetlen logikai egységbe szervezi az adott fogalomhoz tartozó adatokat és az ezeken dolgozó műveleteket. Egy \code{BankAccount} osztály esetén például az egyenleg, a tulajdonos, a befizetés, a pénzkivétel és az egyenleglekérdezés ugyanahhoz a fogalomhoz tartoznak.
+
+Az egységbezárás következményei:
+
+\begin{itemize}
+  \item az osztály saját névteret képez, ezért más osztályban is lehet azonos nevű tag;
+  \item az osztály metódusai közvetlenül elérik az osztály adattagjait;
+  \item a kód áttekinthetőbb, mert az adat és az adatot kezelő logika együtt található;
+  \item az objektum felelős a saját állapotának konzisztenciájáért.
+\end{itemize}
+
+\subsection{Az információrejtés jelentése}
+
+Az \textbf{információrejtés} azt jelenti, hogy az osztály belső adatszerkezetét és implementációs részleteit nem tesszük tetszőlegesen elérhetővé a külvilág számára. A külső kód csak azt láthatja, amit az osztály publikus vagy megfelelően látható felületként megenged.
+
+Ez különösen az adattagoknál fontos. Ha egy osztály állapotát bárki közvetlenül módosíthatná, akkor az objektum könnyen érvénytelen állapotba kerülhetne. Például bankszámlánál nem engedhető meg, hogy külső kód tetszőlegesen negatív értéket írjon az egyenlegbe. Ehelyett az egyenleget \code{private} mezőben tároljuk, és csak ellenőrzött metódusokon keresztül módosítjuk.
+
+\begin{warningbox}
+Az egységbezárás és az információrejtés nem ugyanaz. Az egységbezárás szervezési elv: az adatokat és a műveleteket egy osztályba zárjuk. Az információrejtés védelmi és tervezési elv: eldöntjük, hogy a belső részletekből mi látható kívülről. Egy osztály lehet formailag egységbe zárt, de rosszul megtervezett, ha minden adattagja \code{public}.
+\end{warningbox}
+
+\subsection{Invariáns és publikus felület}
+
+Az osztály gyakran valamilyen \textbf{invariánst} tart fenn. Az invariáns olyan feltétel, amelynek az objektum érvényes állapotában mindig teljesülnie kell. Például egy bankszámla egyenlege nem mehet egy meghatározott minimum alá, egy dátum objektumban a hónap értéke csak 1 és 12 között lehet, egy kör sugara pedig nem lehet negatív.
+
+Az információrejtés célja, hogy ezek az invariánsok ne sérülhessenek meg közvetlen mezőírással. A publikus metódusok az osztály szerződését adják: kívülről ezeken keresztül használható az objektum, a belső reprezentáció pedig később akár megváltoztatható anélkül, hogy a használó kódot módosítani kellene.
+
+\section{Osztálydefiníció}
+
+\subsection{Az osztály általános szerkezete}
+
+Java-ban az osztálydefiníció alapformája:
+\[
+  \code{módosítók class Osztálynév \{ tagok \}}
+\]
+
+Egy osztály tipikus tagjai:
+
+\begin{itemize}
+  \item \textbf{adattagok}: az állapot tárolására szolgáló mezők;
+  \item \textbf{inicializáló blokkok}: ritkábban használt kezdeti beállításokhoz;
+  \item \textbf{konstruktorok}: az objektum létrehozásakor futnak le;
+  \item \textbf{metódusok}: az objektum vagy az osztály műveletei;
+  \item \textbf{tagosztályok}: az osztályon belül definiált segédtípusok.
+\end{itemize}
+
+Az osztálytagok sorrendje Java-ban nem tetszőleges jelentésű, de olvashatóság miatt szokásos rendet követünk: előbb a mezők, majd konstruktorok, majd metódusok, végül belső típusok. Az osztálynév konvenció szerint nagy kezdőbetűs, például \code{BankAccount}, \code{Circle}, \code{Student}.
+
+\subsection{Adattagok}
+
+Az adattag az osztályon belül definiált változó. Példányszintű adattag esetén minden objektumnak saját értéke van belőle. Egy \code{Circle} osztályban például a \code{radius} példányszintű mező minden kör objektumnál más lehet.
+
+Adattag definíciójának egyszerű alakja:
+\[
+  \code{módosítók típus név;}
+\]
+
+Példák:
+
+\begin{itemize}
+  \item \code{private String owner;} -- rejtett példánymező;
+  \item \code{private double balance;} -- módosítható belső állapot;
+  \item \code{private static int count;} -- közös osztályszintű mező;
+  \item \code{private static final double MIN\_BALANCE = 0.0;} -- osztályszintű konstans.
+\end{itemize}
+
+\subsection{Konstruktorok}
+
+A konstruktor speciális tag, amely az objektum létrehozásakor fut le. Neve megegyezik az osztály nevével, nincs visszatérési típusa, és feladata az objektum kezdőállapotának beállítása. Egy osztálynak több konstruktora is lehet, ha a paraméterlistájuk eltér.
+
+A konstruktor jó hely az ellenőrzésekre. Ha a létrehozáshoz kapott adatok hibásak, akkor az objektumot nem célszerű félig érvényes állapotban létrehozni; Java-ban ilyenkor gyakori megoldás kivétel dobása.
+
+\subsection{Metódusok}
+
+A metódus az osztályhoz tartozó művelet. Lehet példányszintű vagy osztályszintű, lehet visszatérési értéke, és kaphat paramétereket. Példányszintű metódus esetén a metódus egy konkrét objektum állapotával dolgozik.
+
+A publikus metódusok alkotják az osztály külső felületét. A privát metódusok ezzel szemben belső segédműveletek: kívülről nem hívhatók, de segítenek az osztály implementációját rendezettebbé tenni.
+
+\zvcode[language=Java,caption={Egységbezárás és információrejtés egyszerű Java osztályban},label={lst:zv14_bank_account}]{src/code/zv14_bank_account.java}
+
+A példában az \code{owner} és a \code{balance} mező kívülről nem írható közvetlenül. Az egyenleg csak a \code{deposit} és a \code{withdraw} metódusokon keresztül változhat, ezért az osztály meg tudja őrizni azt a szabályt, hogy az egyenleg nem mehet a megengedett minimum alá.
+
+\section{Példányosítás és objektumreferencia}
+
+\subsection{A példányosítás menete}
+
+A \textbf{példányosítás} egy osztály konkrét objektumának létrehozása. Java-ban ennek tipikus alakja:
+\[
+  \code{BankAccount account = new BankAccount("Anna", 12000);}
+\]
+
+A példányosítás során több dolog történik:
+
+\begin{enumerate}
+  \item a futtatókörnyezet memóriát foglal az új objektum számára;
+  \item az objektum mezői alapértéket kapnak;
+  \item lefutnak az inicializálások;
+  \item meghívódik a megfelelő konstruktor;
+  \item a \code{new} kifejezés visszaadja az új objektum referenciáját.
+\end{enumerate}
+
+A változó ilyenkor nem maga az objektum, hanem referencia az objektumra. Ezért ha a referenciát egy másik változóba másoljuk, nem jön létre új objektum: csak két változó mutat ugyanarra a példányra.
+
+\subsection{Objektum és állapot}
+
+Ugyanabból az osztályból több objektum hozható létre. Ezek ugyanazon osztály metóduskódját használják, de a példányszintű mezőik külön állapotot tárolnak. Két bankszámla objektumnak például külön tulajdonosa és külön egyenlege van.
+
+\input{src/figures/zv14_osztaly_objektum_tagok.tex}
+
+\subsection{A this szerepe}
+
+Példányszintű metódus hívásakor mindig van egy aktuális objektum. Erre az aktuális objektumra hivatkozik a \code{this}. Ha egy metódusban vagy konstruktorban minősítés nélkül írunk egy példánytagot, az lényegében az aktuális objektum tagját jelenti.
+
+Például:
+\[
+  \code{this.owner = owner;}
+\]
+
+Itt a bal oldali \code{this.owner} az objektum adattagja, a jobb oldali \code{owner} pedig a konstruktor paramétere. Ilyen névütközésnél a \code{this} kiírása szükséges az egyértelműséghez.
+
+A \code{this} nem azonos a konstruktorból hívható \code{this(...)} formával. A \code{this} az aktuális objektum referenciája, a \code{this(...)} pedig ugyanazon osztály egy másik konstruktorát hívja.
+
+\section{Példányszintű és osztályszintű tagok}
+
+\subsection{Példányszintű tagok}
+
+A példányszintű tag egy konkrét objektumhoz kötődik. Ha egy osztályban van egy \code{private double balance;} mező, akkor minden \code{BankAccount} objektumnak saját \code{balance} mezője van. Egy példányszintű metódus, például a \code{withdraw}, az aktuális objektum saját állapotát módosítja.
+
+Példányszintű tagokra általában objektumreferencián keresztül hivatkozunk:
+\[
+  \code{account.withdraw(2000);}
+\]
+
+Az osztályon belül ugyanez sokszor minősítés nélkül vagy \code{this}-szel jelenik meg:
+\[
+  \code{balance -= amount;}
+\]
+
+\subsection{Osztályszintű tagok}
+
+Az osztályszintű tagot a \code{static} módosító jelöli. Nem egy konkrét példányhoz, hanem az osztályhoz tartozik. Egy statikus mezőből egy közös példány van, amelyet az osztály minden objektuma közösen használhat.
+
+Tipikus statikus tagok:
+
+\begin{itemize}
+  \item közös számláló, például hány objektum jött létre;
+  \item közös beállítás vagy osztályszintű adat;
+  \item segédmetódus, amely nem igényel objektumállapotot;
+  \item konstans, például \code{static final} mező.
+\end{itemize}
+
+Statikus metódusban nincs aktuális objektum, ezért nem használható a \code{this}. Ha statikus metódusból példányszintű tagot akarunk elérni, akkor ehhez konkrét objektumreferencia kell.
+
+\begin{center}
+\input{src/tables/zv14_peldany_osztalyszint.tex}
+\end{center}
+
+\zvcode[language=Java,caption={Példányszintű és osztályszintű tagok használata},label={lst:zv14_static_instance_members}]{src/code/zv14_static_instance_members.java}
+
+A példában a \code{nextId} osztályszintű mező, ezért a számlálót az összes objektum közösen használja. Az \code{id} és az \code{owner} viszont példányszintű mezők, ezért minden jegyobjektumnak saját értéke van belőlük.
+
+\subsection{Konstansok}
+
+Java-ban a \code{final} módosító azt jelenti, hogy a változó vagy mező értéke a beállítás után nem változtatható meg. Ha egy konstans minden példányra közös, akkor tipikusan \code{static final} mezőként definiáljuk.
+
+Példák:
+
+\begin{itemize}
+  \item \code{private final String owner;} -- példányonként beállított, később nem módosítható mező;
+  \item \code{private static final double MIN\_BALANCE = 0.0;} -- osztályszintű konstans;
+  \item \code{public static final int MAX\_SIZE = 100;} -- kívülről is használható publikus konstans.
+\end{itemize}
+
+Konvenció szerint a nevesített konstansok neve csupa nagybetűs, a szavakat aláhúzás választja el, például \code{MAX\_VALUE}, \code{DEFAULT\_CAPACITY}. A publikus konstansokkal óvatosan kell bánni, mert az osztály külső szerződésének részévé válnak.
+
+\section{Hozzáférési kategóriák}
+
+\subsection{Miért kell hozzáférést szabályozni?}
+
+A hozzáférési kategóriák azt határozzák meg, hogy egy osztály vagy osztálytag honnan látható. Ezek nem pusztán szintaktikai elemek, hanem tervezési eszközök. Segítségükkel elválasztjuk a publikus felületet a belső implementációtól.
+
+A jó OOP tervezésben általában a következő alapelv érvényesül: ami nem szükséges kívülről, azt ne tegyük kívülről elérhetővé. Ez csökkenti a hibalehetőséget, védi az objektum állapotát, és megkönnyíti a későbbi módosítást.
+
+\begin{center}
+\input{src/tables/zv14_hozzaferesi_kategoriak.tex}
+\end{center}
+
+\subsection{Osztályok és tagok láthatósága}
+
+Java-ban felső szintű osztály esetén a legfontosabb két lehetőség:
+
+\begin{itemize}
+  \item \code{public class}: más csomagból is elérhető;
+  \item módosító nélküli \code{class}: csak a saját csomagban látható.
+\end{itemize}
+
+Osztálytagoknál már használható a \code{public}, a módosító nélküli csomagszintű láthatóság, a \code{protected} és a \code{private}. A \code{private} a legerősebb elrejtés: a tag csak ugyanazon osztályon belül érhető el. Ezért a mezők többsége tipikusan privát.
+
+\subsection{A hozzáférési kategóriák használati elvei}
+
+Gyakorlati szabályok:
+
+\begin{itemize}
+  \item az objektum állapotát tároló mezők legyenek többnyire \code{private};
+  \item csak olyan metódus legyen \code{public}, amely valóban az osztály külső szolgáltatása;
+  \item a \code{protected} tag öröklési szerződést jelent, ezért nem érdemes túl sok belső részletet így kinyitni;
+  \item a csomagszintű láthatóság hasznos lehet egy modulon vagy csomagon belüli együttműködéshez;
+  \item publikus konstans vagy publikus adattag csak akkor indokolt, ha tényleg stabil külső API-rész.
+\end{itemize}
+
+\section{Hivatkozás az osztály tagjaira}
+
+\subsection{Hivatkozás példánytagokra}
+
+Példánytagra kívülről objektumreferencián keresztül hivatkozunk, ha a hozzáférési kategória ezt engedi:
+\[
+  \code{account.getBalance()}
+\]
+
+Az osztályon belül a példánytag minősítés nélkül is írható, ilyenkor az aktuális objektum tagját jelenti:
+\[
+  \code{balance += amount;}
+\]
+
+Ez lényegében a következővel egyenértékű:
+\[
+  \code{this.balance += amount;}
+\]
+
+Ha egy lokális változó vagy paraméter elfedi az adattag nevét, akkor a \code{this} használata kötelező az adattag egyértelmű megjelöléséhez.
+
+\subsection{Hivatkozás osztályszintű tagokra}
+
+Osztályszintű tagokra az osztály nevével minősítve célszerű hivatkozni:
+\[
+  \code{NumberedTicket.getNextId()}
+\]
+
+Bár Java sok esetben megengedi, hogy statikus tagot példányreferencián keresztül írjunk, ez rossz stílus, mert azt sugallja, hogy a tag az objektumhoz tartozik. Vizsgán érdemes kimondani: a statikus tagot osztálynévvel minősítjük.
+
+\subsection{Hivatkozás másik objektum tagjaira}
+
+Egy metódus nemcsak az aktuális objektum tagjaira hivatkozhat, hanem egy paraméterként kapott másik objektum publikus vagy elérhető tagjaira is. Például két kör összehasonlításánál a metódus használhatja a \code{this.radius} és az \code{other.radius} értéket is, ha ugyanazon osztályon belül vagyunk.
+
+Fontos, hogy a hozzáférési szabályok ilyenkor is érvényesek. Az, hogy van referenciánk egy objektumra, önmagában nem jelenti azt, hogy minden belső tagját elérhetjük. A \code{private} tagok kívülről nem válnak elérhetővé csak azért, mert az objektum referenciája rendelkezésre áll.
+
+\section{Gyakori félreértések}
+
+\subsection{A public mező nem jó információrejtés}
+
+Ha egy osztály minden mezője \code{public}, akkor a külső kód közvetlenül módosíthatja az objektum állapotát. Ezzel az osztály elveszíti a kontrollt az invariánsai felett. A mezők helyett célszerű privát adattagokat és ellenőrzött metódusokat használni.
+
+\subsection{A static nem azt jelenti, hogy konstans}
+
+A \code{static} azt jelenti, hogy a tag az osztályhoz tartozik, nem egy példányhoz. Ettől még lehet módosítható. Konstanshoz Java-ban \code{final} kell; közös osztálykonstanshoz pedig tipikusan \code{static final}.
+
+\subsection{Statikus metódusból nincs this}
+
+A statikus metódus példány nélkül is meghívható, ezért nincs aktuális objektuma. Emiatt statikus metódusban nem használható a \code{this}, és példánymezőre sem hivatkozhatunk közvetlenül.
+
+\subsection{A referencia nem maga az objektum}
+
+A referencia egy objektum elérésére szolgáló érték. Ha két referencia ugyanarra az objektumra mutat, akkor az egyik referencián keresztüli állapotmódosítás a másikon keresztül is látszik. Ez gyakori félreértés példányosításnál és objektumátadásnál.
+
+\subsection{A protected nem egyszerűen erősebb public}
+
+A \code{protected} nem általános külső láthatóságot jelent, hanem örökléshez kapcsolódó hozzáférést. Használata akkor indokolt, ha a leszármazott osztályoknak tényleg szükségük van az adott tagra. Ellenkező esetben jobb a \code{private} és jól definiált publikus vagy védett metódusok használata.
+
+\section{Tipikus vizsgakérdések és rövid válaszvázlatok}
+
+\subsection{Mi az egységbezárás?}
+
+Az egységbezárás az az OOP alapelv, amely szerint az összetartozó adatokat és az ezeken dolgozó műveleteket egy osztályba szervezzük. Így az osztály modellezi az adott fogalmat, saját névteret képez, és az objektum felelős a saját állapotáért.
+
+\subsection{Mi az információrejtés?}
+
+Az információrejtés azt jelenti, hogy az osztály belső állapotát és implementációs részleteit elrejtjük a külvilág elől. A külső kód csak szabályozott felületen, például publikus metódusokon keresztül használhatja az objektumot.
+
+\subsection{Mi a különbség osztály és objektum között?}
+
+Az osztály típus vagy minta, amely leírja az objektumok adatait és műveleteit. Az objektum az osztály konkrét példánya, saját állapottal és azonossággal.
+
+\subsection{Mi történik példányosításkor?}
+
+A \code{new} memóriát foglal az objektumnak, inicializálja a mezőket, meghívja a konstruktort, majd visszaadja az objektum referenciáját. A referencia segítségével később elérhetjük az objektum publikus vagy látható tagjait.
+
+\subsection{Mi a this szerepe?}
+
+A \code{this} az aktuális objektum referenciája példányszintű metódusban vagy konstruktorban. Segítségével egyértelműen hivatkozhatunk az aktuális objektum adattagjaira és metódusaira, különösen névütközés esetén.
+
+\subsection{Mi a különbség példányszintű és osztályszintű tag között?}
+
+A példányszintű tag egy konkrét objektumhoz tartozik, ezért minden objektumnak saját állapota lehet belőle. Az osztályszintű tag \code{static}, magához az osztályhoz tartozik, és példány nélkül is elérhető.
+
+\subsection{Mire való a final és a static final?}
+
+A \code{final} azt jelenti, hogy a mező vagy változó értéke beállítás után nem változtatható. A \code{static final} közös osztályszintű konstansra használható, például \code{MAX\_SIZE} vagy \code{MIN\_BALANCE} esetén.
+
+\subsection{Melyek a Java hozzáférési kategóriái?}
+
+A fontos hozzáférési kategóriák: \code{public}, módosító nélküli csomagszintű láthatóság, \code{protected} és \code{private}. A \code{public} mindenhol látható, a csomagszintű csak azonos csomagban, a \code{protected} csomagon belül és leszármazottakból, a \code{private} pedig csak ugyanazon osztályban.
+
+\section{Összefoglalás vizsgára}
+
+Rövid, vizsgán jól használható összefoglalás:
+
+\begin{itemize}
+  \item Az OOP program objektumok együttműködése; az objektumnak állapota, viselkedése és azonossága van.
+  \item Az osztály programozó által definiált típus, az objektum pedig az osztály konkrét példánya.
+  \item Az egységbezárás az adatokat és a rajtuk dolgozó műveleteket egy osztályba szervezi.
+  \item Az információrejtés a belső állapotot és implementációt elrejti a külső kód elől.
+  \item A jó osztály publikus felületet ad, a belső állapotát pedig többnyire \code{private} mezőkben tárolja.
+  \item Az invariáns olyan feltétel, amelynek az objektum érvényes állapotában mindig teljesülnie kell.
+  \item Az osztály tagjai lehetnek adattagok, konstruktorok, metódusok, inicializáló blokkok és tagosztályok.
+  \item Példányosításkor a \code{new} létrehozza az objektumot, meghívja a konstruktort, és visszaadja a referenciát.
+  \item A referencia nem maga az objektum; több referencia mutathat ugyanarra az objektumra.
+  \item A \code{this} az aktuális objektum referenciája, és névütközésnél különösen fontos.
+  \item A példányszintű tag objektumhoz kötődik, az osztályszintű tagot pedig \code{static} jelöli.
+  \item Statikus metódusban nincs \code{this}, és példánytag csak konkrét objektumreferencián keresztül érhető el.
+  \item Konstanshoz Java-ban \code{final}, közös osztálykonstanshoz általában \code{static final} használható.
+  \item Java hozzáférési kategóriái: \code{public}, csomagszintű, \code{protected}, \code{private}.
+  \item Statikus tagokra osztálynévvel, példánytagokra objektumreferenciával vagy osztályon belül \code{this}-szel hivatkozunk.
+\end{itemize}

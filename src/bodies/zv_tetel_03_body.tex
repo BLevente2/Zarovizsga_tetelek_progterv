@@ -1,0 +1,756 @@
+\section{A tétel lényege és vizsgaszintű vázlata}
+
+\begin{summarybox}
+A tétel központi gondolata az, hogy az algoritmusok vezérlését nem csak programkódként, hanem matematikai szerkezetként is lehet vizsgálni. A strukturált programozás olyan programépítési elv, amely a vezérlést jól áttekinthető, egymásba ágyazható, egy belépési és egy kilépési ponttal rendelkező szerkezetekből építi fel. A tételben ezért egyszerre kell tudni beszélni programgráfról, pszeudokódról, struktogramról, programformuláról és bonyolultsági tételekről.
+\end{summarybox}
+
+A tétel vizsgán jól felépíthető a következő sorrendben:
+
+\begin{enumerate}
+  \item a strukturált programozás célja és történeti motivációja;
+  \item programgráf és vezérlési gráf fogalma;
+  \item valódi program definíciója;
+  \item strukturált alapelemek: szekvencia, elágazás, ciklus;
+  \item kvázi strukturált elemként az iteráció, és annak átírása strukturált alakra;
+  \item vezérlőgráf lebontása;
+  \item strukturált program és strukturált programformula;
+  \item strukturált programgráf kialakítása felülről lefelé építéssel;
+  \item struktogram, mint a strukturált program grafikus jelölése;
+  \item ciklikus bonyolultság, lényeges bonyolultság és a kapcsolódó tételek.
+\end{enumerate}
+
+A legfontosabb vizsgamondat: a strukturált program olyan program, amelynek programgráfja a strukturált alapelemek ismételt felismerésével és összevonásával egyetlen irányított élre bontható vissza. Ennek megfelelően a program formulája is felírható szekvenciákból, elágazásokból és ciklusokból.
+
+\section{A strukturált programozás alapgondolata}
+
+\subsection{Miért volt szükség strukturált programozásra?}
+
+A korai programozási stílusban gyakori volt a tetszőleges ugrás, például a \code{GOTO} vagy gépi szinten a \code{JMP} használata. Egy ilyen programban a vezérlés bármely pontból szinte bármely másik pontra átugorhatott. Ez kis programoknál még kezelhető lehetett, nagyobb programoknál azonban gyorsan áttekinthetetlen vezérlési szerkezethez vezetett.
+
+A probléma lényege az, hogy a program helyességét nem csak az egyes utasítások határozzák meg, hanem az is, hogy milyen sorrendben és milyen feltételek mellett hajtódnak végre. Ha a vezérlés sok tetszőleges ugrást tartalmaz, akkor a program állapottere nehezebben követhető, a hibakeresés nehezebb, a módosítás veszélyesebb, a bizonyítás pedig lényegesen bonyolultabb.
+
+A \textbf{strukturált programozás} célja, hogy a program vezérlését néhány alapvető, szabályos szerkezetből építse fel. Ezek a szerkezetek:
+
+\begin{itemize}
+  \item a \textbf{szekvencia}, vagyis egymás utáni végrehajtás;
+  \item az \textbf{elágazás}, vagyis feltételtől függő választás;
+  \item a \textbf{ciklus}, vagyis feltételes ismétlés.
+\end{itemize}
+
+A strukturált programozás nem azt jelenti, hogy a programban nincs elágazás vagy ismétlés. Éppen ellenkezőleg: ezek megengedettek, de csak olyan formában, amelynek világos a belépési és kilépési pontja.
+
+\subsection{A strukturáltság jelentése}
+
+Strukturáltság alatt általában azt értjük, hogy egy bonyolult rendszert egymásba ágyazott, jól elhatárolt részekre bontunk. Programok esetében ez azt jelenti, hogy a teljes program kisebb blokkokból épül fel, a blokkok pedig további blokkokat tartalmazhatnak.
+
+Ez fa jellegű szerkezetet eredményez:
+
+\begin{itemize}
+  \item a gyökér a teljes program;
+  \item a belső csomópontok összetett szerkezetek, például szekvenciák, elágazások vagy ciklusok;
+  \item a levelek elemi utasítások vagy egyszerű részprogramok.
+\end{itemize}
+
+A strukturált programozás legfontosabb gyakorlati előnyei:
+
+\begin{itemize}
+  \item \textbf{áttekinthetőség}: a program logikája hierarchikusan követhető;
+  \item \textbf{lokalitás}: egy blokk vizsgálatakor kevesebb külső ugrást kell figyelembe venni;
+  \item \textbf{bizonyíthatóság}: könnyebb invariánsokat, elő- és utófeltételeket rendelni a blokkokhoz;
+  \item \textbf{karbantarthatóság}: a program módosítása kevésbé borítja fel a teljes vezérlést;
+  \item \textbf{tesztelhetőség}: a logikai utak jobban azonosíthatók.
+\end{itemize}
+
+\subsection{Programok ekvivalenciája}
+
+Két programot \textbf{ekvivalensnek} nevezünk, ha minden megengedett bemenetre ugyanazt a kimenetet adják, illetve ugyanabból a kezdőállapotból ugyanabba a végállapotba jutnak. Formálisan, ha a programot állapottranszformációnak tekintjük, akkor két program ekvivalens, ha ugyanazt a leképezést valósítják meg az állapottéren.
+
+Ez azért fontos, mert a strukturált programozás egyik alaptétele szerint egy valódi program helyett megadható vele ekvivalens strukturált program. Az ekvivalencia tehát nem azt jelenti, hogy a két program ugyanúgy néz ki, hanem azt, hogy ugyanazt számolja ki.
+
+\begin{warningbox}
+Az ekvivalens strukturált program gyakran bonyolultabb vagy hosszabb lehet, mint az eredeti nem strukturált program. A tétel elvi átírhatóságot mond ki, nem pedig azt, hogy az átírás mindig rövid, esztétikus vagy gyakorlati szempontból ideális.
+\end{warningbox}
+
+\section{Programgráf és vezérlési gráf}
+
+\subsection{A programgráf fogalma}
+
+A \textbf{programgráf} vagy \textbf{vezérlési gráf} olyan összefüggő, irányított gráf, amely a program vezérlésének lehetséges útjait ábrázolja. A gráf csomópontjai a program vezérlési elemeinek felelnek meg, az irányított élek pedig azt mutatják, hogy a végrehajtás melyik pontból melyik másik pontba kerülhet.
+
+A programgráf tipikus elemei:
+
+\begin{center}
+\input{src/tables/zv03_programgraf_elemek.tex}
+\end{center}
+
+Egy egyszerű elágazás programgráfja például így nézhet ki:
+
+\input{src/figures/programgraf_elagazas_start_stop.tex}
+
+\subsection{Teljes élhalmazos jelölés}
+
+A programgráfot megadhatjuk úgy, hogy felsoroljuk az éleit. Ilyenkor minden csomópontnak nevet adunk, és a gráfot rendezett párok halmazaként írjuk fel. Elágazás esetén jelöljük, hogy melyik él tartozik az igaz, illetve a hamis esethez.
+
+Például:
+
+\[
+G=\{(START,A),(A,B/i),(A,C/h),(B,D),(C,D),(D,STOP)\}.
+\]
+
+Ebben az $A$ csomópont predikátum, mert két kimenő éle van. A $B$ és $C$ csomópont a két ág művelete, $D$ pedig gyűjtőpontként értelmezhető.
+
+\subsection{Tömör élhalmazos jelölés}
+
+A tömör élhalmazos jelölésben az éleket nyilakkal adjuk meg, és gyakran nem rajzoljuk ki külön a gyűjtőpontokat. Az előző szerkezet tömören például így írható:
+
+\[
+G=\{START\rightarrow A,\ A\rightarrow(B,C),\ B\rightarrow STOP,\ C\rightarrow STOP\}.
+\]
+
+Ez a jelölés gyorsabb és áttekinthetőbb, de kevésbé részletes. Vizsgán érdemes tudni, hogy a tömör jelölés mögött is egy pontosabb programgráf áll, amelyben a gyűjtőpontok és az elágazások külön csomópontként szerepelhetnek.
+
+\subsection{Programgráf és programkód kapcsolata}
+
+A programkód és a programgráf ugyanannak a vezérlési szerkezetnek két különböző leírása. Például az alábbi pszeudókód:
+
+\zvpseudocode[caption={Elágazás pszeudókódja},label={lst:zv03_elagazas_pelda}]{src/code/zv03_elagazas_pelda.pseudo}
+
+vezérlési szempontból azt jelenti, hogy először megvizsgáljuk a $p$ predikátumot. Igaz esetben az $f$, hamis esetben a $g$ ág fut le, majd mindkét esetben a $h$ művelet következik.
+
+A programgráf különösen akkor hasznos, amikor nem csak a program olvashatóságát, hanem a program szerkezetét és bonyolultságát is vizsgálni akarjuk.
+
+\section{Valódi program}
+
+\subsection{A valódi program definíciója}
+
+Egy programot \textbf{valódi programnak} nevezünk, ha a programgráfja jól formált vezérlési gráfot alkot. A tételben használt definíció szerint egy program valódi, ha:
+
+\begin{enumerate}
+  \item programgráfja véges számú csomóponttal és éllel rendelkezik;
+  \item csomópontjai a megengedett típusokból állnak: predikátumokból, függvény- vagy műveletcsomópontokból és gyűjtőpontokból;
+  \item a programgráf minden pontján keresztül vezet út a belépési ponttól a kilépési pontig.
+\end{enumerate}
+
+A harmadik feltétel azt jelenti, hogy nincs elérhetetlen kódrészlet, és nincs olyan csomópont, amelyből nem lehet eljutni a program kilépési pontjához.
+
+\subsection{Nem valódi programokra példák}
+
+A nem valódi program nem feltétlenül szintaktikailag hibás programkód, hanem vezérlési gráf szempontjából hibás vagy szabálytalan szerkezet. Tipikus esetek:
+
+\begin{itemize}
+  \item \textbf{elérhetetlen csomópont}: van olyan utasítás, amelyhez a START pontból nem vezet út;
+  \item \textbf{zsákutca}: van olyan csomópont, amelyből nem vezet út a STOP pontig;
+  \item \textbf{végtelen elágazás vagy végtelen gráf}: a gráf nem véges;
+  \item \textbf{szabálytalan csomópont}: például egy predikátumnak nincs pontosan két kimenő ága;
+  \item \textbf{több belépési pont}: a programrész nem egyetlen ponton lép be;
+  \item \textbf{több kilépési pont}: a programrész nem egyetlen ponton lép ki, és ezt nem kezeljük egységesen.
+\end{itemize}
+
+\begin{warningbox}
+A strukturáltság és a valódiság nem ugyanaz a fogalom. A valódi program azt mondja meg, hogy a vezérlési gráf jól formált-e. A strukturált program azt mondja meg, hogy a jól formált gráf lebontható-e a strukturált alapelemekre.
+\end{warningbox}
+
+\section{Strukturált alapelemek és formuláik}
+
+\subsection{Szekvencia}
+
+A \textbf{szekvencia} egymás után végrehajtott részprogramok vagy utasítások sorozata. Jelölése:
+
+\[
+S(f_1,f_2,\ldots,f_n).
+\]
+
+Ez azt jelenti, hogy először $f_1$, utána $f_2$, majd így tovább, végül $f_n$ hajtódik végre.
+
+\zvpseudocode[caption={Szekvencia pszeudókódja},label={lst:zv03_szekvencia_pelda}]{src/code/zv03_szekvencia_pelda.pseudo}
+
+Programgráfként:
+
+\input{src/figures/strukturalt_szekvencia.tex}
+
+A szekvencia strukturált alapelem, mert egyetlen belépési és egyetlen kilépési pontja van.
+
+\subsection{Elágazás}
+
+Az \textbf{elágazás} egy predikátum értéke alapján két ág közül választ. Jelölése:
+
+\[
+E(p;f,g).
+\]
+
+Itt $p$ a feltétel, $f$ az igaz ág, $g$ a hamis ág.
+
+\zvpseudocode[caption={Kétágú elágazás alapeleme},label={lst:zv03_elagazas_alapelem}]{src/code/zv03_elagazas_alapelem.pseudo}
+
+A programgráfban a predikátumcsomópontból két él indul ki, majd a két ág egy gyűjtőpontban újraegyesül.
+
+\input{src/figures/strukturalt_elagazas.tex}
+
+Egyágú elágazás is megadható kétágúként, ha a hiányzó ágat üres programmal helyettesítjük:
+
+\[
+IF\ p\ THEN\ f \quad \equiv \quad E(p;f,\varepsilon),
+\]
+
+ahol $\varepsilon$ az üres programot jelöli.
+
+\subsection{Ciklus}
+
+A \textbf{ciklus} feltételes ismétlést valósít meg. A klasszikus strukturált alapelem az elöltesztelő ciklus, vagyis a \code{WHILE} ciklus. Jelölése:
+
+\[
+C(p;f).
+\]
+
+Ez azt jelenti, hogy amíg $p$ igaz, végrehajtjuk az $f$ törzset.
+
+\zvpseudocode[caption={Elöltesztelő ciklus alapeleme},label={lst:zv03_while_ciklus_alapelem}]{src/code/zv03_while_ciklus_alapelem.pseudo}
+
+A ciklus programgráfjában a predikátum igaz ága a ciklusmaghoz vezet, a ciklusmag visszatér a predikátumhoz, a hamis ág pedig kilép a ciklusból.
+
+\input{src/figures/strukturalt_ciklus.tex}
+
+A ciklus is strukturált alapelem, mert a teljes ciklusszerkezetnek egy belépése és egy kilépése van.
+
+\subsection{Iteráció mint kvázi strukturált alapelem}
+
+Az \textbf{iteráció} alatt a hátultesztelő ismétlést is érthetjük, ahol a ciklusmag legalább egyszer lefut, és csak utána történik a feltételvizsgálat. Jelölése:
+
+\[
+I(p;f).
+\]
+
+Pszeudókódban:
+
+\zvpseudocode[caption={Hátultesztelő ciklus alapeleme},label={lst:zv03_do_while_ciklus}]{src/code/zv03_do_while_ciklus.pseudo}
+
+Ez kvázi strukturált elem, mert közvetlenül nem a három klasszikus strukturált alapelem egyike, de könnyen átírható szekvencia és ciklus segítségével:
+
+\[
+I(p;f)=S(f,C(p;f)).
+\]
+
+Vagyis először egyszer végrehajtjuk az $f$ műveletet, majd ugyanazt a törzset egy elöltesztelő ciklusban ismételjük, amíg a feltétel igaz.
+
+\begin{warningbox}
+A \code{DO-WHILE} és a \code{REPEAT-UNTIL} nem teljesen ugyanazt a logikai feltételt használja. A \code{DO-WHILE} addig ismétel, amíg a feltétel igaz; a \code{REPEAT-UNTIL} addig ismétel, amíg a feltétel hamis, és akkor áll meg, amikor a feltétel igazzá válik.
+\end{warningbox}
+
+\section{A struktogram}
+
+\subsection{A struktogram szerepe}
+
+A \textbf{struktogram}, más néven Nassi-Schneiderman-ábra, a strukturált programok grafikus leírására szolgál. A folyamatábrával szemben nem tetszőleges nyilakat használ, hanem egymásba ágyazott téglalapokat. Ez a jelölés természetes módon kikényszeríti a strukturált szemléletet.
+
+A struktogram fő gondolata:
+
+\begin{itemize}
+  \item a szekvencia egymás alatti téglalapokból áll;
+  \item az elágazás egy feltételmezőből és két ágból áll;
+  \item a ciklus egy feltétellel ellátott ismétlődő blokk;
+  \item a blokkok egymásba ágyazhatók.
+\end{itemize}
+
+\subsection{Példa struktogramra}
+
+Az alábbi egyszerű struktogram egy olyan algoritmust jelöl, amely először beolvas egy értéket, majd eldönti, hogy pozitív-e, végül kiírja a megfelelő üzenetet.
+
+\input{src/figures/struktogram_pozitiv_ertek.tex}
+
+A struktogram előnye, hogy jól mutatja a program blokkstruktúráját. Hátránya, hogy nagy programok esetén nehezen kezelhető, és kevésbé alkalmas bonyolult adatkapcsolatok vagy objektumorientált szerkezetek bemutatására.
+
+\subsection{A struktogram és a strukturáltság kapcsolata}
+
+Ha egy programot szabályos struktogrammal írunk le, akkor a leírás jellemzően strukturált szerkezetet tükröz. Ugyanakkor vizsgán fontos különbséget tenni:
+
+\begin{itemize}
+  \item a struktogram \textbf{jelölési mód};
+  \item a strukturáltság \textbf{programgráf-tulajdonság};
+  \item a valódiság pedig \textbf{jól formáltsági feltétel}.
+\end{itemize}
+
+Egy szépen megrajzolt ábra önmagában nem bizonyítás, de ha a struktogram szabályosan szekvenciából, elágazásból és ciklusból épül fel, akkor közvetlenül megadható belőle a strukturált program formulája.
+
+\section{Vezérlőgráf lebontása}
+
+\subsection{A lebontás fogalma}
+
+A \textbf{vezérlőgráf lebontása} olyan eljárás, amelyben a programgráfban felismerünk egy strukturált alapelemet, majd azt egyetlen függvény- vagy műveletcsomóponttal helyettesítjük. Ezt addig ismételjük, amíg már nem lehet több alapelemet összevonni.
+
+Ha a végén a teljes gráf egyetlen irányított élre, illetve egyetlen egyszerű programrészre redukálható, akkor a program strukturált.
+
+A lebontás lépései általánosan:
+
+\begin{enumerate}
+  \item keressünk egy szekvenciát, elágazást vagy ciklust;
+  \item írjuk fel ennek a formuláját;
+  \item helyettesítsük az egész részgráfot egy új csomóponttal;
+  \item ismételjük a folyamatot, amíg lehet;
+  \item ha az egész program egyetlen egységgé vonható össze, akkor a program strukturált.
+\end{enumerate}
+
+\subsection{Lebontás szekvencia esetén}
+
+Ha a programgráfban két művelet egymás után következik, és nincs közöttük elágazó vagy visszaugró vezérlés, akkor szekvenciát alkotnak:
+
+\[
+f\rightarrow g \quad \Rightarrow \quad S(f,g).
+\]
+
+A részgráfot egyetlen új műveletcsomóponttal helyettesíthetjük, amelynek jelentése: előbb $f$, majd $g$ végrehajtása.
+
+\subsection{Lebontás elágazás esetén}
+
+Ha egy predikátumból két ág indul ki, mindkét ág egy-egy programrészhez vezet, majd a két ág ugyanabban a gyűjtőpontban találkozik, akkor elágazást ismertünk fel:
+
+\[
+E(p;f,g).
+\]
+
+A teljes elágazást egyetlen csomóponttal lehet helyettesíteni.
+
+\subsection{Lebontás ciklus esetén}
+
+Ha egy predikátum igaz ága egy programrészhez vezet, a programrész végéről visszajutunk ugyanahhoz a predikátumhoz, a hamis ág pedig kilép a szerkezetből, akkor elöltesztelő ciklust ismertünk fel:
+
+\[
+C(p;f).
+\]
+
+A ciklus teljes részgráfja egyetlen csomóponttal helyettesíthető.
+
+\subsection{Példa lebontásra}
+
+Tekintsük az alábbi pszeudókódot:
+
+\zvpseudocode[caption={Strukturált program példa},label={lst:zv03_strukturalt_program_pelda}]{src/code/zv03_strukturalt_program_pelda.pseudo}
+
+A program formulája:
+
+\[
+S\bigl(f, E(p;g,h), C(q;k)\bigr).
+\]
+
+Lebontáskor először felismerjük az $E(p;g,h)$ elágazást, majd a $C(q;k)$ ciklust, végül a három rész egymás utáni végrehajtását szekvenciaként vonjuk össze.
+
+Ez azért strukturált, mert a teljes formula kizárólag a strukturált alapelemekből épül fel.
+
+\section{Strukturált program és programformula}
+
+\subsection{Strukturált program definíciója}
+
+Egy programot \textbf{strukturált programnak} nevezünk, ha a programgráfja lebontható az önmagában álló irányított élre. Másképpen fogalmazva: a program vezérlési gráfja előállítható a strukturált alapelemek fordított irányú alkalmazásával.
+
+A definíció két irányból is megérthető:
+
+\begin{itemize}
+  \item \textbf{lebontással}: kész gráfból indulunk ki, és strukturált alapelemeket vonunk össze;
+  \item \textbf{felépítéssel}: az üres vagy elemi programból indulunk ki, és szekvenciával, elágazással, ciklussal építjük fel a teljes programot.
+\end{itemize}
+
+\subsection{A strukturált program formulája}
+
+A \textbf{programformula} a program szerkezetének algebrai jellegű leírása. Nem konkrét programnyelvi szintaxis, hanem a vezérlési szerkezet absztrakt megadása.
+
+A három alapformula:
+
+\[
+S(f_1,\ldots,f_n),\qquad E(p;f,g),\qquad C(p;f).
+\]
+
+Ezek egymásba ágyazhatók. Például:
+
+\[
+S\bigl(a, E(p; b, C(q;c)), d\bigr)
+\]
+
+jelentése:
+
+\begin{enumerate}
+  \item hajtsuk végre $a$-t;
+  \item ha $p$ igaz, hajtsuk végre $b$-t;
+  \item ha $p$ hamis, akkor hajtsuk végre a $C(q;c)$ ciklust;
+  \item végül hajtsuk végre $d$-t.
+\end{enumerate}
+
+Egy program akkor strukturált, ha adható hozzá ilyen formula kizárólag a megengedett alapelemekből.
+
+\subsection{Böhm-Jacopini tétel}
+
+A \textbf{Böhm-Jacopini tétel} lényege, hogy minden valódi programhoz megadható vele ekvivalens strukturált program. Ez elméleti szempontból nagyon fontos, mert azt mondja ki, hogy a tetszőleges ugrások kifejezőereje nem szükséges ahhoz, hogy algoritmusokat le tudjunk írni.
+
+A tétel következményei:
+
+\begin{itemize}
+  \item a szekvencia, elágazás és ciklus elégséges vezérlési építőelemek;
+  \item a \code{GOTO} elvileg kiküszöbölhető;
+  \item a programok vezérlése hierarchikusan szervezhető;
+  \item a strukturált programozás nem csökkenti az algoritmikusan leírható problémák körét.
+\end{itemize}
+
+Fontos azonban, hogy a tétel nem ad egyetlen kötelező, optimális átírási módszert. Több ekvivalens strukturált alak is létezhet, és az átírás segédváltozókat igényelhet.
+
+\section{Strukturált programgráf kialakítása}
+
+\subsection{Felülről lefelé történő kialakítás}
+
+Strukturált programgráfot legegyszerűbben \textbf{felülről lefelé finomítással} lehet kialakítani. Először a teljes feladatot egyetlen absztrakt műveletnek tekintjük, majd ezt fokozatosan bontjuk részfeladatokra.
+
+Például:
+
+\begin{enumerate}
+  \item teljes feladat: rendezett sorozatban keresünk egy elemet;
+  \item részfeladatok: kezdőértékek beállítása, ciklusos keresés, eredmény eldöntése;
+  \item vezérlési szerkezet: szekvencia, azon belül ciklus és elágazás;
+  \item végső alak: pszeudókód, programgráf vagy struktogram.
+\end{enumerate}
+
+A módszer előnye, hogy már a tervezés során strukturált alakot kapunk, nem utólag kell a nem strukturált gráfot javítani.
+
+\subsection{Kialakítás programformulából}
+
+Ha adott a programformula, abból közvetlenül felépíthető a programgráf. Például:
+
+\[
+S(a,C(p;E(q;b,c)),d)
+\]
+
+felépítése:
+
+\begin{enumerate}
+  \item az egész program szekvencia: $a$, majd $C(p;E(q;b,c))$, majd $d$;
+  \item a középső elem ciklus;
+  \item a ciklusmag egy elágazás;
+  \item az elágazás két ága $b$ és $c$.
+\end{enumerate}
+
+Pszeudókódban:
+
+\zvpseudocode[caption={Beágyazott strukturált program példa},label={lst:zv03_beagyazott_strukturalt_pelda}]{src/code/zv03_beagyazott_strukturalt_pelda.pseudo}
+
+Ez strukturált, mert a formula szintaktikailag csak $S$, $E$ és $C$ konstrukciókat tartalmaz.
+
+\subsection{Nem strukturált szerkezet strukturálása segédváltozóval}
+
+Bizonyos nem strukturált vezérlések csak úgy alakíthatók át kényelmesen strukturált formára, ha segédváltozót vezetünk be. Ilyen segédváltozó lehet egy logikai \code{flag}, amely jelzi, hogy folytatni kell-e egy ciklust, vagy végre kell-e hajtani egy programrészt.
+
+Például egy korai kilépést tartalmazó ciklus:
+
+\zvpseudocode[caption={Korai kilépés GOTO-val},label={lst:zv03_goto_korai_kilepes}]{src/code/zv03_goto_korai_kilepes.pseudo}
+
+Strukturáltabb alakban:
+
+\zvpseudocode[caption={Korai kilépés strukturálása segédváltozóval},label={lst:zv03_flag_strukturalas}]{src/code/zv03_flag_strukturalas.pseudo}
+
+Itt a \code{flag} jellegű \code{talalt} változó megszünteti a tetszőleges ugrást, és a kilépés feltételét a ciklusfeltételbe emeli.
+
+\begin{warningbox}
+A segédváltozós átírás elvileg helyes lehet, de nem mindig szebb. Gyakorlati programozásban sok nyelv támogatja a \code{break}, \code{continue} és \code{return} utasításokat. Ezek fegyelmezett használata általában elfogadható, de programgráf-elméleti szempontból külön vizsgálni kell, hogy nem sértik-e az egy belépési és egy kilépési pont elvét.
+\end{warningbox}
+
+\section{Ciklikus bonyolultság}
+
+\subsection{A ciklikus bonyolultság fogalma}
+
+A \textbf{ciklikus bonyolultság} a programgráf vezérlési összetettségét méri. A tételben használt jelölés szerint:
+
+\[
+m(P)=e-c,
+\]
+
+ahol $e$ a programgráf éleinek száma, $c$ pedig a programgráf csomópontjainak száma a kurzuson használt számolási konvenció szerint. Ha a START és STOP csomópontokat is beleszámoljuk a csúcsszámba, akkor gyakran az ekvivalens, klasszikus alakot használják:
+
+\[
+M=E-N+2,
+\]
+
+összefüggő, egy belépésű és egy kilépésű vezérlési gráf esetén. A két képlet közötti különbség a számolási konvencióból adódik.
+
+A ciklikus bonyolultság gyakorlati értelmezése:
+
+\begin{itemize}
+  \item megmutatja, mennyi független vezérlési út van a programban;
+  \item minden új döntési pont növeli a bonyolultságot;
+  \item jó közelítést ad arra, hogy legalább hány teszteset szükséges a független utak lefedéséhez;
+  \item nagy értéke gyakran nehezen áttekinthető programrészt jelez.
+\end{itemize}
+
+\subsection{A ciklikus bonyolultság tétele}
+
+A tételben szereplő fontos összefüggés:
+
+\[
+m(P)=p+1,
+\]
+
+ahol $p$ a programgráfban lévő predikátumcsomópontok száma.
+
+Ez a gyakorlatban nagyon egyszerű számolást ad: ha a programban három döntési pont van, akkor a ciklikus bonyolultság $4$.
+
+\subsection{A tétel bizonyítása}
+
+Jelölések:
+
+\begin{itemize}
+  \item $p$: predikátumcsomópontok száma;
+  \item $f$: függvény- vagy műveletcsomópontok száma;
+  \item $g$: gyűjtőpontok száma;
+  \item $e$: élek száma;
+  \item $c$: csomópontok száma.
+\end{itemize}
+
+A csomópontok száma:
+
+\[
+c=p+f+g.
+\]
+
+Az élek számát a bemenő és kimenő élek alapján is felírhatjuk. A kurzuson használt jelöléssel:
+
+\[
+e=p+f+2g+1,
+\]
+
+illetve:
+
+\[
+e=2p+f+g+1.
+\]
+
+A két kifejezés ugyanazt az élszámot adja, ezért:
+
+\[
+p+f+2g+1=2p+f+g+1.
+\]
+
+Ebből:
+
+\[
+g=p.
+\]
+
+Ezt visszahelyettesítve:
+
+\[
+c=p+f+g=2p+f,
+\]
+
+és:
+
+\[
+e=2p+f+g+1=3p+f+1.
+\]
+
+Így:
+
+\[
+m(P)=e-c=(3p+f+1)-(2p+f)=p+1.
+\]
+
+Ezzel beláttuk, hogy a ciklikus bonyolultság a predikátumok számán keresztül is meghatározható.
+
+\subsection{Példa ciklikus bonyolultság számítására}
+
+Tekintsük az alábbi programot:
+
+\zvpseudocode[caption={Ciklikus bonyolultság példaprogramja},label={lst:zv03_ciklikus_bonyolultsag_pelda}]{src/code/zv03_ciklikus_bonyolultsag_pelda.pseudo}
+
+A programban két predikátum van: $p$ és $q$. Ezért:
+
+\[
+m(P)=p_{db}+1=2+1=3.
+\]
+
+Ugyanez a program formulával:
+
+\[
+S(E(p;a,b),C(q;c)).
+\]
+
+A formula is mutatja, hogy két döntési pont szerepel benne: egy elágazás és egy ciklusfeltétel.
+
+\section{Lényeges bonyolultság és további tételek}
+
+\subsection{Nem strukturált program ciklikus bonyolultságának tétele}
+
+A tételben szereplő fontos állítás:
+
+\[
+\text{ha }P\text{ nem strukturált, akkor }m(P)\geq 3.
+\]
+
+Ennek intuitív magyarázata az, hogy a nagyon egyszerű vezérlési gráfok, amelyek ciklikus bonyolultsága $1$ vagy $2$, még nem tartalmaznak elég összetett vezérlést ahhoz, hogy valódi strukturálatlanság jelenjen meg bennük. A strukturálatlansághoz legalább olyan vezérlési szerkezet kell, amelyben több döntési és visszacsatolási kapcsolat keveredik.
+
+\subsection{Lényeges bonyolultság}
+
+A \textbf{lényeges bonyolultság} azt méri, hogy a programgráfban mennyi olyan bonyolultság marad, amelyet nem lehet strukturált alapelemek lebontásával eltávolítani.
+
+Definíció:
+
+\[
+M(P)=m(P)-k,
+\]
+
+ahol $k$ a programgráfban elvégezhető olyan maximális lebontási lépések száma, amelyekben predikátumot tartalmazó strukturált alapelemet vonunk össze.
+
+Ha egy programban sok döntés van, de ezek mind szépen strukturált elágazások vagy ciklusok részei, akkor a ciklikus bonyolultság lehet nagy, a lényeges bonyolultság mégis kicsi marad.
+
+\subsection{Strukturált program lényeges bonyolultságának tétele}
+
+A strukturált programokra teljesül:
+
+\[
+M(P)=1.
+\]
+
+Bizonyítás:
+
+strukturált program esetében minden predikátum része egy lebontási lépésnek. Ha a predikátumok száma $p$, akkor $k=p$. A ciklikus bonyolultság tétele szerint $m(P)=p+1$. Ezért:
+
+\[
+M(P)=m(P)-k=(p+1)-p=1.
+\]
+
+Ez azt fejezi ki, hogy a strukturált programban a döntési pontok ugyan növelik a ciklikus bonyolultságot, de nem hagynak hátra strukturálatlan, lényegi bonyolultságot.
+
+\subsection{A bonyolultsági tételek gyakorlati jelentése}
+
+A bonyolultsági tételek nem csak elméleti érdekességek. A gyakorlatban a következőkre használhatók:
+
+\begin{itemize}
+  \item túl bonyolult metódusok felismerése;
+  \item tesztesetek minimális számának becslése;
+  \item refaktorálási igény jelzése;
+  \item nem strukturált vezérlés azonosítása;
+  \item kódminőségi metrikák számítása.
+\end{itemize}
+
+Fontos azonban, hogy a ciklikus bonyolultság önmagában nem mér mindent. Egy program lehet alacsony ciklikus bonyolultságú, de rosszul elnevezett, túl hosszú vagy nehezen érthető. Fordítva is igaz: egy algoritmus természeténél fogva tartalmazhat több döntési pontot, mégis lehet jól strukturált és jól olvasható.
+
+\section{Részletes kidolgozott példa}
+
+\subsection{Feladat}
+
+Adott egy sorozat. Döntsük el, hogy van-e benne pozitív páros szám, és ha van, írjuk ki az első ilyen elemet.
+
+\subsection{Strukturált pszeudókód}
+
+\zvpseudocode[caption={Strukturált keresési példa},label={lst:zv03_kereses_strukturalt_pelda}]{src/code/zv03_kereses_strukturalt_pelda.pseudo}
+
+\subsection{Programformula}
+
+A program magas szintű formulája:
+
+\[
+\begin{aligned}
+P = S\Bigl(&i\leftarrow 1,\ talalt\leftarrow hamis,\\
+& C(i\leq n\land talalt=hamis;\\
+&\quad E(T(X_i);\\
+&\qquad S(talalt\leftarrow igaz,\ ertek\leftarrow X_i),\\
+&\qquad i\leftarrow i+1)),\\
+& E(talalt;\ kiir(ertek),\ kiir(nincs))\Bigr).
+\end{aligned}
+\]
+
+Itt:
+
+\[
+T(X_i) \equiv X_i>0\land X_i\bmod 2=0.
+\]
+
+A formula csak szekvenciát, elágazást és ciklust használ, ezért a program strukturált.
+
+\subsection{Ciklikus bonyolultság}
+
+A programban három predikátumot azonosíthatunk:
+
+\begin{enumerate}
+  \item a \code{WHILE} feltétele;
+  \item a cikluson belüli \code{IF} feltétele;
+  \item a ciklus utáni \code{IF talalt} feltétel.
+\end{enumerate}
+
+Ezért:
+
+\[
+m(P)=p+1=3+1=4.
+\]
+
+A program strukturált, ezért a lényeges bonyolultsága:
+
+\[
+M(P)=1.
+\]
+
+\subsection{Struktogram értelmezése}
+
+A struktogram ebben az esetben a következő hierarchiát mutatná:
+
+\begin{enumerate}
+  \item inicializáló szekvencia;
+  \item ciklus;
+  \item a cikluson belül elágazás;
+  \item a ciklus után újabb elágazás;
+  \item mindez egyetlen külső szekvenciába ágyazva.
+\end{enumerate}
+
+Ez jól mutatja a strukturált programozás lényegét: a vezérlés nem tetszőleges ugrások hálózata, hanem egymásba ágyazott, szabályos blokkok rendszere.
+
+\section{Tipikus vizsgakérdések és válaszvázlatok}
+
+\subsection{Mi a különbség a programgráf és a struktogram között?}
+
+A programgráf irányított gráfként ábrázolja a vezérlés lehetséges útjait. Tartalmazhat tetszőlegesebb szerkezeteket is, ezért alkalmas nem strukturált programok vizsgálatára. A struktogram ezzel szemben strukturált grafikus jelölés: egymásba ágyazott blokkokkal dolgozik, és természetes módon a szekvencia, elágazás és ciklus szerkezetére épül.
+
+\subsection{Mitől valódi egy program?}
+
+Attól, hogy programgráfja véges, megengedett típusú csomópontokból áll, és minden csomópontja része valamely START-tól STOP-ig vezető útvonalnak. Vagyis nincs benne elérhetetlen rész és nincs olyan rész sem, amelyből nem lehet kilépni.
+
+\subsection{Mitől strukturált egy program?}
+
+Attól, hogy programgráfja a strukturált alapelemek ismételt összevonásával egyetlen irányított élre bontható. Ekvivalensen: a program felírható olyan formulával, amely csak szekvenciát, elágazást és ciklust tartalmaz.
+
+\subsection{Miért fontos a Böhm-Jacopini tétel?}
+
+Azért, mert kimondja, hogy minden valódi programhoz létezik ekvivalens strukturált program. Ez azt jelenti, hogy a tetszőleges ugrások nem szükségesek az algoritmusok kifejezéséhez; a strukturált alapelemek elegendők.
+
+\subsection{Hogyan számolható a ciklikus bonyolultság?}
+
+A tételben használt képlet szerint:
+
+\[
+m(P)=e-c.
+\]
+
+A gyakorlatban sokszor egyszerűbb a predikátumok számából számolni:
+
+\[
+m(P)=p+1.
+\]
+
+Tehát minden döntési pont eggyel növeli a ciklikus bonyolultságot.
+
+\subsection{Mi a lényeges bonyolultság jelentése?}
+
+A lényeges bonyolultság azt méri, hogy mennyi strukturálatlan bonyolultság marad a gráfban a strukturált részek lebontása után. Strukturált program esetén ez mindig $1$.
+
+\section{Rövid összefoglalás}
+
+\begin{summarybox}
+A strukturált programozás lényege, hogy a program vezérlését szabályos, egy belépési és egy kilépési ponttal rendelkező szerkezetekből építjük fel. A programgráf a vezérlés irányított gráfos modellje, a struktogram pedig ennek strukturált, blokkalapú grafikus leírása. Egy program valódi, ha a vezérlési gráfja jól formált és minden része START-tól STOP-ig vezető út része. Egy program strukturált, ha a programgráfja szekvenciák, elágazások és ciklusok lebontásával egyetlen élre redukálható. A ciklikus bonyolultság a döntési pontok számával arányos: $m(P)=p+1$. A strukturált programok lényeges bonyolultsága $1$.
+\end{summarybox}
+
+\section{Vizsgán gyorsan elmondható feleletvázlat}
+
+\begin{enumerate}
+  \item A strukturált programozás célja a tetszőleges ugrások helyett jól áttekinthető vezérlési szerkezetek használata.
+  \item A három alapvető szerkezet: szekvencia $S$, elágazás $E$, ciklus $C$.
+  \item A programgráf irányított gráf, amelyben a csomópontok műveletek, predikátumok és gyűjtőpontok, az élek pedig a vezérlés átadását jelölik.
+  \item A valódi program véges, jól formált, és minden csomópontja START-tól STOP-ig vezető út része.
+  \item Strukturált program az, amelynek programgráfja strukturált alapelemek összevonásával egyetlen élre bontható.
+  \item A program formula alakban is leírható: például $S(a,E(p;b,c),C(q;d))$.
+  \item A struktogram a strukturált program blokkalapú grafikus ábrázolása.
+  \item A Böhm-Jacopini tétel szerint minden valódi programhoz létezik ekvivalens strukturált program.
+  \item A ciklikus bonyolultság a kurzus jelölésével $m(P)=e-c$, illetve $m(P)=p+1$.
+  \item A lényeges bonyolultság $M(P)=m(P)-k$, strukturált program esetén $M(P)=1$.
+\end{enumerate}

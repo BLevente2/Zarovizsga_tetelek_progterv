@@ -1,0 +1,323 @@
+\section{A tétel lényege és vizsgaszintű vázlata}
+
+\begin{summarybox}
+A 24. tétel a TCP/IP protokollszövet és az Internet működésének hálózati alapjait foglalja össze. A központi gondolat az, hogy a TCP/IP nem egyetlen protokoll, hanem rétegekbe szervezett protokollcsalád: az alkalmazások alatt a TCP vagy UDP szállítási szolgáltatás, az alatt az IP-alapú Internet réteg, legalul pedig a konkrét hálózati hozzáférési technológia működik. Vizsgán különösen fontos az ISO--OSI és a DoD modell összevetése, az ARP, RARP, IP, ICMP, TCP és UDP szerepe, valamint az IPv4 címzés fejlődése a címosztályoktól a subnetting, VLSM, CIDR és NAT irányába. A tétel végén az IPv6 címzés alapjai és címtípusai zárják az anyagot.
+\end{summarybox}
+
+Vizsgán célszerű a következő sorrendet követni:
+
+\begin{enumerate}
+  \item az Internet mint hálózatok hálózata és a TCP/IP protokollszövet fogalma;
+  \item a TCP/IP / DoD modell rétegei és összevetése az ISO--OSI modellel;
+  \item a fő protokollok helye és feladata: ARP, RARP, IP, ICMP, TCP, UDP;
+  \item az IP best effort, összeköttetésmentes datagram szolgáltatása;
+  \item TCP és UDP összehasonlítása portok, megbízhatóság és kapcsolatjelleg alapján;
+  \item IPv4 címek: 32 bit, pontozott decimális jelölés, netid és hostid;
+  \item klasszikus IPv4 címosztályok: A, B, C, D, E;
+  \item maszk, prefix, subnetting és a hálózati cím kiszámítása;
+  \item VLSM és longest prefix match;
+  \item CIDR és supernetting szerepe az aggregációban;
+  \item privát/lokális IPv4 címtartományok és NAT/PAT működése;
+  \item IPv6 célja, 128 bites címek, prefixjelölés, rövidítés;
+  \item IPv6 címtípusok: unicast, multicast, anycast, link-local, unique local, global unicast;
+  \item gyakori vizsgahibák és rövid összefoglaló válasz.
+\end{enumerate}
+
+A legfontosabb vizsgamondat: a TCP/IP modellben az IP egységes, összeköttetésmentes hálózatközi datagram szolgáltatást ad heterogén hálózatok fölött; a TCP erre megbízható bájtfolyamot, az UDP pedig egyszerű datagram szolgáltatást épít, az IPv4 címzés skálázási problémáit pedig subnetting, VLSM, CIDR, privát címek és NAT enyhítik, míg az IPv6 alapvetően nagyobb, hierarchikusabb címtérrel oldja meg a problémát.
+
+\section{Az Internet és a TCP/IP protokollszövet}
+
+\subsection{Az Internet fogalma}
+
+Az \textbf{Internet} egymással összekapcsolt, önállóan működő hálózatok világméretű rendszere. Szemléletesen nem egyetlen nagy helyi hálózat, hanem hálózatok hálózata. Az összekapcsolás lényege az, hogy különböző fizikai és adatkapcsolati technológiák fölött egységes hálózatközi címzést és csomagtovábbítást használunk.
+
+Egy végállomás szempontjából a cél lehet helyi vagy távoli. Helyi cél esetén a küldő közvetlenül az adott helyi hálózati technológiával, például Ethernet-keretben tudja elérni a másik állomást. Távoli cél esetén a csomagot egy \textbf{routernek}, vagyis útválasztónak kell átadni. A routerek IP-címek és útválasztási táblák alapján továbbítják a datagramokat a következő ugrás felé.
+
+\subsection{Protokollszövet}
+
+A \textbf{TCP/IP protokollszövet} olyan protokollok együttese, amelyek egymásra épülve adnak teljes hálózati kommunikációs szolgáltatást. A protokollszövet kifejezés azért találó, mert nem egyetlen szigorúan elkülönített protokollról beszélünk, hanem több, egymással összedolgozó protokollról: IP, ICMP, ARP, TCP, UDP és sok alkalmazási protokoll tartozik ide.
+
+A TCP/IP család tervezési szempontból gyakorlati, Internet-központú modell. Nem mindenhol feleltethető meg tökéletesen az ISO--OSI modellnek, mert a DoD/TCP/IP modell kevesebb réteget használ, és egyes OSI-funkciókat az alkalmazási protokollokra vagy a konkrét hálózati technológiára bíz.
+
+\input{src/figures/zv24_tcpip_stack.tex}
+
+\section{Az Internet hivatkozási modell és az ISO--OSI összevetése}
+
+\subsection{A DoD / TCP/IP modell rétegei}
+
+Az Internet hivatkozási modelljét gyakran \textbf{DoD modellnek} is nevezik. Négy fő réteggel szokás bemutatni:
+
+\begin{itemize}
+  \item \textbf{Application}: alkalmazási protokollok és felhasználói folyamatok;
+  \item \textbf{Host-to-Host} vagy \textbf{Transport}: végpont--végpont szállítási szolgáltatás, TCP és UDP;
+  \item \textbf{Internet}: hálózatközi datagram továbbítás, IP és vezérlő protokollok;
+  \item \textbf{Network Access} vagy \textbf{Link}: konkrét adatkapcsolati és fizikai hálózat elérése.
+\end{itemize}
+
+Az ISO--OSI modell hét rétege részletesebb fogalmi bontást ad. A TCP/IP modellben az OSI alkalmazási, megjelenítési és viszony rétege jellemzően egyetlen alkalmazási rétegként jelenik meg. Az OSI adatkapcsolati és fizikai rétege pedig a TCP/IP modellben sokszor együtt, hálózati hozzáférési rétegként szerepel.
+
+\input{src/figures/zv24_dod_osi_mapping.tex}
+
+\begin{center}
+\input{src/tables/zv24_osi_dod_osszehasonlitas.tex}
+\end{center}
+
+\subsection{Az összevetés lényege}
+
+Az ISO--OSI modell elsősorban oktatási és szabványosítási szempontból tiszta rétegmodellt ad. Pontosan elkülöníti például a megjelenítési és viszony réteget. A TCP/IP modell történetileg az Internet működő protokollcsaládja köré épült, ezért gyakorlatiasabb és kevésbé merev.
+
+A két modell összevetésekor fontos, hogy a rétegek nem mindig egy az egyben azonosak. Például az ARP nem illeszkedik teljesen tisztán egyetlen OSI rétegbe: az IPv4 Internet rétegéhez kapcsolódó címet oldja fel adatkapcsolati címre, de maga helyi hálózati keretekben működik. Hasonlóan az ICMP az IP működését segítő vezérlő protokoll, de nem egy felhasználói szállítási protokoll.
+
+\section{A TCP/IP protokollszövet főbb protokolljai}
+
+\subsection{A fő protokollok helye és szerepe}
+
+A TCP/IP protokollszövetben minden fő protokollnak jól meghatározható feladata van. Az IP adja a közös hálózatközi csomagtovábbítást. A TCP és az UDP a végpontok alkalmazásai között különböző jellegű szállítási szolgáltatást adnak. Az ICMP az IP működéséhez szükséges vezérlő- és hibaüzeneteket viszi. Az ARP és a RARP a logikai IP-címzés és a helyi hálózati címzés közötti átmenethez kapcsolódik.
+
+\begin{center}
+\input{src/tables/zv24_tcpip_protokollok.tex}
+\end{center}
+
+\subsection{ARP és RARP}
+
+Az \textbf{ARP -- Address Resolution Protocol} IPv4-hálózatokban arra szolgál, hogy egy ismert IPv4-címhez megtaláljuk a helyi hálózaton használt adatkapcsolati címet, például Ethernet MAC-címet. Ha a cél ugyanazon a helyi hálózaton van, a cél IP-címét kell feloldani. Ha a cél távoli hálózatban van, akkor nem a távoli cél MAC-címét keressük, hanem a következő ugrás, tipikusan az alapértelmezett átjáró MAC-címét.
+
+Az ARP kérés általában broadcast keretben megy ki: a küldő megkérdezi, hogy ki használja az adott IPv4-címet. Az érintett állomás ARP választ küld, amelyben közli a saját MAC-címét. A gépek ARP cache-ben tárolják a frissen megtanult megfeleltetéseket, hogy ne kelljen minden csomag előtt újra kérdezni.
+
+\input{src/figures/zv24_arp_folyamat.tex}
+
+A \textbf{RARP -- Reverse Address Resolution Protocol} a fordított irányú régi megoldás volt: egy állomás a saját MAC-címe alapján próbálta megtudni az IP-címét. Ez főleg lemez nélküli gépek indításánál volt hasznos. A gyakorlatban a BOOTP, majd a DHCP váltotta fel, mert ezek több konfigurációs adatot is tudnak szolgáltatni, például maszkot, átjárót és DNS-szervert.
+
+\subsection{IP és ICMP}
+
+Az \textbf{IP -- Internet Protocol} az Internet réteg alapja. Összeköttetésmentes, best effort szolgáltatást nyújt: a datagramokat megpróbálja eljuttatni a célhoz, de önmagában nem garantál kézbesítést, sorrendhelyességet, ismétlésmentességet vagy késleltetési felső korlátot.
+
+Az IP fő feladatai:
+
+\begin{itemize}
+  \item logikai címzés forrás- és célcímmel;
+  \item datagramok továbbítása routereken keresztül;
+  \item IPv4 esetén szükség szerint fragmentáció és összeállítás támogatása;
+  \item a csomag élettartamának korlátozása TTL, illetve IPv6-ban Hop Limit mezővel;
+  \item felsőbb rétegbeli protokoll azonosítása, például TCP vagy UDP.
+\end{itemize}
+
+Az \textbf{ICMP -- Internet Control Message Protocol} az IP működését segítő vezérlő protokoll. Hiba- és diagnosztikai üzeneteket továbbít. Például ha egy router nem tudja továbbítani a csomagot, ICMP hibajelzést küldhet. A \code{ping} eszköz ICMP echo request és echo reply üzeneteket használ. A \code{traceroute} működése is a TTL/Hop Limit lejártához kapcsolódó ICMP üzenetekre épülhet.
+
+Fontos, hogy az ICMP nem javítja ki automatikusan a hibákat, hanem jelzi azokat. A megbízhatóságot szükség esetén felsőbb réteg, például a TCP vagy maga az alkalmazás valósítja meg.
+
+\section{TCP és UDP}
+
+\subsection{Portok és multiplexálás}
+
+A szállítási réteg egyik alapfeladata az \textbf{alkalmazások közötti multiplexálás}. Egy gépen egyszerre több hálózati alkalmazás futhat, ezért nem elég csak a gép IP-címét megadni. A TCP és az UDP \textbf{portszámokat} használ: a végpontot az IP-cím, protokoll és port együtt azonosítja.
+
+Példák jól ismert portokra:
+
+\begin{itemize}
+  \item HTTP: TCP 80;
+  \item HTTPS: TCP 443;
+  \item SMTP: TCP 25;
+  \item DNS: tipikusan UDP 53, de TCP-t is használhat;
+  \item DHCP: UDP 67/68.
+\end{itemize}
+
+\subsection{TCP}
+
+A \textbf{TCP -- Transmission Control Protocol} összeköttetésalapú, megbízható bájtfolyam-szolgáltatást ad. Az alkalmazás bájtfolyamként látja az adatátvitelt, a TCP pedig szegmensekre bontja, sorszámozza, nyugtázza és szükség esetén újraküldi az adatokat.
+
+A TCP legfontosabb szolgáltatásai:
+
+\begin{itemize}
+  \item kapcsolatfelépítés és kapcsolatlezárás;
+  \item sorrendhelyes átadás;
+  \item hibás vagy elveszett szegmensek újraküldése;
+  \item duplikált adatok kiszűrése;
+  \item adatfolyam-vezérlés a fogadó túlterhelésének elkerülésére;
+  \item torlódásvezérlés a hálózat túlterhelésének mérséklésére.
+\end{itemize}
+
+A TCP akkor előnyös, ha az alkalmazás számára fontos, hogy az adatok hiánytalanul és helyes sorrendben érkezzenek meg. Ilyen például a weboldalak letöltése, fájlátvitel, e-mail küldés vagy távoli bejelentkezés.
+
+\subsection{UDP}
+
+Az \textbf{UDP -- User Datagram Protocol} összeköttetésmentes, egyszerű datagram szolgáltatást ad. Fejrésze kicsi, a protokoll nem épít kapcsolatot, nem sorszámoz, nem nyugtáz, nem végez automatikus újraküldést és nem garantál sorrendet.
+
+Az UDP előnye az egyszerűség és a kis többletterhelés. Olyan alkalmazásoknál hasznos, ahol a kis késleltetés fontosabb lehet, mint minden egyes csomag garantált pótlása, vagy ahol az alkalmazás maga kezeli a megbízhatóságot. Példák: DNS-kérések, DHCP, valós idejű hang- és videóátvitel, online játékok, TFTP.
+
+\begin{center}
+\input{src/tables/zv24_tcp_udp.tex}
+\end{center}
+
+\section{IPv4 címzés és klasszikus címosztályok}
+
+\subsection{IPv4 cím felépítése}
+
+Az \textbf{IPv4 cím} 32 bites, vagyis 4 bájtos logikai cím. Általában pontozott decimális alakban írjuk, például \texttt{193.6.5.73}. Minden oktett 0 és 255 közötti érték. A cím két fő része a hálózati rész és a gép, vagyis host rész.
+
+Klasszikus címosztályos címzésnél a cím első bitjei határozták meg, hol van a hálózati és host rész határa. Ez egyszerű volt, de pazarló. Egy A osztályú hálózat óriási, egy C osztályú hálózat viszont sok szervezetnek túl kicsi lehetett. Emiatt később megjelent a subnetting, VLSM és CIDR.
+
+\subsection{A, B, C, D és E osztály}
+
+\begin{center}
+\input{src/tables/zv24_ipv4_osztalyok.tex}
+\end{center}
+
+A klasszikus A, B és C osztály unicast hálózatokhoz kötődött, vagyis konkrét állomások címzéséhez. A D osztály multicast csoportcímeket jelent, az E osztály pedig fenntartott tartomány.
+
+Fontos speciális címek:
+
+\begin{itemize}
+  \item \texttt{0.0.0.0}: több kontextusban is speciális, például default route prefixként \texttt{0.0.0.0/0};
+  \item host rész csupa 0: hálózati cím;
+  \item host rész csupa 1: adott alhálózat broadcast címe;
+  \item \texttt{127.0.0.0/8}: loopback;
+  \item \texttt{255.255.255.255}: korlátozott broadcast a helyi hálózaton.
+\end{itemize}
+
+\section{Maszk, subnet, supernet, CIDR és VLSM}
+
+\subsection{Maszk és prefix}
+
+A \textbf{subnet maszk} megadja, hogy az IPv4 cím mely bitjei tartoznak a hálózati részhez. A maszkban a hálózati részt 1-es bitek, a host részt 0-s bitek jelölik. Például:
+
+\begin{itemize}
+  \item \texttt{255.255.255.0} megfelel a \texttt{/24} prefixnek;
+  \item \texttt{255.255.255.128} megfelel a \texttt{/25} prefixnek;
+  \item \texttt{255.255.255.224} megfelel a \texttt{/27} prefixnek.
+\end{itemize}
+
+A hálózati cím az IP-cím és a maszk bitenkénti AND műveletével kapható meg. Például a \texttt{193.6.5.130/27} címnél a blokk mérete 32 cím, ezért a cím a \texttt{193.6.5.128/27} alhálózatba tartozik. Ebben az alhálózatban a \texttt{193.6.5.128} a hálózati cím, a \texttt{193.6.5.159} a broadcast cím, és \texttt{193.6.5.129}--\texttt{193.6.5.158} között vannak kiosztható hostcímek.
+
+\subsection{Subnetting}
+
+\textbf{Subnetting} esetén egy eredeti hálózatot kisebb alhálózatokra bontunk. Ezt úgy érjük el, hogy a host bitek egy részét alhálózat-azonosítóként használjuk. Ha például egy \texttt{/24} hálózatot \texttt{/27} alhálózatokra bontunk, akkor 3 bitet veszünk el a host részből. Így 8 darab \texttt{/27} alhálózat keletkezik, és minden alhálózatban 5 host bit marad, vagyis 32 cím, ebből klasszikusan 30 kiosztható hostcím.
+
+A subnetting előnye, hogy egy szervezet a saját címtartományát belső topológia, telephelyek, VLAN-ok vagy részlegek szerint oszthatja fel. Hátránya, hogy minden alhálózatban van hálózati és broadcast cím, valamint a maszk pontos konfigurálása nélkül a címzés nem értelmezhető helyesen.
+
+\subsection{VLSM és leghosszabb prefix egyezés}
+
+A \textbf{VLSM -- Variable Length Subnet Mask} változó hosszúságú alhálózati maszkokat jelent. Ahelyett, hogy minden alhálózat egyforma méretű lenne, a nagyobb részlegek nagyobb, a kisebb pont--pont linkek vagy kis részlegek kisebb címtartományt kaphatnak.
+
+VLSM esetén az útválasztóknak a prefixet is ismerniük kell. Ha egy célcím több bejegyzésre is illeszkedik, a router a \textbf{leghosszabb prefix egyezést} választja. Ez azt jelenti, hogy a legspecifikusabb, legtöbb hálózati bitet tartalmazó bejegyzés nyer.
+
+Például ha a routing táblában szerepel \texttt{2.28.0.0/16}, \texttt{2.28.137.0/24} és \texttt{2.28.137.128/25}, akkor a \texttt{2.28.137.130} célcímre a \texttt{/25} bejegyzés a legspecifikusabb.
+
+\subsection{CIDR és supernetting}
+
+A \textbf{CIDR -- Classless Inter-Domain Routing} osztály nélküli címzést jelent. A CIDR lényege, hogy a hálózat méretét nem az A, B vagy C osztály határozza meg, hanem a prefix hossza. Így rugalmasan lehet kisebb vagy nagyobb blokkokat kiosztani.
+
+A \textbf{supernetting} több szomszédos címtartomány összevonása rövidebb prefix alatt. Például 16 egymás utáni C osztályú \texttt{/24} hálózat összevonható egy \texttt{/20} prefix alá, ha a címek bitszinten folytonosak és a topológia ezt támogatja. Ennek fő előnye a routing táblák méretének csökkentése: sok kis bejegyzés helyett egy aggregált bejegyzés is elég lehet.
+
+\begin{center}
+\input{src/tables/zv24_cimzesi_modszerek.tex}
+\end{center}
+
+\input{src/figures/zv24_subnet_cidr_vlsm.tex}
+
+\section{Címek kiosztása, lokális címek és NAT}
+
+\subsection{Globális és privát címek}
+
+A globális Interneten az IP-címeknek egyedinek kell lenniük. A címkiosztás hierarchikus szervezetekhez kötődik: globális és regionális címkiosztó szervezetek kezelik a nyilvános címtartományokat. Egy szervezeten belül a címek további kiosztása már helyi adminisztrációs feladat.
+
+IPv4-ben a címtér szűkössége miatt külön \textbf{privát címtartományokat} jelöltek ki. Ezeket belső hálózatokban szabad használni, de a publikus Interneten nem irányítják őket. Ha egy privát című gép publikus Internet-szolgáltatást akar elérni, akkor tipikusan NAT-ra van szükség.
+
+\begin{center}
+\input{src/tables/zv24_lokalis_cimek_nat.tex}
+\end{center}
+
+\subsection{NAT és PAT}
+
+A \textbf{NAT -- Network Address Translation} címfordítást jelent. A NAT átjáró a belső hálózat privát IP-címeit külső, publikus címre vagy címekre fordítja. A leggyakoribb otthoni és kisvállalati változat a portokat is módosítja; ezt gyakran \textbf{PAT}-nak vagy \textbf{NAPT}-nak nevezik.
+
+Egyetlen külső cím esetén a NAT átjáró a kimenő csomagban kicseréli a belső forráscímet a saját külső címére, és szükség esetén új forrásportot választ. A fordítást táblázatba írja. Amikor a válasz megérkezik a külső címre és portra, a táblázat alapján vissza tudja alakítani a célcímet és célportot a belső gép címére.
+
+\input{src/figures/zv24_nat_mukodes.tex}
+
+A NAT előnye, hogy sok belső gép osztozhat kevés publikus IPv4 címen, és a belső címzés részben elrejthető. Hátránya, hogy megtöri az eredeti végpont--végpont Internet-modellt, problémát okozhat olyan protokolloknál, amelyek IP-címet vagy portot hordoznak az alkalmazási adatban, és külön megoldásokat igényelhet bejövő kapcsolatokhoz.
+
+\section{IPv6 címzés}
+
+\subsection{Miért volt szükség IPv6-ra?}
+
+Az IPv4 32 bites címtérrel dolgozik, ami elméletileg körülbelül 4 milliárd címet jelent, de a gyakorlatban a címosztályos kiosztás, a fenntartott tartományok, a topológiai igények és az útválasztási aggregáció miatt ennél jóval kevesebb hatékonyan használható cím áll rendelkezésre. A subnetting, CIDR és NAT sokat javított a helyzeten, de nem szüntette meg alapvetően a címtér korlátját.
+
+Az \textbf{IPv6} 128 bites címeket használ. Ez rendkívül nagy címtér, amely megkönnyíti a hierarchikus címkiosztást, az aggregációt és az automatikus konfigurációt. IPv6-ban az címek valójában interfészekhez kötődnek: egy hostnak több interfésze és egy interfésznek több címe is lehet.
+
+\subsection{IPv6 címek jelölése}
+
+Az IPv6 címet 8 darab 16 bites hexadecimális csoporttal írjuk. Példa teljes alakra:
+
+\begin{center}
+\texttt{2001:0db8:0000:0000:0000:0000:0000:0001}
+\end{center}
+
+A jelölés rövidíthető:
+
+\begin{itemize}
+  \item a csoportok elején álló nullák elhagyhatók;
+  \item egyetlen, egymást követő nullacsoport-sorozat \texttt{::} alakban rövidíthető;
+  \item ezért a fenti cím röviden: \texttt{2001:db8::1}.
+\end{itemize}
+
+A \texttt{::} rövidítés egy címben csak egyszer használható, különben nem lenne egyértelmű, hány nullacsoportot kell visszaállítani. IPv6-ban nem hagyományos decimális maszkot használunk, hanem prefixhosszt, például \texttt{2001:db8:1234::/48}.
+
+\subsection{IPv6 és IPv4 fontos különbségei}
+
+Az IPv6 nem egyszerűen hosszabb IPv4-címeket jelent. Több szerkezeti különbség is van:
+
+\begin{itemize}
+  \item az IPv6 cím 128 bites, az IPv4 cím 32 bites;
+  \item IPv6-ban nincs broadcast, helyette multicast címzés használható;
+  \item az ARP szerepét IPv6-ban a Neighbor Discovery veszi át ICMPv6 üzenetekkel;
+  \item IPv6-ban a routerek nem fragmentálnak, a fragmentációt a küldő végpont kezeli;
+  \item az IPv6 al fejrésze fix 40 bájtos, az opcionális információk kiegészítő fejrészekben jelennek meg;
+  \item a Hop Limit az IPv4 TTL megfelelője;
+  \item támogatott az állapotmentes és állapottartó automatikus címkonfiguráció.
+\end{itemize}
+
+\subsection{IPv6 címtípusok}
+
+IPv6-ban a címek fő típusai: \textbf{unicast}, \textbf{multicast} és \textbf{anycast}. Broadcast cím nincs.
+
+\begin{itemize}
+  \item \textbf{Unicast}: egy konkrét interfészt azonosít. A csomag egy célhoz megy.
+  \item \textbf{Multicast}: interfészek csoportját azonosítja. A csomag a csoport tagjaihoz jut el.
+  \item \textbf{Anycast}: ugyanaz a cím több interfészen is beállítható; a routing a topológiailag legközelebbi példányhoz viszi a csomagot.
+\end{itemize}
+
+Fontos unicast alcsoportok:
+
+\begin{itemize}
+  \item \textbf{global unicast}: globálisan irányítható cím, tipikusan \texttt{2000::/3};
+  \item \textbf{link-local}: \texttt{fe80::/10}, csak az adott linken érvényes;
+  \item \textbf{unique local}: \texttt{fc00::/7}, szervezeten belüli, privát jellegű címzés;
+  \item \textbf{loopback}: \texttt{::1};
+  \item \textbf{unspecified}: \texttt{::}, például még nem ismert forráscím jelölésére.
+\end{itemize}
+
+\begin{center}
+\input{src/tables/zv24_ipv6_cimtipusok.tex}
+\end{center}
+
+\input{src/figures/zv24_ipv6_cimtipusok.tex}
+
+\section{Gyakori vizsgahibák}
+
+\begin{warningbox}
+\begin{itemize}
+  \item \textbf{TCP/IP és OSI összekeverése}: a TCP/IP modellben nincs külön megjelenítési és viszony réteg; ezek funkciói jellemzően az alkalmazási rétegben vagy az alkalmazási protokollban jelennek meg.
+  \item \textbf{ARP távoli célra}: távoli IP-címnél nem a távoli gép MAC-címét keressük, hanem a következő ugrás, például az alapértelmezett átjáró MAC-címét.
+  \item \textbf{IP megbízhatóság}: az IP best effort, nem garantálja a kézbesítést. A megbízhatóságot TCP vagy az alkalmazás adhatja.
+  \item \textbf{TCP és UDP leegyszerűsítése}: az UDP nem rossz TCP, hanem egyszerű, kis többletű datagram szolgáltatás olyan helyzetekre, ahol ez előnyös.
+  \item \textbf{CIDR és VLSM keverése}: mindkettő prefixalapú rugalmasságot ad, de a CIDR főleg osztály nélküli címkiosztás és aggregáció, a VLSM pedig különböző méretű alhálózatok kialakítása.
+  \item \textbf{IPv6 broadcast}: IPv6-ban nincs broadcast cím, a megfelelő feladatokat multicast címek és Neighbor Discovery mechanizmusok veszik át.
+\end{itemize}
+\end{warningbox}
+
+\section{Rövid összefoglaló válasz vizsgára}
+
+\begin{summarybox}
+A TCP/IP protokollszövet az Internet gyakorlati protokollcsaládja. A DoD modell alkalmazási, szállítási, Internet és hálózati hozzáférési rétegre bontható. Az OSI modellhez képest kevesebb, gyakorlatiasabb réteget használ: az OSI felső három rétege lényegében az alkalmazási rétegbe kerül, az adatkapcsolati és fizikai réteg pedig a hálózati hozzáférési rétegben jelenik meg. Az IP összeköttetésmentes, best effort datagram szolgáltatást nyújt; az ICMP vezérlő és hibaüzeneteket visz; az ARP IPv4-címet old fel helyi adatkapcsolati címre, a RARP régi fordított címfeloldás volt. A TCP megbízható, összeköttetésalapú bájtfolyamot biztosít, az UDP egyszerű, összeköttetésmentes datagram szolgáltatást ad. IPv4-ben a cím 32 bites, klasszikusan A, B, C, D és E osztályok léteztek, de a hatékonyabb címhasználat miatt subnetting, VLSM, CIDR, supernetting, privát címek és NAT terjedtek el. IPv6-ban a cím 128 bites, nincs broadcast, a fő címtípusok az unicast, multicast és anycast, fontos alcímek a global unicast, link-local és unique local címek.
+\end{summarybox}

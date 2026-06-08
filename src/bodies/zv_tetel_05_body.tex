@@ -1,0 +1,427 @@
+\section{A tétel lényege és vizsgaszintű vázlata}
+
+\begin{summarybox}
+A rendezés olyan alapvető algoritmikai feladat, amelyben egy sorozat elemeit egy megadott rendezési reláció szerint kell sorrendbe állítani. A tétel fő gondolata az, hogy a rendezési algoritmusok között nagy különbség van aszerint, hogy összehasonlításokon alapulnak-e, helyben dolgoznak-e, stabilak-e, mennyi segédmemóriát igényelnek, és milyen időigényük van a legjobb, átlagos és legrosszabb esetben.
+\end{summarybox}
+
+Vizsgán a tétel jól felépíthető a következő sorrendben:
+
+\begin{enumerate}
+  \item rendezés fogalma, rendezési reláció, kulcs és rekord;
+  \item rendezési szempontok: stabilitás, helyben rendezés, adaptivitás, belső és külső rendezés;
+  \item egyszerű, többnyire négyzetes rendezések: beszúró, buborék, minimum kiválasztásos;
+  \item oszd meg és uralkodj elv: összefésülő rendezés és gyorsrendezés;
+  \item Shell rendezés és négyzetes rendezés mint köztes ötletek;
+  \item lineáris idejű rendezések: leszámláló és számjegyes rendezés;
+  \item összehasonlító rendezések alsó korlátja: bármely összehasonlító rendezés legrosszabb esetben legalább $\Omega(n\log n)$ összehasonlítást igényel.
+\end{enumerate}
+
+A legfontosabb vizsgamondat: az összehasonlító rendezések általános alsó korlátja $\Omega(n\log n)$, ezért lineáris idejű rendezést csak akkor kaphatunk, ha a kulcsokra külön feltételeket teszünk, és nem pusztán páronkénti összehasonlításokból dolgozunk.
+
+\begin{center}
+\input{src/tables/zv05_rendezesek_osszefoglalo.tex}
+\end{center}
+
+\section{A rendezés alapfogalmai}
+
+\subsection{Rendezési reláció és rendezendő sorozat}
+
+Rendezésről akkor beszélhetünk, ha az adatok között értelmezve van valamilyen rendezési reláció. Tipikus esetben a reláció a $\leq$ reláció, de a rendezés alapja lehet például név szerinti betűrend, dátum, ár, pontszám vagy többmezős kulcs is.
+
+Egy $A[1..n]$ sorozat növekvő rendezése azt jelenti, hogy a kimeneti sorozat ugyanazokat az elemeket tartalmazza, mint a bemenet, de teljesül rá:
+
+\[
+A[1] \leq A[2] \leq \dots \leq A[n].
+\]
+
+Ha rekordokat rendezünk, akkor általában nem az egész rekord határozza meg a sorrendet, hanem annak egy vagy több \textbf{kulcsa}. Például hallgatói rekordoknál lehet kulcs a Neptun-kód, a név vagy az átlag.
+
+\subsection{Rendezési algoritmusok fontos tulajdonságai}
+
+Egy rendezési algoritmust nem csak az időigény alapján érdemes értékelni. A gyakorlatban a következő tulajdonságok is fontosak:
+
+\begin{itemize}
+  \item \textbf{Helyben rendezés:} az algoritmus legfeljebb konstans vagy nagyon kicsi extra tárat használ, az eredmény az eredeti tömbben áll elő.
+  \item \textbf{Stabilitás:} az azonos kulcsú elemek relatív sorrendje megmarad.
+  \item \textbf{Adaptivitás:} az algoritmus gyorsabb lehet, ha a bemenet már majdnem rendezett.
+  \item \textbf{Belső rendezés:} az adatok elférnek a memóriában.
+  \item \textbf{Külső rendezés:} az adatok háttértáron vannak, ezért a fájlműveletek és a blokkos hozzáférés dominálnak.
+  \item \textbf{Összehasonlító rendezés:} a sorrend kizárólag elempárok összehasonlításából derül ki.
+  \item \textbf{Nem összehasonlító rendezés:} a kulcs szerkezetét vagy tartományát is kihasználja, például egész kulcsok kis intervallumát.
+\end{itemize}
+
+\begin{center}
+\input{src/tables/zv05_tulajdonsagok_osszefoglalo.tex}
+\end{center}
+
+\input{src/figures/rendezesek_csoportositasa.tex}
+
+\subsection{Időelemzés szempontjai}
+
+A rendezések időigényét gyakran három esetben vizsgáljuk:
+
+\begin{itemize}
+  \item \textbf{legjobb eset:} a bemenet különösen kedvező, például már rendezett;
+  \item \textbf{átlagos eset:} a bemenet tipikus vagy véletlenszerű;
+  \item \textbf{legrosszabb eset:} a bemenet az algoritmus számára a lehető legkedvezőtlenebb.
+\end{itemize}
+
+A rendezések összehasonlításánál gyakori jelölések:
+
+\[
+\Theta(n^2),\qquad \Theta(n\log n),\qquad \Theta(n+k),\qquad \Theta(d(n+k)).
+\]
+
+Itt $n$ az elemek száma, $k$ például a kulcsok lehetséges értékeinek száma, $d$ pedig számjegyes rendezésnél a feldolgozott pozíciók száma.
+
+\section{Beszúró rendezés}
+
+\subsection{Alapelv}
+
+A \textbf{beszúró rendezés} úgy működik, ahogyan kézzel is rendezünk például kártyákat. A sorozat elején mindig fenntart egy rendezett részt, majd a következő elemet beszúrja ebbe a rendezett részbe a megfelelő helyre.
+
+A legfontosabb invariáns:
+
+\begin{summarybox}
+A $j$-edik külső cikluslépés előtt az $A[1..j-1]$ rész már rendezett, és pontosan az eredeti első $j-1$ elemet tartalmazza rendezett sorrendben.
+\end{summarybox}
+
+\input{src/figures/beszuro_rendezes_invarians.tex}
+
+\subsection{Pszeudókód}
+
+\zvpseudocode[caption={Beszúró rendezés},label={lst:zv05_beszuro_rendezes}]{src/code/zv05_beszuro_rendezes.pseudo}
+
+\subsection{Időigény}
+
+Ha a tömb már rendezett, akkor minden elemnél elég egy összehasonlítás, ezért a legjobb eset:
+
+\[
+T(n)=\Theta(n).
+\]
+
+Ha a tömb fordított sorrendű, akkor minden új kulcsot végig kell mozgatni a rendezett rész elejéig. Ekkor a mozgatások és összehasonlítások száma nagyságrendileg:
+
+\[
+1+2+\dots+(n-1)=\frac{n(n-1)}{2}=\Theta(n^2).
+\]
+
+Ezért a legrosszabb és az átlagos eset is:
+
+\[
+T(n)=\Theta(n^2).
+\]
+
+A beszúró rendezés előnye, hogy egyszerű, helyben rendez, stabil, és kis vagy majdnem rendezett adatsorokra jó választás lehet.
+
+\section{Oszd meg és uralkodj elv}
+
+\subsection{Az elv általános menete}
+
+Az \textbf{oszd meg és uralkodj} stratégia három fő lépésből áll:
+
+\begin{enumerate}
+  \item \textbf{Felosztás:} a problémát kisebb, hasonló részproblémákra bontjuk.
+  \item \textbf{Uralkodás:} a részproblémákat rekurzívan megoldjuk.
+  \item \textbf{Egyesítés:} a részmegoldásokat összerakjuk a teljes probléma megoldásává.
+\end{enumerate}
+
+Rendezéseknél ezt az elvet legszebben az összefésülő rendezés és a gyorsrendezés mutatja. Az összefésülő rendezésnél a nehéz lépés az egyesítés, a gyorsrendezésnél pedig a felosztás.
+
+\input{src/figures/oszd_meg_uralkodj_rendezesek.tex}
+
+\section{Összefésülő rendezés}
+
+\subsection{Alapelv}
+
+Az \textbf{összefésülő rendezés} a tömböt két részre osztja, mindkét részt rekurzívan rendezi, majd a két rendezett részt lineáris időben összefésüli.
+
+Az összefésülés lényege: két rendezett sorozat első még fel nem dolgozott elemét hasonlítjuk össze, és mindig a kisebbet írjuk a kimenet következő helyére. Ha az egyik sorozat elfogy, a másik maradékát egyszerűen átmásoljuk.
+
+\subsection{Pszeudókód}
+
+\zvpseudocode[caption={Összefésülő rendezés},label={lst:zv05_osszefesulo_rendezes}]{src/code/zv05_osszefesulo_rendezes.pseudo}
+
+\zvpseudocode[caption={Két rendezett résztömb összefésülése},label={lst:zv05_osszefesul}]{src/code/zv05_osszefesul.pseudo}
+
+\subsection{Időigény}
+
+Az összefésülő rendezés rekurziós formulája:
+
+\[
+T(n)=2T\left(\frac{n}{2}\right)+\Theta(n).
+\]
+
+Az $\Theta(n)$ tag az összefésülés költsége. A rekurziós fa minden szintjén összesen $\Theta(n)$ munka történik, a szintek száma pedig $\Theta(\log n)$, ezért:
+
+\[
+T(n)=\Theta(n\log n).
+\]
+
+Az összefésülő rendezés stabil lehet, ha egyenlőség esetén a bal oldali rész eleme kerül előbb a kimenetbe. Hátránya, hogy általában $\Theta(n)$ segédtárat igényel.
+
+\section{Gyorsrendezés}
+
+\subsection{Alapelv}
+
+A \textbf{gyorsrendezés} is oszd meg és uralkodj típusú algoritmus, de másképpen működik, mint az összefésülő rendezés. Először kiválaszt egy \textbf{pivot} elemet, majd a tömböt úgy osztja két részre, hogy az egyik oldalra kerüljenek a pivotnál nem nagyobb, a másik oldalra pedig a pivotnál nagyobb elemek. Ezután a két részt rekurzívan rendezi.
+
+A gyorsrendezésnél az egyesítés már nem igényel külön munkát, mert a felosztás után a két rész egymáshoz képest jó sorrendben van.
+
+\input{src/figures/gyorsrendezes_particionalas.tex}
+
+\subsection{Pszeudókód}
+
+\zvpseudocode[caption={Gyorsrendezés},label={lst:zv05_gyorsrendezes}]{src/code/zv05_gyorsrendezes.pseudo}
+
+\zvpseudocode[caption={Particionálás gyorsrendezéshez},label={lst:zv05_particional}]{src/code/zv05_particional.pseudo}
+
+\subsection{Időigény}
+
+A particionálás egy adott részintervallumon lineáris időt igényel. A teljes időigény attól függ, mennyire kiegyensúlyozottak a felosztások.
+
+Legjobb esetben a pivot mindig közel felezi a tömböt:
+
+\[
+T(n)=2T\left(\frac{n}{2}\right)+\Theta(n)=\Theta(n\log n).
+\]
+
+Legrosszabb esetben a pivot mindig a legkisebb vagy a legnagyobb elem, ezért az egyik rész $0$, a másik $n-1$ elemű:
+
+\[
+T(n)=T(n-1)+\Theta(n)=\Theta(n^2).
+\]
+
+Átlagosan, jó pivotválasztással vagy véletlenített pivotválasztással:
+
+\[
+T(n)=\Theta(n\log n).
+\]
+
+A gyorsrendezés a gyakorlatban nagyon gyors lehet, mert helyben dolgozik és jók a konstansai, de általában nem stabil, és rossz pivotválasztással négyzetes időigényűvé válhat.
+
+\section{Buborék rendezés}
+
+\subsection{Alapelv}
+
+A \textbf{buborék rendezés} az egymás mellett álló elemeket hasonlítja össze, és ha rossz sorrendben vannak, felcseréli őket. Egy menet után a legnagyobb elem a rendezendő rész végére kerül. Ezt addig ismétli, amíg nincs több csere.
+
+\zvpseudocode[caption={Buborékrendezés},label={lst:zv05_buborekrendezes}]{src/code/zv05_buborekrendezes.pseudo}
+
+A buborék rendezés előnye, hogy egyszerű és helyben rendez. Ha szerepel benne a cserefigyelés, akkor már rendezett bemeneten $\Theta(n)$ időben megáll. Legrosszabb esetben viszont sok összehasonlítást és sok cserét végez:
+
+\[
+T(n)=\Theta(n^2).
+\]
+
+\begin{warningbox}
+A buborék rendezést vizsgán érdemes egyszerű algoritmusként ismerni, de gyakorlati alkalmazásra nagy adatsorokon általában nem jó választás, mert sok felesleges cserét végez.
+\end{warningbox}
+
+\section{Shell rendezés}
+
+\subsection{Alapelv}
+
+A \textbf{Shell rendezés} a beszúró rendezés továbbfejlesztése. A beszúró rendezés gyenge pontja, hogy egy elem csak szomszédos mozgatásokkal jut el messzire. A Shell rendezés ezért eleinte távoli elemeket hasonlít össze és rendez, majd a távolságot fokozatosan csökkenti.
+
+A távolságokat \textbf{növekményeknek} nevezzük. Például:
+
+\[
+\dots, 32,16,8,4,2,1
+\]
+
+vagy
+
+\[
+\dots, 121,40,13,4,1.
+\]
+
+Minden növekményre egy olyan beszúró rendezéshez hasonló lépés fut, amely nem szomszédos, hanem $h$ távolságra lévő elemeket rendez. Mire a növekmény $1$ lesz, a tömb már részben rendezett, ezért az utolsó beszúró rendezés gyorsabb lehet.
+
+\subsection{Pszeudókód}
+
+\zvpseudocode[caption={Shell rendezés},label={lst:zv05_shell_rendezes}]{src/code/zv05_shell_rendezes.pseudo}
+
+\subsection{Időigény}
+
+A Shell rendezés időigénye erősen függ a növekménysorozattól. Egyszerű vizsgaszintű megfogalmazásban:
+
+\[
+T(n) \approx \Theta(n^{1.5})
+\]
+
+alkalmas növekményválasztás mellett, de ez nem univerzális törvény minden növekménysorozatra. A lényeg az, hogy a Shell rendezés a tiszta $\Theta(n^2)$ beszúró rendezésnél sok esetben gyorsabb, de nem éri el általánosan az összefésülő rendezés garantált $\Theta(n\log n)$ idejét.
+
+\section{Minimum kiválasztásos rendezés}
+
+\subsection{Alapelv}
+
+A \textbf{minimum kiválasztásos rendezés} minden lépésben megkeresi a rendezendő rész legkisebb elemét, és azt a rész elejére cseréli. Az első menet után a legkisebb elem a helyén van, a második menet után a második legkisebb is, és így tovább.
+
+\zvpseudocode[caption={Minimum kiválasztásos rendezés},label={lst:zv05_minimum_kivalasztasos_rendezes}]{src/code/zv05_minimum_kivalasztasos_rendezes.pseudo}
+
+Az összehasonlítások száma bemenettől függetlenül:
+
+\[
+(n-1)+(n-2)+\dots+1=\frac{n(n-1)}{2}=\Theta(n^2).
+\]
+
+A cserék száma viszont legfeljebb $n-1$, ezért akkor lehet érdekes, ha az összehasonlítás olcsó, de a mozgatás drága. Általában helyben rendez, de nem stabil, mert egy távoli minimum előrecserélése felboríthatja az azonos kulcsú elemek sorrendjét.
+
+\section{Négyzetes rendezés}
+
+A tételben szereplő \textbf{négyzetes rendezés} nem azt jelenti, hogy az időigénye $n^2$, hanem azt, hogy a módszer a bemenetet közel $\sqrt n$ darab, közel $\sqrt n$ méretű részre osztja. Az alapgondolat:
+
+\begin{enumerate}
+  \item az $n$ elemet több alcsoportba osztjuk;
+  \item minden alcsoportból kiemeljük a legkisebb elemet;
+  \item ezekből főcsoportot képezünk;
+  \item mindig a főcsoport minimumát írjuk az eredménybe;
+  \item abból az alcsoportból, ahonnan a minimum származott, új elemet emelünk be.
+\end{enumerate}
+
+\subsection{Pszeudókód}
+
+\zvpseudocode[caption={Négyzetes rendezés},label={lst:zv05_negyzetes_rendezes}]{src/code/zv05_negyzetes_rendezes.pseudo}
+
+Ha $\sqrt n$ alcsoport van, és mindegyik közel $\sqrt n$ méretű, akkor a módszer összehasonlításszáma:
+
+\[
+T(n)=\Theta(n\sqrt n)=\Theta(n^{1.5}).
+\]
+
+Továbbfejlesztett, több szintű csoportosítással ez javítható például $\Theta(n^{4/3})$ nagyságrendre. A vizsgán itt a lényeg az, hogy a módszer a minimumkiválasztás ötletét csoportosítással gyorsítja, de az általános összehasonlító alsó korlát miatt nem tud valódi lineáris összehasonlító rendezéssé válni.
+
+\section{Lineáris idejű rendezések}
+
+\subsection{Miért lehetnek lineárisak?}
+
+A leszámláló és számjegyes rendezés nem pusztán összehasonlításokra épül. Ezek kulcsszerkezeti feltételeket használnak ki, például azt, hogy a kulcsok kis tartományba eső egészek, vagy fix hosszúságú számjegysorozatok.
+
+Ezért nem mondanak ellent az összehasonlító rendezések $\Omega(n\log n)$ alsó korlátjának.
+
+\input{src/figures/leszamlalo_rendezes_folyamat.tex}
+
+\subsection{Leszámláló rendezés}
+
+A \textbf{leszámláló rendezés} bemenete olyan egész kulcsokból áll, amelyek $1$ és $k$ közé esnek. Három tömböt használ:
+
+\begin{itemize}
+  \item $A[1..n]$: bemeneti tömb;
+  \item $B[1..n]$: kimeneti tömb;
+  \item $C[1..k]$: számláló tömb.
+\end{itemize}
+
+A módszer lépései:
+
+\begin{enumerate}
+  \item lenullázza a $C$ tömböt;
+  \item megszámolja, hogy melyik kulcs hányszor szerepel;
+  \item prefixösszegeket képez, így $C[i]$ megadja, hány elem $\leq i$;
+  \item hátulról előre bejárja a bemenetet, és minden elemet a végleges helyére ír a $B$ tömbben.
+\end{enumerate}
+
+\zvpseudocode[caption={Leszámláló rendezés},label={lst:zv05_leszamlalo_rendezes}]{src/code/zv05_leszamlalo_rendezes.pseudo}
+
+Az időigény:
+
+\[
+T(n)=\Theta(n+k).
+\]
+
+Ha $k=\Theta(n)$, akkor:
+
+\[
+T(n)=\Theta(n).
+\]
+
+A leszámláló rendezés stabil, ha a bemenetet hátulról előre járjuk be a kimenetbe íráskor. Ez különösen fontos a számjegyes rendezésnél, mert ott a stabil részrendezések egymásra épülnek.
+
+\subsection{Számjegyes rendezés}
+
+A \textbf{számjegyes rendezés}, más néven radix rendezés, fix hosszúságú kulcsokat rendez több menetben. Például számokat számjegyenként vagy sztringeket karakterenként dolgozhat fel.
+
+A leggyakoribb változat a legkisebb helyiértéktől halad a legnagyobb felé. Minden pozíció szerint stabil rendezést végzünk.
+
+\zvpseudocode[caption={Számjegyes rendezés},label={lst:zv05_szamjegyes_rendezes}]{src/code/zv05_szamjegyes_rendezes.pseudo}
+
+Ha $d$ a számjegyek száma, $k$ pedig egy számjegy lehetséges értékeinek száma, akkor az időigény:
+
+\[
+T(n)=\Theta(d(n+k)).
+\]
+
+Ha $d$ és $k$ az $n$-hez képest kicsi vagy konstansnak tekinthető, akkor a számjegyes rendezés lineáris jellegű.
+
+\begin{center}
+\input{src/tables/zv05_linearis_rendezesek_feltetelei.tex}
+\end{center}
+
+\section{Az összehasonlító rendezések alsó korlátja}
+
+\subsection{Döntési fa modell}
+
+Egy összehasonlító rendezés működése modellezhető döntési fával. A fa belső csúcsai összehasonlítások, például:
+
+\[
+A[i] \leq A[j]?
+\]
+
+A bal vagy jobb ág annak felel meg, hogy az összehasonlítás eredménye igaz vagy hamis. A fa levelei a lehetséges rendezett permutációknak felelnek meg.
+
+\input{src/figures/osszehasonlito_rendezes_dontesi_fa.tex}
+
+\subsection{Az alsó korlát gondolata}
+
+$n$ különböző elemnek $n!$ lehetséges sorrendje van. Egy helyes összehasonlító rendezésnek minden lehetséges bemeneti permutációt meg kell tudnia különböztetni, ezért a döntési fának legalább $n!$ levele kell legyen.
+
+Egy $h$ magasságú bináris fa legfeljebb $2^h$ levelet tartalmaz, ezért:
+
+\[
+2^h \geq n!.
+\]
+
+Logaritmust véve:
+
+\[
+h \geq \log_2(n!).
+\]
+
+Stirling-formulával:
+
+\[
+\log_2(n!)=\Omega(n\log n).
+\]
+
+Tehát bármely összehasonlító rendezés legrosszabb esetben legalább
+
+\[
+\Omega(n\log n)
+\]
+
+összehasonlítást igényel.
+
+\begin{warningbox}
+Ez az alsó korlát csak az összehasonlító rendezésekre vonatkozik. A leszámláló rendezés és a számjegyes rendezés azért lehet lineáris, mert a kulcsokról többet feltételez, mint pusztán azt, hogy összehasonlíthatók.
+\end{warningbox}
+
+\section{Összefoglalás vizsgára}
+
+\begin{center}
+\input{src/tables/zv05_idoigenyek_es_memoria.tex}
+\end{center}
+
+Rövid, vizsgán jól használható összehasonlítás:
+
+\begin{itemize}
+  \item A \textbf{beszúró rendezés} egyszerű, stabil, helyben rendez, majdnem rendezett bemeneten gyors, de általánosan $\Theta(n^2)$.
+  \item Az \textbf{összefésülő rendezés} garantáltan $\Theta(n\log n)$, stabil lehet, de $\Theta(n)$ segédtár kell hozzá.
+  \item A \textbf{gyorsrendezés} átlagosan $\Theta(n\log n)$ és gyakorlatban gyors, de legrosszabb esetben $\Theta(n^2)$.
+  \item A \textbf{buborék rendezés} egyszerű, de sok cserét végez, ezért inkább elméleti alapalgoritmus.
+  \item A \textbf{Shell rendezés} a beszúró rendezést gyorsítja távoli cserékkel, ideje a növekménysorozattól függ.
+  \item A \textbf{minimum kiválasztásos rendezés} mindig $\Theta(n^2)$ összehasonlítást végez, de kevés cserét használ.
+  \item A \textbf{négyzetes rendezés} csoportosítással gyorsítja a minimumkiválasztás gondolatát, tipikusan $\Theta(n^{1.5})$ nagyságrenddel.
+  \item A \textbf{leszámláló rendezés} $\Theta(n+k)$ idejű, ha a kulcsok kis egész tartományból jönnek.
+  \item A \textbf{számjegyes rendezés} $\Theta(d(n+k))$ idejű, és stabil részrendezést igényel.
+  \item Az \textbf{összehasonlító rendezések alsó korlátja} $\Omega(n\log n)$, ezért általános összehasonlító módszerrel ennél aszimptotikusan jobb legrosszabb eseti rendezés nem lehetséges.
+\end{itemize}
